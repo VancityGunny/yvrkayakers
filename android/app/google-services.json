@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "669436728185",
+    "firebase_url": "https://yvrkayakers.firebaseio.com",
+    "project_id": "yvrkayakers",
+    "storage_bucket": "yvrkayakers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669436728185:android:67b9b6d8ef8e7ad61c95a8",
+        "android_client_info": {
+          "package_name": "com.zeusshard.yvrkayakers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "669436728185-u8gmev2qjdjuusne5s2bs600ol1t0ujs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkMfU-qUjzs7WV_KASiA2Qr7-eth7SrFY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "669436728185-u8gmev2qjdjuusne5s2bs600ol1t0ujs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

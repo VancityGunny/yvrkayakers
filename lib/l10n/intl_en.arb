@@ -1,0 +1,8 @@
+{    
+    "signInWithGoogleButton": "Sign in with Google",
+    "phoneAuthenticationTitle": "Phone Authentication",
+    "loginFailed": "Login Failed",
+    "yesButton": "Yes",
+    "noButton": "No",
+    "signOutLabel": "Sign out"
+}
