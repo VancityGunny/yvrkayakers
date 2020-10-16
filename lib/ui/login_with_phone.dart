@@ -140,7 +140,7 @@ class _LoginOTPState extends State<LoginOTP> {
     };
 
     final PhoneVerificationFailed verificationFailed =
-        (AuthException authException) {
+        (FirebaseAuthException authException) {
       // setState(() {
       print(
           'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');

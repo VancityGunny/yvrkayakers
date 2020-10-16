@@ -8,26 +8,26 @@ import 'package:yvrkayakers/blocs/user/user_provider.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
-  static final _firestore = Firestore.instance;
+  static final _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn;
 
   AuthRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignin})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
         _googleSignIn = googleSignin ?? GoogleSignIn();
 
-  Future<FirebaseUser> signInWithGoogle() async {
+  Future<User> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
     await _firebaseAuth.signInWithCredential(credential);
-    var user = await _firebaseAuth.currentUser();
+    var user = _firebaseAuth.currentUser;
 
     return user;
   }
@@ -35,7 +35,7 @@ class AuthRepository {
   Future<void> signInWithPhoneNumber(
       AuthCredential credential, String phoneNumber) async {
     // now we merge with existing firebase user
-    FirebaseUser currentUser = await _firebaseAuth.currentUser();
+    User currentUser = _firebaseAuth.currentUser;
     await currentUser.linkWithCredential(credential).then((value) async {
       await createOrAssumeUser(value, currentUser, phoneNumber);
     });
@@ -45,8 +45,8 @@ class AuthRepository {
   }
 
   Future createOrAssumeUser(
-      AuthResult authResult, FirebaseUser currentUser, phoneNumber) async {
-    if (authResult.user == null) {
+      UserCredential userCred, User currentUser, phoneNumber) async {
+    if (userCred.user == null) {
       return;
     }
 
@@ -55,15 +55,15 @@ class AuthRepository {
     var foundUsers = await _firestore
         .collection('/users')
         .where('uid', isEqualTo: currentUser.uid)
-        .getDocuments();
+        .get();
     // assume account found by id
-    if (foundUsers.documents.length > 0) {
+    if (foundUsers.docs.length > 0) {
       await userProvider.assumeUser(
-          foundUsers.documents.first.documentID,
+          foundUsers.docs.first.id,
           new UserModel(currentUser.uid, currentUser.email,
-              currentUser.displayName, phoneNumber, currentUser.photoUrl));
+              currentUser.displayName, phoneNumber, currentUser.photoURL));
       var session = FlutterSession();
-      await session.set("currentUserId", foundUsers.documents.first.documentID);
+      await session.set("currentUserId", foundUsers.docs.first.id);
       return; // if existing then just update this and return
     } else {
       // can't find match by uid
@@ -71,28 +71,27 @@ class AuthRepository {
       var foundUsersByPhone = await _firestore
           .collection('/users')
           .where('phone', isEqualTo: phoneNumber)
-          .getDocuments();
+          .get();
       // create new user if not already exists
 
-      if (foundUsersByPhone.documents.length == 0) {
+      if (foundUsersByPhone.docs.length == 0) {
         // check if user record does not exist then create the record
         var uuid = new Uuid();
         var userId = uuid.v1();
         await userProvider.addUser(
             userId.toString(),
             new UserModel(currentUser.uid, currentUser.email,
-                currentUser.displayName, phoneNumber, currentUser.photoUrl));
+                currentUser.displayName, phoneNumber, currentUser.photoURL));
         var session = FlutterSession();
         await session.set("currentUserId", userId);
       } else {
         // assume user
         await userProvider.assumeUser(
-            foundUsersByPhone.documents.first.documentID,
+            foundUsersByPhone.docs.first.id,
             new UserModel(currentUser.uid, currentUser.email,
-                currentUser.displayName, phoneNumber, currentUser.photoUrl));
+                currentUser.displayName, phoneNumber, currentUser.photoURL));
         var session = FlutterSession();
-        await session.set(
-            "currentUserId", foundUsersByPhone.documents.first.documentID);
+        await session.set("currentUserId", foundUsersByPhone.docs.first.id);
       }
       return;
     }
@@ -106,22 +105,22 @@ class AuthRepository {
   }
 
   Future<bool> isSignedIn() async {
-    final currentUser = await _firebaseAuth.currentUser();
+    final currentUser = _firebaseAuth.currentUser;
     return currentUser != null;
   }
 
   Future<UserModel> getUser() async {
-    var user = await _firebaseAuth.currentUser();
+    var user = _firebaseAuth.currentUser;
 
     var foundUsers = await _firestore
         .collection('/users')
         .where('uid', isEqualTo: user.uid)
-        .getDocuments();
-    if (foundUsers.documents.length > 0) {
-      var loggedInUser = UserModel.fromJson(foundUsers.documents[0].data);
+        .get();
+    if (foundUsers.docs.length > 0) {
+      var loggedInUser = UserModel.fromJson(foundUsers.docs[0].data());
       var session = FlutterSession();
       await session.set("loggedInUser", loggedInUser);
-      await session.set("currentUserId", foundUsers.documents[0].documentID);
+      await session.set("currentUserId", foundUsers.docs[0].id);
       return loggedInUser;
     } else {
       return null;

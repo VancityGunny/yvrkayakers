@@ -32,19 +32,25 @@ dependencies:
   flutter_bloc: ^4.0.0
   bloc: ^4.0.0
   equatable: ^1.1.1
-  # The foolowing add firebase authentication
-  firebase_auth: ^0.15.5+3
+  # The foolowing add firebase authentication  
+  firebase_core: ^0.5.0
+  firebase_auth: ^0.18.1+2
   google_sign_in: ^4.0.0
-  cloud_firestore: ^0.13.5
+  cloud_firestore: ^0.14.0+2
   uuid: ^2.0.4
   flutter_session: ^0.1.1
   path_provider: ^1.6.9
-  rxdart: ^0.18.0
+  rxdart: ^0.24.1
   font_awesome_flutter: ^8.8.1
   international_phone_input: ^1.0.4
-  firebase_storage: ^3.1.5
+  firebase_storage: ^4.0.1
   collection: ^1.14.11
   package_info: '>=0.4.0+16 <2.0.0'
+  geoflutterfire: ^2.2.1
+  persistent_bottom_nav_bar: ^2.1.0
+  google_maps_flutter: ^0.5.30
+  google_map_location_picker: ^3.3.4
+  flutter_dotenv: ^2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,6 +67,7 @@ flutter:
   uses-material-design: true
   assets:
     - graphics/
+    - secrets.env
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

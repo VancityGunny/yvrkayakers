@@ -1,8 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
+import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_screen.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_screen.dart';
 import 'package:yvrkayakers/common/common_bloc.dart';
 import 'package:yvrkayakers/generated/l10n.dart';
 
@@ -41,10 +46,10 @@ class HomeScreenState extends State<HomeScreen> {
           actions: <Widget>[
             IconButton(
               icon: Icon(
-                Icons.contacts,
+                Icons.list,
               ),
               onPressed: () {
-                //_goToContactScreen(context);
+                //_goToRiverbetaScreen(context);
               },
             ),
             IconButton(
@@ -96,6 +101,58 @@ class HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-        body: Text('Nothing here'));
+        body: MultiBlocProvider(
+          providers: [
+            BlocProvider<RiverbetaBloc>(
+              create: (BuildContext context) => RiverbetaBloc(),
+            ),
+          ],
+          child: Center(
+            child: PersistentTabView(
+              controller: _controller,
+              screens: _NavScreens(),
+              items: _navBarsItems(),
+              confineInSafeArea: true,
+              backgroundColor: Colors.white,
+              handleAndroidBackButtonPress: true,
+              resizeToAvoidBottomInset: true,
+              hideNavigationBarWhenKeyboardShows: true,
+              decoration: NavBarDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              popAllScreensOnTapOfSelectedTab: true,
+              navBarStyle: NavBarStyle.style9,
+            ),
+          ),
+        ));
+  }
+
+  PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
+  List<Widget> _NavScreens() {
+    return [RiverbetaScreen(), RiverbetaAddScreen(), RiverbetaDetailScreen()];
+  }
+
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: Icon(Icons.home),
+        title: ("Rivers"),
+        activeColor: CupertinoColors.activeBlue,
+        inactiveColor: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(Icons.favorite),
+        title: ("OFFERS"),
+        activeColor: CupertinoColors.activeGreen,
+        inactiveColor: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(Icons.person_pin),
+        title: ("Help"),
+        activeColor: CupertinoColors.systemRed,
+        inactiveColor: CupertinoColors.systemGrey,
+      )
+    ];
   }
 }
