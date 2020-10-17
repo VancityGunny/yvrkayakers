@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 
 /// generate by https://javiercbk.github.io/json_to_dart/
@@ -32,47 +33,35 @@ class RiverbetaModel extends Equatable {
   final String id;
   final String riverName;
   final String sectionName;
-  final String thumbnailUrl;
   final double difficulty; // 2.75 for grade III- and 3.25 for grade III+
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
-  final int minFlow; // minimum runnable flow in cms
-  final int maxFlow; // maximum runnable flow in cms
-  final double minDifficulty;
-  final double maxDifficulty;
-  final int minVisualLevel; // translate to visual gauge that available
-  final int maxVisualLevel;
+  final double minLevel; // minimum runnable flow in cms
+  final double maxLevel; // maximum runnable flow in cms
+  final String gaugeUnit;
 
   RiverbetaModel(
       this.id,
       this.riverName,
       this.sectionName,
-      this.thumbnailUrl,
       this.difficulty,
       this.putInLocation,
       this.takeOutLocation,
-      this.minFlow,
-      this.maxFlow,
-      this.minDifficulty,
-      this.maxDifficulty,
-      this.minVisualLevel,
-      this.maxVisualLevel);
+      this.minLevel,
+      this.maxLevel,
+      this.gaugeUnit);
 
   @override
   List<Object> get props => [
         id,
         riverName,
         sectionName,
-        thumbnailUrl,
         difficulty,
         putInLocation,
         takeOutLocation,
-        minFlow,
-        maxFlow,
-        minDifficulty,
-        maxDifficulty,
-        minVisualLevel,
-        maxVisualLevel
+        minLevel,
+        maxLevel,
+        gaugeUnit
       ];
 
   factory RiverbetaModel.fromFire(DocumentSnapshot doc) {
@@ -81,16 +70,12 @@ class RiverbetaModel extends Equatable {
         doc.id,
         json['riverName'] as String,
         json['sectionName'] as String,
-        json['thumbnailUrl'] as String,
         json['difficulty'] as double,
         json['putInLocation'] as GeoFirePoint,
         json['takeOutLocation'] as GeoFirePoint,
-        json['minFlow'] as int,
-        json['maxFlow'] as int,
-        json['minDifficulty'] as double,
-        json['maxDifficulty'] as double,
-        json['minVisualLevel'] as int,
-        json['maxVisualLevel'] as int);
+        json['minFlow'] as double,
+        json['maxFlow'] as double,
+        json['gaugeUnit'] as String);
   }
 
   factory RiverbetaModel.fromJson(Map<String, dynamic> json) {
@@ -98,16 +83,12 @@ class RiverbetaModel extends Equatable {
         null,
         json['riverName'] as String,
         json['sectionName'] as String,
-        json['thumbnailUrl'] as String,
         json['difficulty'] as double,
         json['putInLocation'] as GeoFirePoint,
         json['takeOutLocation'] as GeoFirePoint,
-        json['minFlow'] as int,
-        json['maxFlow'] as int,
-        json['minDifficulty'] as double,
-        json['maxDifficulty'] as double,
-        json['minVisualLevel'] as int,
-        json['maxVisualLevel'] as int);
+        json['minFlow'] as double,
+        json['maxFlow'] as double,
+        json['gaugeUnit'] as String);
   }
 
   Map<String, dynamic> toJson() {
@@ -115,16 +96,12 @@ class RiverbetaModel extends Equatable {
     //data['id'] = id;
     data['riverName'] = riverName;
     data['sectionName'] = sectionName;
-    data['thumbnailUrl'] = thumbnailUrl;
     data['difficulty'] = difficulty;
-    data['putInLocation'] = putInLocation;
-    data['takeOutLocation'] = takeOutLocation;
-    data['minFlow'] = minFlow;
-    data['maxFlow'] = maxFlow;
-    data['minDifficulty'] = minDifficulty;
-    data['maxDifficulty'] = maxDifficulty;
-    data['minVisualLevel'] = minVisualLevel;
-    data['maxVisualLevel'] = maxVisualLevel;
+    data['putInLocation'] = putInLocation.data;
+    data['takeOutLocation'] = takeOutLocation.data;
+    data['minFlow'] = minLevel;
+    data['maxFlow'] = maxLevel;
+    data['gaugeUnit'] = gaugeUnit;
     return data;
   }
 }

@@ -35,7 +35,7 @@ class RiverbetaDetailScreenState extends State<RiverbetaDetailScreen> {
         );
       }
       if (currentState is ErrorRiverbetaState) {
-        return Center(
+        return SingleChildScrollView(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

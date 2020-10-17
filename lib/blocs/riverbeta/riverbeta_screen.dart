@@ -29,7 +29,8 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
   @override
   Widget build(BuildContext context) {
     List<bool> _gradeSelections = List.generate(4, (_) => false);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       children: [
         Text('Rivers Info'),
         Row(
@@ -69,7 +70,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
           child: Icon(FontAwesomeIcons.plus, color: Colors.black),
         )
       ],
-    );
+    ));
 
     BlocBuilder<RiverbetaBloc, RiverbetaState>(
         bloc: BlocProvider.of<RiverbetaBloc>(context),

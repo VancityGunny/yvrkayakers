@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
 class RiverbetaAddScreen extends StatefulWidget {
@@ -90,7 +92,7 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
   }
 
   Widget newRiverForm(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           Text('Add New River'),
@@ -198,12 +200,15 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
               value: _riverGaugeUnit,
               items: [
                 DropdownMenuItem(
+                  value: 'CMS',
                   child: Text('CMS'),
                 ),
                 DropdownMenuItem(
+                  value: 'M',
                   child: Text('M'),
                 ),
                 DropdownMenuItem(
+                  value: 'Visual',
                   child: Text('Visual Gauge'),
                 )
               ],
@@ -262,10 +267,29 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
               child: Text('Pick location'),
             ),
           ]),
+          RaisedButton(
+              child: Text('Add New River'),
+              onPressed: () {
+                var uuid = new Uuid();
+                var riverId = uuid.v1();
+                RiverbetaModel newRiver = RiverbetaModel(
+                    riverId.toString(),
+                    txtNewRiverName.text,
+                    txtNewSectionName.text,
+                    _riverGrade,
+                    GeoFirePoint(_putInLocation.latLng.latitude,
+                        _putInLocation.latLng.longitude),
+                    GeoFirePoint(_takeOutLocation.latLng.latitude,
+                        _takeOutLocation.latLng.longitude),
+                    double.parse(txtRiverMin.text),
+                    double.parse(txtRiverMax.text),
+                    _riverGaugeUnit);
+                // add new river
+                BlocProvider.of<RiverbetaBloc>(context)
+                    .add(AddingRiverbetaEvent(newRiver));
+              })
         ],
       ),
     );
   }
-
-  void uploadImage() {}
 }

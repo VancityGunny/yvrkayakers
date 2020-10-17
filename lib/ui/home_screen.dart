@@ -109,7 +109,7 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           ],
           child: Center(
-            child: PersistentTabView(
+                child: PersistentTabView(
               controller: _controller,
               screens: _navScreens(),
               items: _navBarsItems(),

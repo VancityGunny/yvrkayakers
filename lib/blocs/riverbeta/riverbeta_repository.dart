@@ -16,7 +16,7 @@ class RiverbetaRepository {
   }
 
   Future<String> addRiver(RiverbetaModel newRiver) async {
-    return addRiver(newRiver);
+    return _riverbetaProvider.addRiver(newRiver);
   }
 
   void test(bool isError) {

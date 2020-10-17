@@ -9,8 +9,6 @@ class RiverbetaPage extends StatefulWidget {
 }
 
 class _RiverbetaPageState extends State<RiverbetaPage> {
-  final _riverbetaBloc = RiverbetaBloc();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
