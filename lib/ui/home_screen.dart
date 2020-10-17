@@ -41,6 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
     CommonBloc.of(context).initStream();
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('YVRKayakers'),
           actions: <Widget>[
@@ -110,7 +111,7 @@ class HomeScreenState extends State<HomeScreen> {
           child: Center(
             child: PersistentTabView(
               controller: _controller,
-              screens: _NavScreens(),
+              screens: _navScreens(),
               items: _navBarsItems(),
               confineInSafeArea: true,
               backgroundColor: Colors.white,
@@ -129,7 +130,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
-  List<Widget> _NavScreens() {
+  List<Widget> _navScreens() {
     return [RiverbetaScreen(), RiverbetaAddScreen(), RiverbetaDetailScreen()];
   }
 

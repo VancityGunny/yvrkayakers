@@ -1,9 +1,5 @@
-import 'dart:async';
-import 'dart:developer' as developer;
-
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:meta/meta.dart';
 
 @immutable

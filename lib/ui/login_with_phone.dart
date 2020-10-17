@@ -100,7 +100,7 @@ class _LoginOTPState extends State<LoginOTP> {
                                   assert(_verId != null);
 
                                   AuthCredential credential =
-                                      PhoneAuthProvider.getCredential(
+                                      PhoneAuthProvider.credential(
                                           verificationId: _verId,
                                           smsCode: _smsCode);
                                   BlocProvider.of<AuthBloc>(context).add(

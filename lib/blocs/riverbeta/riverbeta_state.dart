@@ -19,16 +19,6 @@ class UnRiverbetaState extends RiverbetaState {
 
   @override
   String toString() => 'UnRiverbetaState';
-
-  @override
-  UnRiverbetaState getStateCopy() {
-    return UnRiverbetaState(0);
-  }
-
-  @override
-  UnRiverbetaState getNewVersion() {
-    return UnRiverbetaState(version + 1);
-  }
 }
 
 /// Initialized
@@ -39,16 +29,6 @@ class InRiverbetaState extends RiverbetaState {
 
   @override
   String toString() => 'InRiverbetaState $hello';
-
-  @override
-  InRiverbetaState getStateCopy() {
-    return InRiverbetaState(version, hello);
-  }
-
-  @override
-  InRiverbetaState getNewVersion() {
-    return InRiverbetaState(version + 1, hello);
-  }
 }
 
 class ErrorRiverbetaState extends RiverbetaState {
@@ -59,16 +39,6 @@ class ErrorRiverbetaState extends RiverbetaState {
 
   @override
   String toString() => 'ErrorRiverbetaState';
-
-  @override
-  ErrorRiverbetaState getStateCopy() {
-    return ErrorRiverbetaState(version, errorMessage);
-  }
-
-  @override
-  ErrorRiverbetaState getNewVersion() {
-    return ErrorRiverbetaState(version + 1, errorMessage);
-  }
 }
 
 class AddedRiverbetaState extends RiverbetaState {

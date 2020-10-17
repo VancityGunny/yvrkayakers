@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
 class RiverbetaAddScreen extends StatefulWidget {
@@ -116,7 +115,7 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
             )
           ]),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Grade'),
               SliderTheme(
@@ -263,15 +262,6 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
               child: Text('Pick location'),
             ),
           ]),
-          Expanded(
-            flex: 1,
-            child: Container(
-              child: OutlineButton(
-                child: Text('Add Image'),
-                onPressed: uploadImage,
-              ),
-            ),
-          ),
         ],
       ),
     );
