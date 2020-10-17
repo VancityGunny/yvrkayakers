@@ -13,10 +13,17 @@ class RiverbetaAddScreen extends StatefulWidget {
 }
 
 class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
-  RiverbetaAddScreenState();
-  LocationResult _pickedLocation;
+  double _riverGrade = 2.0;
+  String _riverGradeLabel = 'II';
+  LocationResult _putInLocation;
+  LocationResult _takeOutLocation;
+  String _riverGaugeUnit;
   TextEditingController txtNewSectionName = TextEditingController();
   TextEditingController txtNewRiverName = TextEditingController();
+  TextEditingController txtRiverMin = TextEditingController();
+  TextEditingController txtRiverMax = TextEditingController();
+
+  RiverbetaAddScreenState();
   @override
   void initState() {
     super.initState();
@@ -108,50 +115,153 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
               ),
             )
           ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('Grade'),
+              SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  activeTrackColor: Colors.red[700],
+                  inactiveTrackColor: Colors.red[100],
+                  trackShape: RoundedRectSliderTrackShape(),
+                  trackHeight: 4.0,
+                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                  thumbColor: Colors.redAccent,
+                  overlayColor: Colors.red.withAlpha(32),
+                  overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+                  tickMarkShape: RoundSliderTickMarkShape(),
+                  activeTickMarkColor: Colors.red[700],
+                  inactiveTickMarkColor: Colors.red[100],
+                  valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+                  valueIndicatorColor: Colors.redAccent,
+                  valueIndicatorTextStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                child: Slider(
+                  value: _riverGrade,
+                  min: 2.0,
+                  max: 5.0,
+                  divisions: 6,
+                  label: '$_riverGradeLabel',
+                  onChanged: (value) {
+                    setState(
+                      () {
+                        switch ((value * 10).round()) {
+                          case 20:
+                            _riverGradeLabel = 'II';
+                            break;
+                          case 25:
+                            _riverGradeLabel = 'II+';
+                            break;
+                          case 30:
+                            _riverGradeLabel = 'III';
+                            break;
+                          case 35:
+                            _riverGradeLabel = 'III+';
+                            break;
+                          case 40:
+                            _riverGradeLabel = 'IV';
+                            break;
+                          case 45:
+                            _riverGradeLabel = 'IV+';
+                            break;
+                          case 50:
+                            _riverGradeLabel = 'V';
+                            break;
+                        }
+                        _riverGrade = value;
+                      },
+                    );
+                  },
+                ),
+              ),
+              Text('$_riverGradeLabel')
+            ],
+          ),
+          Row(children: <Widget>[
+            Text('River Range:'),
+            Expanded(
+              child: TextField(
+                controller: this.txtRiverMin,
+                decoration: InputDecoration(
+                    border: InputBorder.none, hintText: "River Min?"),
+              ),
+            ),
+            Expanded(
+              child: TextField(
+                controller: this.txtRiverMax,
+                decoration: InputDecoration(
+                    border: InputBorder.none, hintText: "River Max?"),
+              ),
+            ),
+            DropdownButton(
+              value: _riverGaugeUnit,
+              items: [
+                DropdownMenuItem(
+                  child: Text('CMS'),
+                ),
+                DropdownMenuItem(
+                  child: Text('M'),
+                ),
+                DropdownMenuItem(
+                  child: Text('Visual Gauge'),
+                )
+              ],
+              onChanged: (value) {
+                _riverGaugeUnit = value;
+              },
+            )
+          ]),
           Row(children: <Widget>[
             Text('PutIn:'),
+            Text((_putInLocation == null)
+                ? '<<EMPTY>>'
+                : _putInLocation.latLng.latitude.toString().substring(0, 8) +
+                    ',' +
+                    _putInLocation.latLng.longitude.toString().substring(0, 8)),
             RaisedButton(
               onPressed: () async {
                 LocationResult result = await showLocationPicker(
-                  context, DotEnv().env['GOOGLE_MAP_API'],
-                  initialCenter: LatLng(31.1975844, 29.9598339),
+                    context, DotEnv().env['GOOGLE_MAP_API'],
+                    //initialCenter: LatLng(31.1975844, 29.9598339),
 //                      automaticallyAnimateToCurrentLocation: true,
 //                      mapStylePath: 'assets/mapStyle.json',
-                  myLocationButtonEnabled: true,
-                  // requiredGPS: true,
-                  layersButtonEnabled: true,
-                  // countries: ['AE', 'NG']
-
+                    myLocationButtonEnabled: true,
+                    // requiredGPS: true,
+                    layersButtonEnabled: true,
+                    countries: ['CA', 'US']
 //                      resultCardAlignment: Alignment.bottomCenter,
-                  //desiredAccuracy: LocationAccuracy.best,
-                );
+                    //desiredAccuracy: LocationAccuracy.best,
+                    );
                 print("result = $result");
-                setState(() => _pickedLocation = result);
+                setState(() => _putInLocation = result);
               },
               child: Text('Pick location'),
             ),
-            Text((_pickedLocation == null)
-                ? 'Please select location'
-                : _pickedLocation.latLng.latitude.toString() +
-                    ',' +
-                    _pickedLocation.latLng.longitude.toString()),
           ]),
           Row(children: <Widget>[
             Text('TakeOut:'),
-            Expanded(
-              child: TextField(
-                controller: this.txtNewSectionName,
-                decoration:
-                    InputDecoration(border: InputBorder.none, hintText: "Lat?"),
-              ),
+            Text((_takeOutLocation == null)
+                ? '<<EMPTY>>'
+                : _takeOutLocation.latLng.latitude.toString().substring(0, 8) +
+                    ',' +
+                    _takeOutLocation.latLng.longitude
+                        .toString()
+                        .substring(0, 8)),
+            RaisedButton(
+              onPressed: () async {
+                LocationResult result = await showLocationPicker(
+                  context,
+                  DotEnv().env['GOOGLE_MAP_API'],
+                  myLocationButtonEnabled: true,
+                  layersButtonEnabled: true,
+                );
+                print("result = $result");
+                setState(() => _takeOutLocation = result);
+              },
+              child: Text('Pick location'),
             ),
-            Expanded(
-              child: TextField(
-                controller: this.txtNewSectionName,
-                decoration: InputDecoration(
-                    border: InputBorder.none, hintText: "Long?"),
-              ),
-            )
           ]),
           Expanded(
             flex: 1,
