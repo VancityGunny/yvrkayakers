@@ -71,8 +71,10 @@ class RiverbetaModel extends Equatable {
         json['riverName'] as String,
         json['sectionName'] as String,
         json['difficulty'] as double,
-        json['putInLocation'] as GeoFirePoint,
-        json['takeOutLocation'] as GeoFirePoint,
+        GeoFirePoint(json['putInLocation']['geopoint'].latitude,
+            json['putInLocation']['geopoint'].longitude),
+        GeoFirePoint(json['takeOutLocation']['geopoint'].latitude,
+            json['takeOutLocation']['geopoint'].longitude),
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String);

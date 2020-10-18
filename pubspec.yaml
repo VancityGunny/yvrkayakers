@@ -51,6 +51,7 @@ dependencies:
   google_maps_flutter: ^1.0.3
   google_map_location_picker: ^4.0.0
   flutter_dotenv: ^2.1.0
+  location: ^3.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

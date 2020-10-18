@@ -18,7 +18,7 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
   String _riverGradeLabel = 'II';
   LocationResult _putInLocation;
   LocationResult _takeOutLocation;
-  String _riverGaugeUnit;
+  String _riverGaugeUnit = 'Visual';
   TextEditingController txtNewSectionName = TextEditingController();
   TextEditingController txtNewRiverName = TextEditingController();
   TextEditingController txtRiverMin = TextEditingController();
@@ -97,24 +97,26 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
         children: <Widget>[
           Text('Add New River'),
           Row(children: <Widget>[
-            Text('River Name:'),
             Expanded(
               child: TextField(
                 controller: this.txtNewRiverName,
                 decoration: InputDecoration(
-                    border: InputBorder.none, hintText: "River Name?"),
+                    border: InputBorder.none,
+                    hintText: "<<River Name>>",
+                    labelText: "River Name:"),
               ),
             )
           ]),
           Row(children: <Widget>[
-            Text('Section Name:'),
             Expanded(
               child: TextField(
                 controller: this.txtNewSectionName,
                 decoration: InputDecoration(
-                    border: InputBorder.none, hintText: "River Section Name?"),
+                    border: InputBorder.none,
+                    hintText: "<<Section Name>>, Leave Blank for Main Section",
+                    labelText: "Section Name:"),
               ),
-            )
+            ),
           ]),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -213,7 +215,9 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
                 )
               ],
               onChanged: (value) {
-                _riverGaugeUnit = value;
+                setState(() {
+                  _riverGaugeUnit = value;
+                });
               },
             )
           ]),

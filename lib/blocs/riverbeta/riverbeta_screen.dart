@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:location/location.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
 /// Screen that show all river list
@@ -13,6 +14,8 @@ class RiverbetaScreen extends StatefulWidget {
 }
 
 class RiverbetaScreenState extends State<RiverbetaScreen> {
+  List<bool> _gradeSelections = List.generate(4, (_) => false);
+  Location location = new Location();
   RiverbetaScreenState();
 
   @override
@@ -28,7 +31,6 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<bool> _gradeSelections = List.generate(4, (_) => false);
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -65,44 +67,49 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
         RaisedButton(
           color: Colors.white,
           onPressed: () {
-            addNewRiver();
+            location.getLocation().then((value) {
+              var myLocation = GeoFirePoint(value.latitude, value.longitude);
+              BlocProvider.of<RiverbetaBloc>(context)
+                  .add(SearchingNearbyRiverbetaEvent(myLocation, 10.0));
+            });
           },
-          child: Icon(FontAwesomeIcons.plus, color: Colors.black),
-        )
+          child: Icon(FontAwesomeIcons.search, color: Colors.black),
+        ),
+        BlocBuilder<RiverbetaBloc, RiverbetaState>(
+            bloc: BlocProvider.of<RiverbetaBloc>(context),
+            builder: (
+              BuildContext context,
+              RiverbetaState currentState,
+            ) {
+              if (currentState is FoundNearbyRiverbetaState) {
+                if (currentState.foundRivers.length > 0) {
+                  return Center(
+                    child: Text('Found Rivers'),
+                  );
+                } else {
+                  return Center(
+                    child: Text('Found No Rivers'),
+                  );
+                }
+              }
+
+              // default loading
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            })
       ],
     ));
-
-    BlocBuilder<RiverbetaBloc, RiverbetaState>(
-        bloc: BlocProvider.of<RiverbetaBloc>(context),
-        builder: (
-          BuildContext context,
-          RiverbetaState currentState,
-        ) {
-          if (currentState is FoundNearbyRiverbetaState) {
-            if (currentState.foundRivers.length > 0) {
-              return Center(
-                child: Text('Found Rivers'),
-              );
-            } else {
-              return Center(
-                child: Text('Found No Rivers'),
-              );
-            }
-          }
-
-          // default loading
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        });
   }
 
   void _load([bool isError = false]) {
     // load nearby river first
     // default to selected location, within 10 km
-    var startingPoint = GeoFirePoint(49.2827, -123.1207);
-    BlocProvider.of<RiverbetaBloc>(context)
-        .add(SearchingNearbyRiverbetaEvent(startingPoint, 10.0));
+    location.getLocation().then((value) {
+      var myLocation = GeoFirePoint(value.latitude, value.longitude);
+      BlocProvider.of<RiverbetaBloc>(context)
+          .add(SearchingNearbyRiverbetaEvent(myLocation, 10.0));
+    });
   }
 
   void addNewRiver() {}

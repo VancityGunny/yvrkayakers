@@ -16,9 +16,11 @@ class RiverbetaProvider {
     Stream<List<DocumentSnapshot>> stream = geo
         .collection(collectionRef: collectionReference)
         .within(center: center, radius: radius, field: field);
-    return stream.first.then((documentList) => documentList
-        .map<RiverbetaModel>((e) => RiverbetaModel.fromFire(e))
-        .toList());
+    return stream.first.then((documentList) {
+      return documentList
+          .map<RiverbetaModel>((e) => RiverbetaModel.fromFire(e))
+          .toList();
+    });
   }
 
   Future<RiverbetaModel> getRiverById(String riverId) async {
