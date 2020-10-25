@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
-class RiverbetaDetailScreen extends StatefulWidget {
+class RiverbetaDetailPage extends StatefulWidget {
+  RiverbetaModel _foundRiver;
+  RiverbetaDetailPage(this._foundRiver);
   @override
-  RiverbetaDetailScreenState createState() {
-    return RiverbetaDetailScreenState();
+  RiverbetaDetailPageState createState() {
+    return RiverbetaDetailPageState();
   }
 }
 
-class RiverbetaDetailScreenState extends State<RiverbetaDetailScreen> {
-  RiverbetaDetailScreenState();
+class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
+  RiverbetaDetailPageState();
 
   @override
   void initState() {
@@ -70,9 +72,23 @@ class RiverbetaDetailScreenState extends State<RiverbetaDetailScreen> {
           ),
         );
       }
-      return Center(
-        child: CircularProgressIndicator(),
-      );
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(widget._foundRiver.riverName),
+          ),
+          body: Column(
+            children: [
+              Text(widget._foundRiver.riverName),
+              Text(widget._foundRiver.sectionName),
+              Text('Difficulty: ' + widget._foundRiver.difficulty.toString()),
+              Text('Level: ' +
+                  widget._foundRiver.minLevel.toString() +
+                  ' to ' +
+                  widget._foundRiver.maxLevel.toString() +
+                  ' ' +
+                  widget._foundRiver.gaugeUnit),
+            ],
+          ));
     });
   }
 

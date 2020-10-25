@@ -6,8 +6,8 @@ import 'package:package_info/package_info.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
-import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_screen.dart';
-import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_screen.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
 import 'package:yvrkayakers/common/common_bloc.dart';
 import 'package:yvrkayakers/generated/l10n.dart';
 
@@ -109,7 +109,7 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           ],
           child: Center(
-                child: PersistentTabView(
+            child: PersistentTabView(
               controller: _controller,
               screens: _navScreens(),
               items: _navBarsItems(),
@@ -131,7 +131,7 @@ class HomeScreenState extends State<HomeScreen> {
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
   List<Widget> _navScreens() {
-    return [RiverbetaScreen(), RiverbetaAddScreen(), RiverbetaDetailScreen()];
+    return [RiverbetaScreen(), RiverbetaScreen(), RiverbetaScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

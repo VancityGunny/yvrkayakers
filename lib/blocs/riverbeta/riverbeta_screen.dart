@@ -4,6 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
+import 'package:yvrkayakers/common/common_functions.dart';
 
 /// Screen that show all river list
 class RiverbetaScreen extends StatefulWidget {
@@ -65,6 +68,12 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
           ],
         ),
         RaisedButton(
+          onPressed: () {
+            goToAddRiverPage();
+          },
+          child: Text('Add River Beta'),
+        ),
+        RaisedButton(
           color: Colors.white,
           onPressed: () {
             location.getLocation().then((value) {
@@ -82,17 +91,55 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
               RiverbetaState currentState,
             ) {
               if (currentState is FoundNearbyRiverbetaState) {
-                if (currentState.foundRivers.length > 0) {
-                  return Center(
-                    child: Text('Found Rivers'),
-                  );
-                } else {
+                if (currentState.foundRivers.length == 0) {
                   return Center(
                     child: Text('Found No Rivers'),
                   );
                 }
-              }
 
+                return LimitedBox(
+                    maxHeight: 300,
+                    child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: currentState.foundRivers.length,
+                        itemBuilder: (context, index) {
+                          var curRiver = currentState.foundRivers[index];
+                          return GestureDetector(
+                              onTap: () {
+                                goToRiverDetail(curRiver);
+                              },
+                              child: Row(
+                                children: [
+                                  ClipOval(
+                                    child: Material(
+                                      color: Colors.blue, // button color
+                                      child: InkWell(
+                                        splashColor:
+                                            Colors.red, // inkwell color
+                                        child: SizedBox(
+                                            width: 35,
+                                            height: 35,
+                                            child: Text(
+                                              CommonFunctions
+                                                  .translateRiverDifficulty(
+                                                      currentState
+                                                          .foundRivers[index]
+                                                          .difficulty),
+                                              style: TextStyle(fontSize: 15.0),
+                                              textAlign: TextAlign.center,
+                                            )),
+                                        onTap: () {},
+                                      ),
+                                    ),
+                                  ),
+                                  Text(currentState
+                                      .foundRivers[index].riverName),
+                                  Text(currentState
+                                      .foundRivers[index].sectionName),
+                                ],
+                              ));
+                        }));
+              }
               // default loading
               return Center(
                 child: CircularProgressIndicator(),
@@ -113,4 +160,32 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
   }
 
   void addNewRiver() {}
+
+  void goToRiverDetail(RiverbetaModel curRiver) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return MultiBlocProvider(providers: [
+          BlocProvider<RiverbetaBloc>(
+            create: (BuildContext context) =>
+                BlocProvider.of<RiverbetaBloc>(context),
+          ),
+        ], child: RiverbetaDetailPage(curRiver));
+      }),
+    );
+  }
+
+  void goToAddRiverPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return MultiBlocProvider(providers: [
+          BlocProvider<RiverbetaBloc>(
+            create: (BuildContext context) =>
+                BlocProvider.of<RiverbetaBloc>(context),
+          ),
+        ], child: RiverbetaAddPage());
+      }),
+    );
+  }
 }

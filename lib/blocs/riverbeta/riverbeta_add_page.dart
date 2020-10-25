@@ -5,15 +5,16 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/common/common_functions.dart';
 
-class RiverbetaAddScreen extends StatefulWidget {
+class RiverbetaAddPage extends StatefulWidget {
   @override
-  RiverbetaAddScreenState createState() {
-    return RiverbetaAddScreenState();
+  RiverbetaAddPageState createState() {
+    return RiverbetaAddPageState();
   }
 }
 
-class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
+class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   double _riverGrade = 2.0;
   String _riverGradeLabel = 'II';
   LocationResult _putInLocation;
@@ -24,7 +25,7 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
   TextEditingController txtRiverMin = TextEditingController();
   TextEditingController txtRiverMax = TextEditingController();
 
-  RiverbetaAddScreenState();
+  RiverbetaAddPageState();
   @override
   void initState() {
     super.initState();
@@ -38,53 +39,57 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RiverbetaBloc, RiverbetaState>(builder: (
-      BuildContext context,
-      RiverbetaState currentState,
-    ) {
-      if (currentState is UnRiverbetaState) {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-      if (currentState is ErrorRiverbetaState) {
-        return Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(currentState.errorMessage ?? 'Error'),
-            Padding(
-              padding: const EdgeInsets.only(top: 32.0),
-              child: RaisedButton(
-                color: Colors.blue,
-                child: Text('reload'),
-                onPressed: _load,
-              ),
-            ),
-          ],
-        ));
-      }
-      if (currentState is InRiverbetaState) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(currentState.hello),
-              Text('Flutter files: done'),
-              Padding(
-                padding: const EdgeInsets.only(top: 32.0),
-                child: RaisedButton(
-                  color: Colors.red,
-                  child: Text('throw error'),
-                  onPressed: () => _load(true),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Add New River"),
+        ),
+        body: BlocBuilder<RiverbetaBloc, RiverbetaState>(builder: (
+          BuildContext context,
+          RiverbetaState currentState,
+        ) {
+          if (currentState is UnRiverbetaState) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (currentState is ErrorRiverbetaState) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(currentState.errorMessage ?? 'Error'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 32.0),
+                  child: RaisedButton(
+                    color: Colors.blue,
+                    child: Text('reload'),
+                    onPressed: _load,
+                  ),
                 ),
+              ],
+            ));
+          }
+          if (currentState is InRiverbetaState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(currentState.hello),
+                  Text('Flutter files: done'),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32.0),
+                    child: RaisedButton(
+                      color: Colors.red,
+                      child: Text('throw error'),
+                      onPressed: () => _load(true),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      }
-      return newRiverForm(context);
-    });
+            );
+          }
+          return newRiverForm(context);
+        }));
   }
 
   void _load([bool isError = false]) {
@@ -150,29 +155,8 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
                   onChanged: (value) {
                     setState(
                       () {
-                        switch ((value * 10).round()) {
-                          case 20:
-                            _riverGradeLabel = 'II';
-                            break;
-                          case 25:
-                            _riverGradeLabel = 'II+';
-                            break;
-                          case 30:
-                            _riverGradeLabel = 'III';
-                            break;
-                          case 35:
-                            _riverGradeLabel = 'III+';
-                            break;
-                          case 40:
-                            _riverGradeLabel = 'IV';
-                            break;
-                          case 45:
-                            _riverGradeLabel = 'IV+';
-                            break;
-                          case 50:
-                            _riverGradeLabel = 'V';
-                            break;
-                        }
+                        _riverGradeLabel =
+                            CommonFunctions.translateRiverDifficulty(value);
                         _riverGrade = value;
                       },
                     );
@@ -274,26 +258,30 @@ class RiverbetaAddScreenState extends State<RiverbetaAddScreen> {
           RaisedButton(
               child: Text('Add New River'),
               onPressed: () {
-                var uuid = new Uuid();
-                var riverId = uuid.v1();
-                RiverbetaModel newRiver = RiverbetaModel(
-                    riverId.toString(),
-                    txtNewRiverName.text,
-                    txtNewSectionName.text,
-                    _riverGrade,
-                    GeoFirePoint(_putInLocation.latLng.latitude,
-                        _putInLocation.latLng.longitude),
-                    GeoFirePoint(_takeOutLocation.latLng.latitude,
-                        _takeOutLocation.latLng.longitude),
-                    double.parse(txtRiverMin.text),
-                    double.parse(txtRiverMax.text),
-                    _riverGaugeUnit);
-                // add new river
-                BlocProvider.of<RiverbetaBloc>(context)
-                    .add(AddingRiverbetaEvent(newRiver));
+                addNewRiver(context); // go up one level
               })
         ],
       ),
     );
+  }
+
+  void addNewRiver(BuildContext context) {
+    var uuid = new Uuid();
+    var riverId = uuid.v1();
+    RiverbetaModel newRiver = RiverbetaModel(
+        riverId.toString(),
+        txtNewRiverName.text,
+        txtNewSectionName.text,
+        _riverGrade,
+        GeoFirePoint(
+            _putInLocation.latLng.latitude, _putInLocation.latLng.longitude),
+        GeoFirePoint(_takeOutLocation.latLng.latitude,
+            _takeOutLocation.latLng.longitude),
+        double.parse(txtRiverMin.text),
+        double.parse(txtRiverMax.text),
+        _riverGaugeUnit);
+    // add new river
+    BlocProvider.of<RiverbetaBloc>(context).add(AddingRiverbetaEvent(newRiver));
+    Navigator.of(context).pop(); // go up one level
   }
 }
