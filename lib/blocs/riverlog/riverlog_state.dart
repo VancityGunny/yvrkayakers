@@ -1,17 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:yvrkayakers/blocs/riverlog/index.dart';
 
 abstract class RiverlogState extends Equatable {
   /// notify change state without deep clone state
   final int version;
-  
+
   final List propss;
-  RiverlogState(this.version,[this.propss]);
-
-  /// Copy object for use in action
-  /// if need use deep clone
-  RiverlogState getStateCopy();
-
-  RiverlogState getNewVersion();
+  RiverlogState(this.version, [this.propss]);
 
   @override
   List<Object> get props => ([version, ...propss ?? []]);
@@ -19,7 +15,6 @@ abstract class RiverlogState extends Equatable {
 
 /// UnInitialized
 class UnRiverlogState extends RiverlogState {
-
   UnRiverlogState(int version) : super(version);
 
   @override
@@ -32,7 +27,7 @@ class UnRiverlogState extends RiverlogState {
 
   @override
   UnRiverlogState getNewVersion() {
-    return UnRiverlogState(version+1);
+    return UnRiverlogState(version + 1);
   }
 }
 
@@ -52,15 +47,16 @@ class InRiverlogState extends RiverlogState {
 
   @override
   InRiverlogState getNewVersion() {
-    return InRiverlogState(version+1, hello);
+    return InRiverlogState(version + 1, hello);
   }
 }
 
 class ErrorRiverlogState extends RiverlogState {
   final String errorMessage;
 
-  ErrorRiverlogState(int version, this.errorMessage): super(version, [errorMessage]);
-  
+  ErrorRiverlogState(int version, this.errorMessage)
+      : super(version, [errorMessage]);
+
   @override
   String toString() => 'ErrorRiverlogState';
 
@@ -71,7 +67,27 @@ class ErrorRiverlogState extends RiverlogState {
 
   @override
   ErrorRiverlogState getNewVersion() {
-    return ErrorRiverlogState(version+1, 
-    errorMessage);
+    return ErrorRiverlogState(version + 1, errorMessage);
   }
+}
+
+class AddedRiverlogState extends RiverlogState {
+  final String newLogId;
+  AddedRiverlogState(int version, {@required this.newLogId}) : super(version);
+  @override
+  List<Object> get props => [newLogId];
+
+  @override
+  String toString() => 'AddedRiverlogState';
+}
+
+class LoadedUserRiverlogState extends RiverlogState {
+  final List<RiverlogModel> riverLogs;
+  LoadedUserRiverlogState(int version, {@required this.riverLogs})
+      : super(version);
+}
+
+class LoadedRiverlogState extends RiverlogState {
+  final RiverlogModel riverLog;
+  LoadedRiverlogState(int version, {@required this.riverLog}) : super(version);
 }

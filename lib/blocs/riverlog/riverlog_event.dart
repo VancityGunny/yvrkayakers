@@ -13,29 +13,77 @@ abstract class RiverlogEvent {
 
 class UnRiverlogEvent extends RiverlogEvent {
   @override
-  Stream<RiverlogState> applyAsync({RiverlogState currentState, RiverlogBloc bloc}) async* {
+  Stream<RiverlogState> applyAsync(
+      {RiverlogState currentState, RiverlogBloc bloc}) async* {
     yield UnRiverlogState(0);
   }
 }
 
-class LoadRiverlogEvent extends RiverlogEvent {
-   
-  final bool isError;
+class LoadUserRiverlogEvent extends RiverlogEvent {
+  final String riverlogUserId;
   @override
-  String toString() => 'LoadRiverlogEvent';
+  String toString() => 'LoadUserRiverlogEvent';
 
-  LoadRiverlogEvent(this.isError);
+  LoadUserRiverlogEvent(this.riverlogUserId);
 
   @override
   Stream<RiverlogState> applyAsync(
       {RiverlogState currentState, RiverlogBloc bloc}) async* {
     try {
       yield UnRiverlogState(0);
-      await Future.delayed(Duration(seconds: 1));
-      _riverlogRepository.test(isError);
-      yield InRiverlogState(0, 'Hello world');
+      // load river
+      var foundRivers =
+          await _riverlogRepository.getRiverLogByUser(riverlogUserId);
+      yield LoadedUserRiverlogState(0, riverLogs: foundRivers);
     } catch (_, stackTrace) {
-      developer.log('$_', name: 'LoadRiverlogEvent', error: _, stackTrace: stackTrace);
+      developer.log('$_',
+          name: 'LoadUserRiverlogEvent', error: _, stackTrace: stackTrace);
+      yield ErrorRiverlogState(0, _?.toString());
+    }
+  }
+}
+
+class LoadRiverlogEvent extends RiverlogEvent {
+  final String riverlogId;
+  @override
+  String toString() => 'LoadRiverlogEvent';
+
+  LoadRiverlogEvent(this.riverlogId);
+
+  @override
+  Stream<RiverlogState> applyAsync(
+      {RiverlogState currentState, RiverlogBloc bloc}) async* {
+    try {
+      yield UnRiverlogState(0);
+      // load river
+      var foundRiver = await _riverlogRepository.getRiverLogById(riverlogId);
+      yield LoadedRiverlogState(0, riverLog: foundRiver);
+    } catch (_, stackTrace) {
+      developer.log('$_',
+          name: 'LoadRiverlogEvent', error: _, stackTrace: stackTrace);
+      yield ErrorRiverlogState(0, _?.toString());
+    }
+  }
+}
+
+class AddRiverlogEvent extends RiverlogEvent {
+  final RiverlogModel newRiverlog;
+  @override
+  String toString() => 'AddRiverlogEvent';
+
+  AddRiverlogEvent(this.newRiverlog);
+
+  @override
+  Stream<RiverlogState> applyAsync(
+      {RiverlogState currentState, RiverlogBloc bloc}) async* {
+    try {
+      yield UnRiverlogState(0);
+      // load river
+      var result = await _riverlogRepository.addRiverLog(newRiverlog);
+      yield AddedRiverlogState(0, newLogId: result);
+    } catch (_, stackTrace) {
+      developer.log('$_',
+          name: 'AddRiverlogEvent', error: _, stackTrace: stackTrace);
       yield ErrorRiverlogState(0, _?.toString());
     }
   }

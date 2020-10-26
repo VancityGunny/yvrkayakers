@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 
 class RiverlogScreen extends StatefulWidget {
@@ -87,6 +88,8 @@ class RiverlogScreenState extends State<RiverlogScreen> {
   }
 
   void _load([bool isError = false]) {
-    widget._riverlogBloc.add(LoadRiverlogEvent(isError));
+    var session = FlutterSession();
+    var currentUserId = session.get("currentUserId").toString();
+    widget._riverlogBloc.add(LoadUserRiverlogEvent(currentUserId));
   }
 }

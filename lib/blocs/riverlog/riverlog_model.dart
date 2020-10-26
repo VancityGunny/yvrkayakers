@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 /// generate by https://javiercbk.github.io/json_to_dart/
@@ -76,6 +77,21 @@ class RiverlogModel extends Equatable {
   factory RiverlogModel.fromJson(Map<String, dynamic> json) {
     return RiverlogModel(
         json['id'] as String,
+        json['riverbetaId'] as String,
+        json['tripId'] as String,
+        json['userId'] as String,
+        json['didSwim'] as bool,
+        json['didRescue'] as bool,
+        json['swimmerRescued'] as List<String>,
+        json['rescuedBy'] as List<String>,
+        json['note'] as String,
+        json['enjoyment'] as int);
+  }
+
+  factory RiverlogModel.fromFire(DocumentSnapshot doc) {
+    var json = doc.data();
+    return RiverlogModel(
+        doc.id,
         json['riverbetaId'] as String,
         json['tripId'] as String,
         json['userId'] as String,
