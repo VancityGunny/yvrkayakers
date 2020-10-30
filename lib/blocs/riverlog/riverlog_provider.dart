@@ -8,9 +8,12 @@ class RiverlogProvider {
   Future<List<RiverlogModel>> getRiverLogByUser(String userId) async {
     var foundDoc = await _firestore.collection('/riverlogs').doc(userId).get();
     var riverLogs = new List<RiverlogModel>();
-    foundDoc.data()['logs'].forEach((t) {
-      riverLogs.add(RiverlogModel.fromFire(t));
-    });
+    if (foundDoc.data() != null) {
+      foundDoc.data()['logs'].forEach((t) {
+        riverLogs.add(RiverlogModel.fromFire(t));
+      });
+    }
+
     return riverLogs;
   }
 

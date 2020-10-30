@@ -66,12 +66,12 @@ class LoadRiverlogEvent extends RiverlogEvent {
   }
 }
 
-class AddRiverlogEvent extends RiverlogEvent {
+class AddingRiverlogEvent extends RiverlogEvent {
   final RiverlogModel newRiverlog;
   @override
-  String toString() => 'AddRiverlogEvent';
+  String toString() => 'AddingRiverlogEvent';
 
-  AddRiverlogEvent(this.newRiverlog);
+  AddingRiverlogEvent(this.newRiverlog);
 
   @override
   Stream<RiverlogState> applyAsync(
@@ -83,7 +83,7 @@ class AddRiverlogEvent extends RiverlogEvent {
       yield AddedRiverlogState(0, newLogId: result);
     } catch (_, stackTrace) {
       developer.log('$_',
-          name: 'AddRiverlogEvent', error: _, stackTrace: stackTrace);
+          name: 'AddingRiverlogEvent', error: _, stackTrace: stackTrace);
       yield ErrorRiverlogState(0, _?.toString());
     }
   }

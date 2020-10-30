@@ -8,6 +8,7 @@ import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
+import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/common/common_bloc.dart';
 import 'package:yvrkayakers/generated/l10n.dart';
 
@@ -107,6 +108,9 @@ class HomeScreenState extends State<HomeScreen> {
             BlocProvider<RiverbetaBloc>(
               create: (BuildContext context) => RiverbetaBloc(),
             ),
+            BlocProvider<RiverlogBloc>(
+              create: (BuildContext context) => RiverlogBloc(),
+            ),
           ],
           child: Center(
             child: PersistentTabView(
@@ -131,7 +135,7 @@ class HomeScreenState extends State<HomeScreen> {
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
   List<Widget> _navScreens() {
-    return [RiverbetaScreen(), RiverbetaScreen(), RiverbetaScreen()];
+    return [RiverbetaScreen(), RiverlogScreen(), RiverbetaScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

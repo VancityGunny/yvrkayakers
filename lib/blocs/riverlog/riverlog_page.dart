@@ -9,15 +9,13 @@ class RiverlogPage extends StatefulWidget {
 }
 
 class _RiverlogPageState extends State<RiverlogPage> {
-  final _riverlogBloc = RiverlogBloc();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Riverlog'),
       ),
-      body: RiverlogScreen(riverlogBloc: _riverlogBloc),
+      body: RiverlogScreen(),
     );
   }
 }
