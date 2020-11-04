@@ -27,7 +27,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   DateTime _logDate;
   TimeOfDay _startTime;
   TimeOfDay _endTime;
-  List<RiverbetaModel> _availableRivers = new List<RiverbetaModel>();
   RiverbetaModel _selectedRiver = null;
   RiverlogAddPageState();
   @override
@@ -49,10 +48,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     //Load RiverBeta list to dropdownbutton
     location.getLocation().then((value) {
       var myLocation = GeoFirePoint(value.latitude, value.longitude);
-      BlocProvider.of<RiverbetaBloc>(context)
-          .riverbetaRepository
-          .getNearbyRivers(myLocation, 10.0)
-          .then((value) => _availableRivers.addAll(value));
     });
   }
 
@@ -82,22 +77,30 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
               ))
             ],
           ),
-          DropdownButton(
-            hint: Text("Select River"),
-            value: _selectedRiver,
-            items: _availableRivers.map((r) {
-              return new DropdownMenuItem(
-                  value: r,
-                  child: Row(children: <Widget>[
-                    Text(r.riverName),
-                  ]));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedRiver = value;
-              });
-            },
-          ),
+          StreamBuilder(
+              stream:
+                  BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return DropdownButton(
+                  hint: Text("Select River"),
+                  value: _selectedRiver,
+                  items:
+                      snapshot.data.map<DropdownMenuItem<RiverbetaModel>>((r) {
+                    return DropdownMenuItem<RiverbetaModel>(
+                        value: r, child: Text(r.riverName));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedRiver = value;
+                    });
+                  },
+                );
+              }),
           Row(
             children: [
               Expanded(
@@ -188,7 +191,9 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null,
         _selectedRiver.riverName,
         double.parse(txtRiverLevel.text), //waterlevel
-        _availableRivers
+        BlocProvider.of<RiverbetaBloc>(context)
+            .allRiverbetas
+            .value
             .where((x) => x.id == _selectedRiver.id)
             .first
             .difficulty, //riverdifficulty

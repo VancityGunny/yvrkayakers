@@ -23,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  RiverbetaBloc _riverbetaBloc = new RiverbetaBloc();
   @override
   void initState() {
     // TODO: implement initState
@@ -40,7 +41,7 @@ class HomeScreenState extends State<HomeScreen> {
     final delegate = S.of(context);
     // set user stream
     CommonBloc.of(context).initStream();
-
+    _riverbetaBloc.initStream();
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -106,7 +107,7 @@ class HomeScreenState extends State<HomeScreen> {
         body: MultiBlocProvider(
           providers: [
             BlocProvider<RiverbetaBloc>(
-              create: (BuildContext context) => RiverbetaBloc(),
+              create: (BuildContext context) => _riverbetaBloc,
             ),
             BlocProvider<RiverlogBloc>(
               create: (BuildContext context) => RiverlogBloc(),
@@ -148,13 +149,13 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.favorite),
-        title: ("OFFERS"),
+        title: ("Logbook"),
         activeColor: CupertinoColors.activeGreen,
         inactiveColor: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.person_pin),
-        title: ("Help"),
+        title: ("Trip"),
         activeColor: CupertinoColors.systemRed,
         inactiveColor: CupertinoColors.systemGrey,
       )

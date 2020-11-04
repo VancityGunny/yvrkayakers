@@ -84,67 +84,67 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
           },
           child: Icon(FontAwesomeIcons.search, color: Colors.black),
         ),
-        BlocBuilder<RiverbetaBloc, RiverbetaState>(
-            bloc: BlocProvider.of<RiverbetaBloc>(context),
-            builder: (
-              BuildContext context,
-              RiverbetaState currentState,
-            ) {
-              if (currentState is FoundNearbyRiverbetaState) {
-                if (currentState.foundRivers.length == 0) {
-                  return Center(
-                    child: Text('Found No Rivers'),
-                  );
-                }
-
-                return LimitedBox(
-                    maxHeight: 300,
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: currentState.foundRivers.length,
-                        itemBuilder: (context, index) {
-                          var curRiver = currentState.foundRivers[index];
-                          return GestureDetector(
-                              onTap: () {
-                                goToRiverDetail(curRiver);
-                              },
-                              child: Row(
-                                children: [
-                                  ClipOval(
-                                    child: Material(
-                                      color: Colors.blue, // button color
-                                      child: InkWell(
-                                        splashColor:
-                                            Colors.red, // inkwell color
-                                        child: SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: Text(
-                                              CommonFunctions
-                                                  .translateRiverDifficulty(
-                                                      currentState
-                                                          .foundRivers[index]
-                                                          .difficulty),
-                                              style: TextStyle(fontSize: 15.0),
-                                              textAlign: TextAlign.center,
-                                            )),
-                                        onTap: () {},
-                                      ),
-                                    ),
-                                  ),
-                                  Text(currentState
-                                      .foundRivers[index].riverName),
-                                  Text(currentState
-                                      .foundRivers[index].sectionName),
-                                ],
-                              ));
-                        }));
+        StreamBuilder(
+            stream:
+                BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               }
-              // default loading
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            })
+
+              if (snapshot.data.length == 0) {
+                return Container(
+                    alignment: Alignment.center,
+                    child: FaIcon(FontAwesomeIcons.userPlus,
+                        size: 150, color: Color.fromARGB(15, 0, 0, 0)));
+              }
+
+              return LimitedBox(
+                  maxHeight: 300,
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        var curRiver = snapshot.data[index];
+                        return GestureDetector(
+                            onTap: () {
+                              goToRiverDetail(curRiver);
+                            },
+                            child: Card(
+                              elevation: 5,
+                              child: Padding(
+                                padding: EdgeInsets.all(7),
+                                child: Stack(children: <Widget>[
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10, top: 5),
+                                            child: Column(
+                                              children: <Widget>[
+                                                Row(
+                                                  children: <Widget>[
+                                                    riverIcon(curRiver),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    riverNameSymbol(curRiver)
+                                                  ],
+                                                )
+                                              ],
+                                            ))
+                                      ],
+                                    ),
+                                  )
+                                ]),
+                              ),
+                            ));
+                      }));
+            }),
       ],
     ));
   }
@@ -186,6 +186,45 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
           ),
         ], child: RiverbetaAddPage());
       }),
+    );
+  }
+
+  Widget riverIcon(RiverbetaModel curRiver) {
+    return Padding(
+        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+        child: Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+                alignment: Alignment.center,
+                height: 60.0,
+                width: 60.0,
+                decoration: new BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: new BorderRadius.circular(10.0)),
+                child: Text(
+                  CommonFunctions.translateRiverDifficulty(curRiver.difficulty),
+                  style: TextStyle(fontSize: 40, color: Colors.amber),
+                ))));
+  }
+
+  Widget riverNameSymbol(RiverbetaModel curRiver) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: RichText(
+        text: TextSpan(
+          text: curRiver.riverName,
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+          children: <TextSpan>[
+            TextSpan(
+                text: '\n${curRiver.sectionName}',
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
     );
   }
 }

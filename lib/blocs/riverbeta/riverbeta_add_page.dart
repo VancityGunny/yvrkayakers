@@ -43,53 +43,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
         appBar: AppBar(
           title: Text("Add New River"),
         ),
-        body: BlocBuilder<RiverbetaBloc, RiverbetaState>(builder: (
-          BuildContext context,
-          RiverbetaState currentState,
-        ) {
-          if (currentState is UnRiverbetaState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (currentState is ErrorRiverbetaState) {
-            return Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(currentState.errorMessage ?? 'Error'),
-                Padding(
-                  padding: const EdgeInsets.only(top: 32.0),
-                  child: RaisedButton(
-                    color: Colors.blue,
-                    child: Text('reload'),
-                    onPressed: _load,
-                  ),
-                ),
-              ],
-            ));
-          }
-          if (currentState is InRiverbetaState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(currentState.hello),
-                  Text('Flutter files: done'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32.0),
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text('throw error'),
-                      onPressed: () => _load(true),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-          return newRiverForm(context);
-        }));
+        body: newRiverForm(context));
   }
 
   void _load([bool isError = false]) {
