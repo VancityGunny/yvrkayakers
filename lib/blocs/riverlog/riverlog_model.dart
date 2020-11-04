@@ -43,10 +43,21 @@ class RiverlogModel extends Equatable {
   final String userId;
   final bool didSwim;
   final bool didRescue;
-  final List<String> swimmerRescued;
-  final List<String> rescuedBy;
+  final List<String> swimmerRescued; //store userId
+  final List<String> rescuedBy; // store userId
   final String note;
   final int enjoyment; // rating of enjoyment 1-5
+
+  final String riverName;
+  final double waterLevel;
+  final double riverDifficulty;
+  final DateTime logDate;
+  final List<String> friends; // store userId
+
+  final int totalRound; // count how many time user run any river
+  final int riverRound; // count how many time user run this river
+
+  final String sectionName;
 
   RiverlogModel(
       this.id,
@@ -58,7 +69,15 @@ class RiverlogModel extends Equatable {
       this.swimmerRescued,
       this.rescuedBy,
       this.note,
-      this.enjoyment);
+      this.enjoyment,
+      this.riverName,
+      this.waterLevel,
+      this.riverDifficulty,
+      this.logDate,
+      this.friends,
+      this.totalRound,
+      this.riverRound,
+      this.sectionName);
 
   @override
   List<Object> get props => [
@@ -71,7 +90,15 @@ class RiverlogModel extends Equatable {
         swimmerRescued,
         rescuedBy,
         note,
-        enjoyment
+        enjoyment,
+        riverName,
+        waterLevel,
+        riverDifficulty,
+        logDate,
+        friends,
+        totalRound,
+        riverRound,
+        sectionName
       ];
 
   factory RiverlogModel.fromJson(Map<String, dynamic> json) {
@@ -85,7 +112,15 @@ class RiverlogModel extends Equatable {
         json['swimmerRescued'] as List<String>,
         json['rescuedBy'] as List<String>,
         json['note'] as String,
-        json['enjoyment'] as int);
+        json['enjoyment'] as int,
+        json['riverName'] as String,
+        json['waterLevel'] as double,
+        json['riverDifficulty'] as double,
+        json['logDate'] as DateTime,
+        json['friends'] as List<String>,
+        json['totalRound'] as int,
+        json['riverRound'] as int,
+        json['sectionName'] as String);
   }
 
   factory RiverlogModel.fromFire(DocumentSnapshot doc) {
@@ -100,12 +135,19 @@ class RiverlogModel extends Equatable {
         json['swimmerRescued'] as List<String>,
         json['rescuedBy'] as List<String>,
         json['note'] as String,
-        json['enjoyment'] as int);
+        json['enjoyment'] as int,
+        json['riverName'] as String,
+        json['waterLevel'] as double,
+        json['riverDifficulty'] as double,
+        (json['logDate'] == null) ? null : json['logDate'].toDate(),
+        json['friends'] as List<String>,
+        json['totalRound'] as int,
+        json['riverRound'] as int,
+        json['sectionName'] as String);
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['id'] = id;
     data['riverbetaId'] = riverbetaId;
     data['tripId'] = tripId;
     data['userId'] = userId;
@@ -115,6 +157,14 @@ class RiverlogModel extends Equatable {
     data['rescuedBy'] = rescuedBy;
     data['note'] = note;
     data['enjoyment'] = enjoyment;
+    data['riverName'] = riverName;
+    data['waterLevel'] = waterLevel;
+    data['riverDifficulty'] = riverDifficulty;
+    data['logDate'] = logDate;
+    data['friends'] = friends;
+    data['totalRound'] = totalRound;
+    data['riverRound'] = riverRound;
+    data['sectionName'] = sectionName;
     return data;
   }
 }

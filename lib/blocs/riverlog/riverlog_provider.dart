@@ -8,8 +8,14 @@ class RiverlogProvider {
   Future<List<RiverlogModel>> getRiverLogByUser(String userId) async {
     var foundDoc = await _firestore.collection('/riverlogs').doc(userId).get();
     var riverLogs = new List<RiverlogModel>();
-    if (foundDoc.data() != null) {
-      foundDoc.data()['logs'].forEach((t) {
+    if (foundDoc.exists) {
+      var foundRivers = await _firestore
+          .collection('/riverlogs')
+          .doc(userId)
+          .collection('/logs')
+          .get();
+
+      foundRivers.docs.forEach((t) {
         riverLogs.add(RiverlogModel.fromFire(t));
       });
     }
@@ -25,9 +31,10 @@ class RiverlogProvider {
   }
 
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {
-    _firestore.collection('/riverlogs').doc(newRiverLog.userId).update({
-      'logs': FieldValue.arrayUnion([newRiverLog.toJson()])
-    });
+    var newRiverLogs =
+        _firestore.collection('/riverlogs').doc(newRiverLog.userId);
+    var newUserRiverLogs = newRiverLogs.collection('/logs').doc(newRiverLog.id);
+    newUserRiverLogs.set(newRiverLog.toJson());
     return newRiverLog.id;
   }
 

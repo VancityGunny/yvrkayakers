@@ -106,7 +106,9 @@ class AuthRepository {
 
   Future<bool> isSignedIn() async {
     final currentUser = _firebaseAuth.currentUser;
-    return currentUser != null;
+    var session = FlutterSession();
+    var logCurrentUser = await session.get("currentUserId");
+    return currentUser != null && logCurrentUser != null;
   }
 
   Future<UserModel> getUser() async {

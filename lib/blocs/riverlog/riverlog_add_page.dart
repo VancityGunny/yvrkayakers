@@ -28,7 +28,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   TimeOfDay _startTime;
   TimeOfDay _endTime;
   List<RiverbetaModel> _availableRivers = new List<RiverbetaModel>();
-  String _selectedRiverId = null;
+  RiverbetaModel _selectedRiver = null;
   RiverlogAddPageState();
   @override
   void initState() {
@@ -62,19 +62,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         appBar: AppBar(
           title: Text("Log River Run"),
         ),
-        body: BlocBuilder<RiverlogBloc, RiverlogState>(builder: (
-          BuildContext context,
-          RiverlogState currentState,
-        ) {
-          if (currentState is UnRiverlogState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          //default
-          return newRiverLogForm();
-        }));
+        body: newRiverLogForm());
   }
 
   Widget newRiverLogForm() {
@@ -95,18 +83,18 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
             ],
           ),
           DropdownButton(
-            hint: Text("Names"),
-            value: _selectedRiverId,
+            hint: Text("Select River"),
+            value: _selectedRiver,
             items: _availableRivers.map((r) {
               return new DropdownMenuItem(
-                  value: r.id,
+                  value: r,
                   child: Row(children: <Widget>[
                     Text(r.riverName),
                   ]));
             }).toList(),
             onChanged: (value) {
               setState(() {
-                _selectedRiverId = value;
+                _selectedRiver = value;
               });
             },
           ),
@@ -187,8 +175,28 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     var currentUserId = (await session.get("currentUserId")).toString();
     var uuid = new Uuid();
     var logId = uuid.v1();
-    RiverlogModel newRiverlog = RiverlogModel(logId, _selectedRiverId, null,
-        currentUserId, blnDidSwim, blnDidRescue, null, null, null, null);
+    RiverlogModel newRiverlog = RiverlogModel(
+        logId,
+        _selectedRiver.id,
+        null,
+        currentUserId,
+        blnDidSwim,
+        blnDidRescue,
+        null,
+        null,
+        null,
+        null,
+        _selectedRiver.riverName,
+        double.parse(txtRiverLevel.text), //waterlevel
+        _availableRivers
+            .where((x) => x.id == _selectedRiver.id)
+            .first
+            .difficulty, //riverdifficulty
+        _logDate, //logdate
+        null, //friends
+        0, //totalround
+        0, //riverround
+        _selectedRiver.sectionName);
     BlocProvider.of<RiverlogBloc>(context)
         .add(AddingRiverlogEvent(newRiverlog));
     Navigator.of(context).pop();

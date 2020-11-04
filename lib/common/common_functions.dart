@@ -1,5 +1,6 @@
 class CommonFunctions {
   static String translateRiverDifficulty(double riverDifficulty) {
+    if (riverDifficulty == null) return '';
     switch ((riverDifficulty * 10).round()) {
       case 20:
         return 'II';
