@@ -75,10 +75,14 @@ class RiverbetaModel extends Equatable {
         json['riverName'] as String,
         json['sectionName'] as String,
         json['difficulty'] as double,
-        GeoFirePoint(json['putInLocation']['geopoint'].latitude,
-            json['putInLocation']['geopoint'].longitude),
-        GeoFirePoint(json['takeOutLocation']['geopoint'].latitude,
-            json['takeOutLocation']['geopoint'].longitude),
+        (json['putInLocation'] == null)
+            ? null
+            : GeoFirePoint(json['putInLocation']['geopoint'].latitude,
+                json['putInLocation']['geopoint'].longitude),
+        (json['takeOutLocation'] == null)
+            ? null
+            : GeoFirePoint(json['takeOutLocation']['geopoint'].latitude,
+                json['takeOutLocation']['geopoint'].longitude),
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
@@ -105,8 +109,9 @@ class RiverbetaModel extends Equatable {
     data['riverName'] = riverName;
     data['sectionName'] = sectionName;
     data['difficulty'] = difficulty;
-    data['putInLocation'] = putInLocation.data;
-    data['takeOutLocation'] = takeOutLocation.data;
+    data['putInLocation'] = (putInLocation == null) ? null : putInLocation.data;
+    data['takeOutLocation'] =
+        (takeOutLocation == null) ? null : takeOutLocation.data;
     data['minFlow'] = minFlow;
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;

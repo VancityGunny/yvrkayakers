@@ -37,21 +37,6 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
     return SingleChildScrollView(
         child: Column(
       children: [
-        Text('Rivers Info'),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text('Near'),
-            DropdownButton(
-              items: [
-                DropdownMenuItem(
-                  child: Text('Vancouver, BC'),
-                )
-              ],
-              onChanged: (value) {},
-            )
-          ],
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -73,17 +58,6 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
           },
           child: Text('Add River Beta'),
         ),
-        RaisedButton(
-          color: Colors.white,
-          onPressed: () {
-            location.getLocation().then((value) {
-              var myLocation = GeoFirePoint(value.latitude, value.longitude);
-              BlocProvider.of<RiverbetaBloc>(context)
-                  .add(SearchingNearbyRiverbetaEvent(myLocation, 10.0));
-            });
-          },
-          child: Icon(FontAwesomeIcons.search, color: Colors.black),
-        ),
         StreamBuilder(
             stream:
                 BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
@@ -102,7 +76,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
               }
 
               return LimitedBox(
-                  maxHeight: 300,
+                  maxHeight: 400,
                   child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       itemCount: snapshot.data.length,

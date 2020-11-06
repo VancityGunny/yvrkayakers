@@ -25,18 +25,21 @@ class RiverbetaBloc extends Bloc<RiverbetaEvent, RiverbetaState> {
       var collectionReference = _firestore.collection('riverbetas');
       double radius = 50; //50; //kilometer
       String field = 'putInLocation';
-      riverBetaController.addStream(geo
-          .collection(collectionRef: collectionReference)
-          .within(center: currentLocation, radius: radius, field: field));
+      // riverBetaController.addStream(geo
+      //     .collection(collectionRef: collectionReference)
+      //     .within(center: currentLocation, radius: radius, field: field));
+      riverBetaController.addStream(collectionReference
+          .snapshots()); // get all river for now, to be limit to nearby later
       riverBetaController.stream.listen((event) {
-        List<DocumentSnapshot> result = event;
-        if (result.length > 0) {
-          var newRiverbetas = new List<RiverbetaModel>();
-          result.forEach((element) {
+        QuerySnapshot querySnapshot = event;
+
+        var newRiverbetas = new List<RiverbetaModel>();
+        if (querySnapshot.docs.length > 0) {
+          querySnapshot.docs.forEach((element) {
             newRiverbetas.add(RiverbetaModel.fromFire(element));
           });
-          allRiverbetas.add(newRiverbetas);
         }
+        allRiverbetas.add(newRiverbetas);
       });
     });
   }

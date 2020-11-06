@@ -26,13 +26,13 @@ class RiverlogBloc extends Bloc<RiverlogEvent, RiverlogState> {
           .snapshots());
       riverLogController.stream.listen((event) {
         QuerySnapshot querySnapshot = event;
+        var newRiverlogs = new List<RiverlogModel>();
         if (querySnapshot.docs.length > 0) {
-          var newRiverlogs = new List<RiverlogModel>();
           event.docs.forEach((f) {
             newRiverlogs.add(RiverlogModel.fromFire(f));
           });
-          allRiverLogs.add(newRiverlogs);
         }
+        allRiverLogs.add(newRiverlogs);
       });
     });
   }

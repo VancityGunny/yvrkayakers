@@ -235,14 +235,14 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
         txtNewRiverName.text,
         txtNewSectionName.text,
         _riverGrade,
-        GeoFirePoint(
-            _putInLocation.latLng.latitude, _putInLocation.latLng.longitude),
-        GeoFirePoint(_takeOutLocation.latLng.latitude,
-            _takeOutLocation.latLng.longitude),
-        double.parse(txtRiverMin.text),
-        double.parse(txtRiverMax.text),
+        null, //GeoFirePoint(_putInLocation.latLng.latitude, _putInLocation.latLng.longitude),
+        null, //GeoFirePoint(_takeOutLocation.latLng.latitude, _takeOutLocation.latLng.longitude),
+        (txtRiverMin.text == "") ? null : double.parse(txtRiverMin.text),
+        (txtRiverMax.text == "") ? null : double.parse(txtRiverMax.text),
         _riverGaugeUnit,
-        double.parse(txtLevelIncrement.text));
+        (txtLevelIncrement.text == "")
+            ? null
+            : double.parse(txtLevelIncrement.text));
     // add new river
     BlocProvider.of<RiverbetaBloc>(context).add(AddingRiverbetaEvent(newRiver));
     Navigator.of(context).pop(); // go up one level
