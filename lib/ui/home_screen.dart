@@ -106,8 +106,8 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         body: MultiBlocProvider(
           providers: [
-            BlocProvider<RiverbetaBloc>(
-              create: (BuildContext context) => _riverbetaBloc,
+            BlocProvider<RiverbetaBloc>.value(
+              value: _riverbetaBloc,
             ),
             BlocProvider<RiverlogBloc>(
               create: (BuildContext context) => RiverlogBloc(),
@@ -136,7 +136,7 @@ class HomeScreenState extends State<HomeScreen> {
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
   List<Widget> _navScreens() {
-    return [RiverbetaScreen(), RiverlogScreen(), RiverbetaScreen()];
+    return [RiverbetaPage(), RiverlogPage(), RiverbetaScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

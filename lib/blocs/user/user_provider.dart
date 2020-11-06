@@ -13,9 +13,6 @@ class UserProvider {
       'phone': newUser.phone,
       'displayName': newUser.displayName
     });
-    // add sentThoughts and receivedThought colleciton for the user too
-    var newRiverLogs = _firestore.collection('/riverlogs').doc(newUserObj.id);
-    newRiverLogs.set({'logs': []});
     return newUserObj.id;
   }
 

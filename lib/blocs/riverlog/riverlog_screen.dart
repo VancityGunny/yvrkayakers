@@ -33,13 +33,6 @@ class RiverlogScreenState extends State<RiverlogScreen> {
     BlocProvider.of<RiverlogBloc>(context).initStream();
     return SingleChildScrollView(
         child: Column(children: [
-      Text('Rivers Logbook'),
-      RaisedButton(
-        onPressed: () {
-          goToAddRiverLogPage();
-        },
-        child: Text('Add River Log'),
-      ),
       StreamBuilder(
           stream: BlocProvider.of<RiverlogBloc>(context).allRiverLogs.stream,
           builder: (context, snapshot) {
@@ -56,7 +49,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                       size: 150, color: Color.fromARGB(15, 0, 0, 0)));
             }
             return LimitedBox(
-                maxHeight: 600,
+                maxHeight: 480,
                 child: ListView.builder(
                     scrollDirection: Axis.vertical,
                     itemCount: snapshot.data.length,
@@ -142,22 +135,6 @@ class RiverlogScreenState extends State<RiverlogScreen> {
     });
   }
 
-  void goToAddRiverLogPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) {
-        return MultiBlocProvider(providers: [
-          BlocProvider.value(
-            value: BlocProvider.of<RiverlogBloc>(context),
-          ),
-          BlocProvider.value(
-            value: BlocProvider.of<RiverbetaBloc>(context),
-          ),
-        ], child: RiverlogAddPage());
-      }),
-    );
-  }
-
   Widget riverIcon(RiverlogModel curRiver) {
     return Padding(
         padding: const EdgeInsets.only(left: 15.0, right: 15.0),
@@ -203,12 +180,12 @@ class RiverlogScreenState extends State<RiverlogScreen> {
       alignment: Alignment.topRight,
       child: RichText(
         text: TextSpan(
-          text: curRiver.waterLevel.toString(),
+          text: '${curRiver.waterLevel.toString()} ${curRiver.gaugeUnit}',
           style: TextStyle(
               fontWeight: FontWeight.bold, color: Colors.green, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-                text: '\n+202.835',
+                text: '\n${curRiver.minFlow}/${curRiver.maxFlow}',
                 style: TextStyle(
                     color: Colors.green,
                     fontSize: 15,

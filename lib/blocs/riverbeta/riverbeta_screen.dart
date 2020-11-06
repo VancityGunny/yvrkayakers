@@ -166,9 +166,8 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
       context,
       MaterialPageRoute(builder: (BuildContext context) {
         return MultiBlocProvider(providers: [
-          BlocProvider<RiverbetaBloc>(
-            create: (BuildContext context) =>
-                BlocProvider.of<RiverbetaBloc>(context),
+          BlocProvider<RiverbetaBloc>.value(
+            value: BlocProvider.of<RiverbetaBloc>(context),
           ),
         ], child: RiverbetaDetailPage(curRiver));
       }),
@@ -180,9 +179,8 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
       context,
       MaterialPageRoute(builder: (BuildContext context) {
         return MultiBlocProvider(providers: [
-          BlocProvider<RiverbetaBloc>(
-            create: (BuildContext context) =>
-                BlocProvider.of<RiverbetaBloc>(context),
+          BlocProvider<RiverbetaBloc>.value(
+            value: BlocProvider.of<RiverbetaBloc>(context),
           ),
         ], child: RiverbetaAddPage());
       }),

@@ -19,11 +19,12 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   String _riverGradeLabel = 'II';
   LocationResult _putInLocation;
   LocationResult _takeOutLocation;
-  String _riverGaugeUnit = 'Visual';
+  String _riverGaugeUnit = 'Gauge';
   TextEditingController txtNewSectionName = TextEditingController();
   TextEditingController txtNewRiverName = TextEditingController();
   TextEditingController txtRiverMin = TextEditingController();
   TextEditingController txtRiverMax = TextEditingController();
+  TextEditingController txtLevelIncrement = TextEditingController();
 
   RiverbetaAddPageState();
   @override
@@ -136,6 +137,13 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
                     border: InputBorder.none, hintText: "River Max?"),
               ),
             ),
+            Expanded(
+              child: TextField(
+                controller: this.txtLevelIncrement,
+                decoration: InputDecoration(
+                    border: InputBorder.none, hintText: "Increment"),
+              ),
+            ),
             DropdownButton(
               value: _riverGaugeUnit,
               items: [
@@ -148,7 +156,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
                   child: Text('M'),
                 ),
                 DropdownMenuItem(
-                  value: 'Visual',
+                  value: 'Gauge',
                   child: Text('Visual Gauge'),
                 )
               ],
@@ -233,7 +241,8 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
             _takeOutLocation.latLng.longitude),
         double.parse(txtRiverMin.text),
         double.parse(txtRiverMax.text),
-        _riverGaugeUnit);
+        _riverGaugeUnit,
+        double.parse(txtLevelIncrement.text));
     // add new river
     BlocProvider.of<RiverbetaBloc>(context).add(AddingRiverbetaEvent(newRiver));
     Navigator.of(context).pop(); // go up one level

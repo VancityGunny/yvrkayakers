@@ -82,9 +82,9 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
               Text(widget._foundRiver.sectionName),
               Text('Difficulty: ' + widget._foundRiver.difficulty.toString()),
               Text('Level: ' +
-                  widget._foundRiver.minLevel.toString() +
+                  widget._foundRiver.minFlow.toString() +
                   ' to ' +
-                  widget._foundRiver.maxLevel.toString() +
+                  widget._foundRiver.maxFlow.toString() +
                   ' ' +
                   widget._foundRiver.gaugeUnit),
             ],

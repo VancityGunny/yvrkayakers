@@ -64,19 +64,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text("Add New River Log"),
-          Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: this.txtRiverName,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "<<River Name>>",
-                    labelText: "River Name"),
-              ))
-            ],
-          ),
           StreamBuilder(
               stream:
                   BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
@@ -87,12 +74,14 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                   );
                 }
                 return DropdownButton(
-                  hint: Text("Select River"),
+                  hint: Text("Select River", style: TextStyle(fontSize: 20)),
                   value: _selectedRiver,
                   items:
                       snapshot.data.map<DropdownMenuItem<RiverbetaModel>>((r) {
                     return DropdownMenuItem<RiverbetaModel>(
-                        value: r, child: Text(r.riverName));
+                        value: r,
+                        child:
+                            Text(r.riverName, style: TextStyle(fontSize: 20)));
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
@@ -201,7 +190,10 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null, //friends
         0, //totalround
         0, //riverround
-        _selectedRiver.sectionName);
+        _selectedRiver.sectionName,
+        _selectedRiver.maxFlow,
+        _selectedRiver.minFlow,
+        _selectedRiver.gaugeUnit);
     BlocProvider.of<RiverlogBloc>(context)
         .add(AddingRiverlogEvent(newRiverlog));
     Navigator.of(context).pop();

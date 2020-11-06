@@ -59,6 +59,10 @@ class RiverlogModel extends Equatable {
 
   final String sectionName;
 
+  final double maxFlow;
+  final double minFlow;
+  final String gaugeUnit;
+
   RiverlogModel(
       this.id,
       this.riverbetaId,
@@ -77,7 +81,10 @@ class RiverlogModel extends Equatable {
       this.friends,
       this.totalRound,
       this.riverRound,
-      this.sectionName);
+      this.sectionName,
+      this.maxFlow,
+      this.minFlow,
+      this.gaugeUnit);
 
   @override
   List<Object> get props => [
@@ -98,7 +105,10 @@ class RiverlogModel extends Equatable {
         friends,
         totalRound,
         riverRound,
-        sectionName
+        sectionName,
+        maxFlow,
+        minFlow,
+        gaugeUnit
       ];
 
   factory RiverlogModel.fromJson(Map<String, dynamic> json) {
@@ -120,7 +130,10 @@ class RiverlogModel extends Equatable {
         json['friends'] as List<String>,
         json['totalRound'] as int,
         json['riverRound'] as int,
-        json['sectionName'] as String);
+        json['sectionName'] as String,
+        json['maxFlow'] as double,
+        json['minFlow'] as double,
+        json['gaugeUnit'] as String);
   }
 
   factory RiverlogModel.fromFire(DocumentSnapshot doc) {
@@ -143,7 +156,10 @@ class RiverlogModel extends Equatable {
         json['friends'] as List<String>,
         json['totalRound'] as int,
         json['riverRound'] as int,
-        json['sectionName'] as String);
+        json['sectionName'] as String,
+        json['maxFlow'] as double,
+        json['minFlow'] as double,
+        json['gaugeUnit'] as String);
   }
 
   Map<String, dynamic> toJson() {
@@ -165,6 +181,9 @@ class RiverlogModel extends Equatable {
     data['totalRound'] = totalRound;
     data['riverRound'] = riverRound;
     data['sectionName'] = sectionName;
+    data['maxFlow'] = maxFlow;
+    data['minFlow'] = minFlow;
+    data['gaugeUnit'] = gaugeUnit;
     return data;
   }
 }

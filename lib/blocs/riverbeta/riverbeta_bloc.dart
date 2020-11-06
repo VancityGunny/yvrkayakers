@@ -14,21 +14,21 @@ class RiverbetaBloc extends Bloc<RiverbetaEvent, RiverbetaState> {
   static final _firestore = FirebaseFirestore.instance;
   static final Geoflutterfire geo = Geoflutterfire();
 
-  StreamController riverLogController;
+  StreamController riverBetaController;
   final BehaviorSubject<List<RiverbetaModel>> allRiverbetas =
       BehaviorSubject<List<RiverbetaModel>>();
 
   initStream() {
-    riverLogController = StreamController.broadcast();
+    riverBetaController = StreamController.broadcast();
 
     CommonFunctions.getCurrentLocation().then((currentLocation) {
       var collectionReference = _firestore.collection('riverbetas');
       double radius = 50; //50; //kilometer
       String field = 'putInLocation';
-      riverLogController.addStream(geo
+      riverBetaController.addStream(geo
           .collection(collectionRef: collectionReference)
           .within(center: currentLocation, radius: radius, field: field));
-      riverLogController.stream.listen((event) {
+      riverBetaController.stream.listen((event) {
         List<DocumentSnapshot> result = event;
         if (result.length > 0) {
           var newRiverbetas = new List<RiverbetaModel>();

@@ -36,9 +36,11 @@ class RiverbetaModel extends Equatable {
   final double difficulty; // 2.75 for grade III- and 3.25 for grade III+
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
-  final double minLevel; // minimum runnable flow in cms
-  final double maxLevel; // maximum runnable flow in cms
+  final double minFlow; // minimum runnable flow in cms
+  final double maxFlow; // maximum runnable flow in cms
   final String gaugeUnit;
+
+  final double flowIncrement; // incremental for the gauge
 
   RiverbetaModel(
       this.id,
@@ -47,9 +49,10 @@ class RiverbetaModel extends Equatable {
       this.difficulty,
       this.putInLocation,
       this.takeOutLocation,
-      this.minLevel,
-      this.maxLevel,
-      this.gaugeUnit);
+      this.minFlow,
+      this.maxFlow,
+      this.gaugeUnit,
+      this.flowIncrement);
 
   @override
   List<Object> get props => [
@@ -59,9 +62,10 @@ class RiverbetaModel extends Equatable {
         difficulty,
         putInLocation,
         takeOutLocation,
-        minLevel,
-        maxLevel,
-        gaugeUnit
+        minFlow,
+        maxFlow,
+        gaugeUnit,
+        flowIncrement
       ];
 
   factory RiverbetaModel.fromFire(DocumentSnapshot doc) {
@@ -77,7 +81,8 @@ class RiverbetaModel extends Equatable {
             json['takeOutLocation']['geopoint'].longitude),
         json['minFlow'] as double,
         json['maxFlow'] as double,
-        json['gaugeUnit'] as String);
+        json['gaugeUnit'] as String,
+        json['flowIncrement'] as double);
   }
 
   factory RiverbetaModel.fromJson(Map<String, dynamic> json) {
@@ -90,7 +95,8 @@ class RiverbetaModel extends Equatable {
         json['takeOutLocation'] as GeoFirePoint,
         json['minFlow'] as double,
         json['maxFlow'] as double,
-        json['gaugeUnit'] as String);
+        json['gaugeUnit'] as String,
+        json['flowIncrement'] as double);
   }
 
   Map<String, dynamic> toJson() {
@@ -101,9 +107,10 @@ class RiverbetaModel extends Equatable {
     data['difficulty'] = difficulty;
     data['putInLocation'] = putInLocation.data;
     data['takeOutLocation'] = takeOutLocation.data;
-    data['minFlow'] = minLevel;
-    data['maxFlow'] = maxLevel;
+    data['minFlow'] = minFlow;
+    data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
+    data['levelIncrement'] = flowIncrement;
     return data;
   }
 }
