@@ -8,6 +8,11 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 
 class RiverlogAddPage extends StatefulWidget {
+  final RiverbetaModel _selectedRiver;
+
+  @override
+  RiverlogAddPage(this._selectedRiver);
+
   @override
   RiverlogAddPageState createState() {
     return RiverlogAddPageState();
@@ -27,7 +32,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   DateTime _logDate;
   TimeOfDay _startTime;
   TimeOfDay _endTime;
-  RiverbetaModel _selectedRiver = null;
   RiverlogAddPageState();
   @override
   void initState() {
@@ -64,32 +68,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          StreamBuilder(
-              stream:
-                  BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                return DropdownButton(
-                  hint: Text("Select River", style: TextStyle(fontSize: 20)),
-                  value: _selectedRiver,
-                  items:
-                      snapshot.data.map<DropdownMenuItem<RiverbetaModel>>((r) {
-                    return DropdownMenuItem<RiverbetaModel>(
-                        value: r,
-                        child:
-                            Text(r.riverName, style: TextStyle(fontSize: 20)));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedRiver = value;
-                    });
-                  },
-                );
-              }),
+          Text(widget._selectedRiver.riverName),
           Row(
             children: [
               Expanded(
@@ -169,7 +148,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     var logId = uuid.v1();
     RiverlogModel newRiverlog = RiverlogModel(
         logId,
-        _selectedRiver.id,
+        widget._selectedRiver.id,
         null,
         currentUserId,
         blnDidSwim,
@@ -178,22 +157,22 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null,
         null,
         null,
-        _selectedRiver.riverName,
+        widget._selectedRiver.riverName,
         double.parse(txtRiverLevel.text), //waterlevel
         BlocProvider.of<RiverbetaBloc>(context)
             .allRiverbetas
             .value
-            .where((x) => x.id == _selectedRiver.id)
+            .where((x) => x.id == widget._selectedRiver.id)
             .first
             .difficulty, //riverdifficulty
         _logDate, //logdate
         null, //friends
         0, //totalround
         0, //riverround
-        _selectedRiver.sectionName,
-        _selectedRiver.maxFlow,
-        _selectedRiver.minFlow,
-        _selectedRiver.gaugeUnit);
+        widget._selectedRiver.sectionName,
+        widget._selectedRiver.maxFlow,
+        widget._selectedRiver.minFlow,
+        widget._selectedRiver.gaugeUnit);
     BlocProvider.of<RiverlogBloc>(context)
         .add(AddingRiverlogEvent(newRiverlog));
     Navigator.of(context).pop();

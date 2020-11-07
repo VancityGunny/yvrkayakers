@@ -19,26 +19,26 @@ class _RiverlogPageState extends State<RiverlogPage> {
         title: Text('Riverlog'),
       ),
       body: RiverlogScreen(),
-      floatingActionButton: new Visibility(
-          child: FloatingActionButton(
-              child: Icon(Icons.add), onPressed: goToAddRiverLogPage)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: new Visibility(
+      //     child: FloatingActionButton(
+      //         child: Icon(Icons.add), onPressed: goToAddRiverLogPage)),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
   void goToAddRiverLogPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) {
-        return MultiBlocProvider(providers: [
-          BlocProvider.value(
-            value: BlocProvider.of<RiverlogBloc>(context),
-          ),
-          BlocProvider.value(
-            value: BlocProvider.of<RiverbetaBloc>(context),
-          ),
-        ], child: RiverlogAddPage());
-      }),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (BuildContext context) {
+    //     return MultiBlocProvider(providers: [
+    //       BlocProvider.value(
+    //         value: BlocProvider.of<RiverlogBloc>(context),
+    //       ),
+    //       BlocProvider.value(
+    //         value: BlocProvider.of<RiverbetaBloc>(context),
+    //       ),
+    //     ], child: RiverlogAddPage());
+    //   }),
+    // );
   }
 }

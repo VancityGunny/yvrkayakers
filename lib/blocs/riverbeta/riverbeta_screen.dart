@@ -17,7 +17,8 @@ class RiverbetaScreen extends StatefulWidget {
 }
 
 class RiverbetaScreenState extends State<RiverbetaScreen> {
-  List<bool> _gradeSelections = List.generate(4, (_) => false);
+  List<bool> _gradeSelections = List.generate(7, (_) => true);
+  List<double> _selectedGrades =[2.0,2.5,3.0,3.5,4.0,4.5,5.0];
   Location location = new Location();
   RiverbetaScreenState();
 
@@ -43,10 +44,17 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
             Text('Grade'),
             ToggleButtons(
               isSelected: _gradeSelections,
-              children: [Text('II'), Text('III'), Text('IV'), Text('V')],
+              children: [Text('II'),Text('II+'), Text('III'), Text('III+'),Text('IV'),Text('IV+'), Text('V')],
               onPressed: (index) {
                 setState(() {
                   _gradeSelections[index] = !_gradeSelections[index];
+                  _selectedGrades.clear();
+                  for(var i = 0; i < _gradeSelections.length; i++) {
+                    if (_gradeSelections[i] == true) {
+                      _selectedGrades.add((i*0.5) +
+                          2.0); // we start from grade 2
+                    }
+                  }
                 });
               },
             ),
@@ -75,13 +83,22 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                         size: 150, color: Color.fromARGB(15, 0, 0, 0)));
               }
 
+              //filter data here
+              List<RiverbetaModel> allRivers = snapshot.data;
+              var filteredRivers = allRivers
+                  .where(
+                      (element) => _selectedGrades.contains(element.difficulty))
+                  .toList();
+              // filteredRivers.where((element) {
+              //   element.difficulty
+              // });
               return LimitedBox(
                   maxHeight: 400,
                   child: ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data.length,
+                      itemCount: filteredRivers.length,
                       itemBuilder: (context, index) {
-                        var curRiver = snapshot.data[index];
+                        var curRiver = filteredRivers[index];
                         return GestureDetector(
                             onTap: () {
                               goToRiverDetail(curRiver);
