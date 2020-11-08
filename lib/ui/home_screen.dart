@@ -9,6 +9,7 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
+import 'package:yvrkayakers/blocs/trip/trip_bloc.dart';
 import 'package:yvrkayakers/common/common_bloc.dart';
 import 'package:yvrkayakers/generated/l10n.dart';
 
@@ -24,6 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   RiverbetaBloc _riverbetaBloc = new RiverbetaBloc();
+  RiverlogBloc _riverlogBloc = new RiverlogBloc();
+  TripBloc _tripBloc = new TripBloc();
   @override
   void initState() {
     // TODO: implement initState
@@ -42,6 +45,8 @@ class HomeScreenState extends State<HomeScreen> {
     // set user stream
     CommonBloc.of(context).initStream();
     _riverbetaBloc.initStream();
+    _riverlogBloc.initStream();
+    _tripBloc.initStream();
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -109,8 +114,11 @@ class HomeScreenState extends State<HomeScreen> {
             BlocProvider<RiverbetaBloc>.value(
               value: _riverbetaBloc,
             ),
-            BlocProvider<RiverlogBloc>(
-              create: (BuildContext context) => RiverlogBloc(),
+            BlocProvider<RiverlogBloc>.value(
+              value: _riverlogBloc,
+            ),
+            BlocProvider<TripBloc>.value(
+              value: _tripBloc,
             ),
           ],
           child: Center(

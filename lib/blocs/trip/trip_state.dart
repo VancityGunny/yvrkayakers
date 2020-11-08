@@ -1,17 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 abstract class TripState extends Equatable {
   /// notify change state without deep clone state
   final int version;
-  
+
   final List propss;
-  TripState(this.version,[this.propss]);
-
-  /// Copy object for use in action
-  /// if need use deep clone
-  TripState getStateCopy();
-
-  TripState getNewVersion();
+  TripState(this.version, [this.propss]);
 
   @override
   List<Object> get props => ([version, ...propss ?? []]);
@@ -19,7 +14,6 @@ abstract class TripState extends Equatable {
 
 /// UnInitialized
 class UnTripState extends TripState {
-
   UnTripState(int version) : super(version);
 
   @override
@@ -32,7 +26,7 @@ class UnTripState extends TripState {
 
   @override
   UnTripState getNewVersion() {
-    return UnTripState(version+1);
+    return UnTripState(version + 1);
   }
 }
 
@@ -52,15 +46,16 @@ class InTripState extends TripState {
 
   @override
   InTripState getNewVersion() {
-    return InTripState(version+1, hello);
+    return InTripState(version + 1, hello);
   }
 }
 
 class ErrorTripState extends TripState {
   final String errorMessage;
 
-  ErrorTripState(int version, this.errorMessage): super(version, [errorMessage]);
-  
+  ErrorTripState(int version, this.errorMessage)
+      : super(version, [errorMessage]);
+
   @override
   String toString() => 'ErrorTripState';
 
@@ -71,7 +66,16 @@ class ErrorTripState extends TripState {
 
   @override
   ErrorTripState getNewVersion() {
-    return ErrorTripState(version+1, 
-    errorMessage);
+    return ErrorTripState(version + 1, errorMessage);
   }
+}
+
+class AddedTripState extends TripState {
+  final String newLogId;
+  AddedTripState(int version, {@required this.newLogId}) : super(version);
+  @override
+  List<Object> get props => [newLogId];
+
+  @override
+  String toString() => 'AddedTripState';
 }

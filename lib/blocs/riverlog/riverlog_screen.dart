@@ -30,7 +30,6 @@ class RiverlogScreenState extends State<RiverlogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<RiverlogBloc>(context).initStream();
     return SingleChildScrollView(
         child: Column(children: [
       StreamBuilder(

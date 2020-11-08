@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
+import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
 
 class RiverbetaDetailPage extends StatefulWidget {
   RiverbetaModel _foundRiver;
@@ -98,7 +99,9 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                   child: Text("Add New Log"),
                 ),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    goToAddTripPage();
+                  },
                   child: Text("Make New Trip"),
                 )
               ])
@@ -123,6 +126,22 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
             value: BlocProvider.of<RiverbetaBloc>(context),
           ),
         ], child: RiverlogAddPage(widget._foundRiver));
+      }),
+    );
+  }
+
+  void goToAddTripPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return MultiBlocProvider(providers: [
+          BlocProvider.value(
+            value: BlocProvider.of<RiverlogBloc>(context),
+          ),
+          BlocProvider.value(
+            value: BlocProvider.of<RiverbetaBloc>(context),
+          ),
+        ], child: TripAddPage(widget._foundRiver));
       }),
     );
   }
