@@ -33,7 +33,7 @@ class RiverbetaShortModel extends Equatable {
   final String id;
   final String riverName;
   final String sectionName;
-  final double difficulty;
+  final double difficulty; // 2.75 for grade III- and 3.25 for grade III+
 
   RiverbetaShortModel(
       this.id, this.riverName, this.sectionName, this.difficulty);
@@ -55,14 +55,11 @@ class RiverbetaShortModel extends Equatable {
     data['riverName'] = riverName;
     data['sectionName'] = sectionName;
     data['difficulty'] = difficulty;
+    return data;
   }
 }
 
 class RiverbetaModel extends RiverbetaShortModel {
-  final String id;
-  final String riverName;
-  final String sectionName;
-  final double difficulty; // 2.75 for grade III- and 3.25 for grade III+
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
   final double minFlow; // minimum runnable flow in cms
@@ -72,10 +69,10 @@ class RiverbetaModel extends RiverbetaShortModel {
   final double flowIncrement; // incremental for the gauge
 
   RiverbetaModel(
-      this.id,
-      this.riverName,
-      this.sectionName,
-      this.difficulty,
+      id,
+      riverName,
+      sectionName,
+      difficulty,
       this.putInLocation,
       this.takeOutLocation,
       this.minFlow,
@@ -133,6 +130,11 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['flowIncrement'] as double);
   }
 
+  RiverbetaShortModel getRiverbetaShort() {
+    return RiverbetaShortModel(id, riverName, sectionName, difficulty);
+  }
+
+  @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     //data['id'] = id;

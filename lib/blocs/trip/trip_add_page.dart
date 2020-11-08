@@ -21,7 +21,6 @@ class TripAddPage extends StatefulWidget {
 }
 
 class TripAddPageState extends State<TripAddPage> {
-  TextEditingController txtTripDate = TextEditingController();
   TextEditingController txtAvailableSpace = TextEditingController();
   TextEditingController txtNote = TextEditingController();
 
@@ -130,8 +129,15 @@ class TripAddPageState extends State<TripAddPage> {
         (txtAvailableSpace.text == "")
             ? 0
             : int.parse(txtAvailableSpace.text)));
-    TripModel newTrip = TripModel(tripId, widget._selectedRiver, this._tripDate,
-        txtNote.text, newTripParticipants, currentUserId);
+    DateTime tmpDateTime = DateTime(_tripDate.year, _tripDate.month,
+        _tripDate.day, _tripTime.hour, _tripTime.minute);
+    TripModel newTrip = TripModel(
+        tripId,
+        widget._selectedRiver.getRiverbetaShort(),
+        tmpDateTime,
+        txtNote.text,
+        newTripParticipants,
+        currentUserId);
     BlocProvider.of<TripBloc>(context).add(AddingTripEvent(newTrip));
     Navigator.of(context).pop();
   }

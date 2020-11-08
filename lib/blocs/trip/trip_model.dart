@@ -62,9 +62,12 @@ class TripModel extends Equatable {
     return TripModel(
         doc.id,
         RiverbetaShortModel.fromJson(json['river']),
-        json['tripDate'] as DateTime,
+        (json['tripDate'] == null) ? null : json['tripDate'].toDate(),
         json['meetingPlace'] as String,
-        TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
+        json['participants']
+            .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+            .toList(),
+        //TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
         json['startedByUserId'] as String);
   }
   Map<String, dynamic> toJson() {
