@@ -18,8 +18,10 @@ class TripBloc extends Bloc<TripEvent, TripState> {
 
   initStream() {
     tripController = StreamController.broadcast();
-    tripController
-        .addStream(FirebaseFirestore.instance.collection('/trips').snapshots());
+    tripController.addStream(FirebaseFirestore.instance
+        .collection('/trips')
+        .orderBy('tripDate')
+        .snapshots());
     tripController.stream.listen((event) {
       QuerySnapshot querySnapshot = event;
       var newTrips = new List<TripModel>();

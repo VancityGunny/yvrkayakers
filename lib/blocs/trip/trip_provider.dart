@@ -26,4 +26,31 @@ class TripProvider {
     newTripRef.set(newTrip.toJson());
     return newTrip.id;
   }
+
+  Future<String> addTripParticipant(
+      String tripId, TripParticipant newTripParticipant) async {
+    var foundTripRef = _firestore.collection('/trips').doc(tripId);
+    var foundTripObj = await foundTripRef.get();
+    List<TripParticipant> updatedParticipants = foundTripObj
+        .data()['participants']
+        .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+        .toList();
+    updatedParticipants.add(newTripParticipant);
+    foundTripRef.update(
+        {'participants': updatedParticipants.map((e) => e.toJson()).toList()});
+  }
+
+  Future<String> removeTripParticipant(
+      String tripId, String removeUserId) async {
+    var foundTripRef = _firestore.collection('/trips').doc(tripId);
+    var foundTripObj = await foundTripRef.get();
+    List<TripParticipant> updatedParticipants = foundTripObj
+        .data()['participants']
+        .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+        .toList();
+    updatedParticipants
+        .removeWhere((element) => element.userId == removeUserId);
+    foundTripRef.update(
+        {'participants': updatedParticipants.map((e) => e.toJson()).toList()});
+  }
 }

@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/blocs/user/user_provider.dart';
+import 'package:yvrkayakers/common/myconstants.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
@@ -51,17 +52,28 @@ class AuthRepository {
     }
 
     var userProvider = new UserProvider();
+
+    List<UserExperienceModel> experience = new List<UserExperienceModel>();
+    MyConstants.RIVER_GRADES.forEach((element) {
+      experience.add(UserExperienceModel(element, 0));
+    });
     // update user add phone number and marked as verified
     var foundUsers = await _firestore
         .collection('/users')
         .where('uid', isEqualTo: currentUser.uid)
         .get();
+
     // assume account found by id
     if (foundUsers.docs.length > 0) {
       await userProvider.assumeUser(
           foundUsers.docs.first.id,
-          new UserModel(currentUser.uid, currentUser.email,
-              currentUser.displayName, phoneNumber, currentUser.photoURL));
+          new UserModel(
+              currentUser.uid,
+              currentUser.email,
+              currentUser.displayName,
+              phoneNumber,
+              currentUser.photoURL,
+              experience));
       var session = FlutterSession();
       await session.set("currentUserId", foundUsers.docs.first.id);
       return; // if existing then just update this and return
@@ -80,16 +92,26 @@ class AuthRepository {
         var userId = uuid.v1();
         await userProvider.addUser(
             userId.toString(),
-            new UserModel(currentUser.uid, currentUser.email,
-                currentUser.displayName, phoneNumber, currentUser.photoURL));
+            new UserModel(
+                currentUser.uid,
+                currentUser.email,
+                currentUser.displayName,
+                phoneNumber,
+                currentUser.photoURL,
+                experience));
         var session = FlutterSession();
         await session.set("currentUserId", userId);
       } else {
         // assume user
         await userProvider.assumeUser(
             foundUsersByPhone.docs.first.id,
-            new UserModel(currentUser.uid, currentUser.email,
-                currentUser.displayName, phoneNumber, currentUser.photoURL));
+            new UserModel(
+                currentUser.uid,
+                currentUser.email,
+                currentUser.displayName,
+                phoneNumber,
+                currentUser.photoURL,
+                experience));
         var session = FlutterSession();
         await session.set("currentUserId", foundUsersByPhone.docs.first.id);
       }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
@@ -65,7 +66,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                                 children: <Widget>[
                                   Padding(
                                       padding: const EdgeInsets.only(
-                                          left: 10, top: 5),
+                                          left: 5, top: 5),
                                       child: Column(
                                         children: <Widget>[
                                           Row(
@@ -79,7 +80,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                                                       color: Colors.teal,
                                                     ),
                                                     Text(
-                                                      " ${curRiver.logDate}",
+                                                      " ${DateFormat.yMMMd().format(curRiver.logDate)}",
                                                       style: TextStyle(
                                                           color: Colors.teal,
                                                           fontWeight:
@@ -136,7 +137,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
 
   Widget riverIcon(RiverlogModel curRiver) {
     return Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+        padding: const EdgeInsets.only(left: 0, right: 5.0),
         child: Align(
             alignment: Alignment.centerLeft,
             child: Container(
@@ -181,13 +182,13 @@ class RiverlogScreenState extends State<RiverlogScreen> {
         text: TextSpan(
           text: '${curRiver.waterLevel.toString()} ${curRiver.gaugeUnit}',
           style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.green, fontSize: 20),
+              fontWeight: FontWeight.bold, color: Colors.green, fontSize: 15),
           children: <TextSpan>[
             TextSpan(
                 text: '\n${curRiver.minFlow}/${curRiver.maxFlow}',
                 style: TextStyle(
                     color: Colors.green,
-                    fontSize: 15,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold)),
           ],
         ),

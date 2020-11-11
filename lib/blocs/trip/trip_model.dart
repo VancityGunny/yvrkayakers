@@ -55,7 +55,7 @@ class TripModel extends Equatable {
         json['tripDate'] as DateTime,
         json['meetingPlace'] as String,
         TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
-        json['startedByUserId'] as String);
+        json['startByUserId'] as String);
   }
   factory TripModel.fromFire(DocumentSnapshot doc) {
     var json = doc.data();
@@ -68,7 +68,7 @@ class TripModel extends Equatable {
             .map<TripParticipant>((e) => TripParticipant.fromJson(e))
             .toList(),
         //TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
-        json['startedByUserId'] as String);
+        json['startByUserId'] as String);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};

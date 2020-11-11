@@ -34,7 +34,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
       BuildContext context,
       RiverbetaState currentState,
     ) {
-      if (currentState is UnRiverbetaState) {
+       if (currentState is UnRiverbetaState) {
         return Center(
           child: CircularProgressIndicator(),
         );

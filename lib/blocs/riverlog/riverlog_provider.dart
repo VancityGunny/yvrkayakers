@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
+import 'package:yvrkayakers/blocs/user/user_model.dart';
 
 class RiverlogProvider {
   static final _firestore = FirebaseFirestore.instance;
@@ -35,6 +36,19 @@ class RiverlogProvider {
         _firestore.collection('/riverlogs').doc(newRiverLog.userId);
     var newUserRiverLogs = newRiverLogs.collection('/logs').doc(newRiverLog.id);
     newUserRiverLogs.set(newRiverLog.toJson());
+
+    // also update user experience
+    var userRef = _firestore.collection('/users').doc(newRiverLog.userId);
+    var userObj = await userRef.get();
+    var foundUser = UserModel.fromJson(userObj.data());
+    var newExperiences = foundUser.experience;
+    newExperiences
+        .where((element) => element.riverGrade == newRiverLog.riverDifficulty)
+        .forEach((element) {
+      element.runCount = element.runCount + 1;
+    });
+    userRef
+        .update({'experience': newExperiences.map((e) => e.toJson()).toList()});
     return newRiverLog.id;
   }
 

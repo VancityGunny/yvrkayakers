@@ -79,3 +79,23 @@ class AddedTripState extends TripState {
   @override
   String toString() => 'AddedTripState';
 }
+
+class JoinedTripState extends TripState {
+  final String newLogId;
+  JoinedTripState(int version, {@required this.newLogId}) : super(version);
+  @override
+  List<Object> get props => [newLogId];
+
+  @override
+  String toString() => 'JoinedTripState';
+}
+
+class LeavedTripState extends TripState {
+  final String newLogId;
+  LeavedTripState(int version, {@required this.newLogId}) : super(version);
+  @override
+  List<Object> get props => [newLogId];
+
+  @override
+  String toString() => 'LeavedTripState';
+}

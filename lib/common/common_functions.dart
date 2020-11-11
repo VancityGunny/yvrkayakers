@@ -4,26 +4,32 @@ import 'package:location/location.dart';
 class CommonFunctions {
   static String translateRiverDifficulty(double riverDifficulty) {
     if (riverDifficulty == null) return '';
-    switch ((riverDifficulty * 10).round()) {
-      case 20:
+    switch ((riverDifficulty * 100).round()) {
+      case 200:
         return 'II';
         break;
-      case 25:
+      case 225:
         return 'II+';
         break;
-      case 30:
+      case 275:
+        return 'III-';
+        break;
+      case 300:
         return 'III';
         break;
-      case 35:
+      case 325:
         return 'III+';
         break;
-      case 40:
+      case 375:
+        return 'IV-';
+        break;
+      case 400:
         return 'IV';
         break;
-      case 45:
+      case 425:
         return 'IV+';
         break;
-      case 50:
+      case 500:
         return 'V';
         break;
     }

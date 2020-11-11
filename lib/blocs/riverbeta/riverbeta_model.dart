@@ -101,7 +101,7 @@ class RiverbetaModel extends RiverbetaShortModel {
         doc.id,
         json['riverName'] as String,
         json['sectionName'] as String,
-        json['difficulty'] as double,
+        double.parse(json['difficulty'].toString()),
         (json['putInLocation'] == null)
             ? null
             : GeoFirePoint(json['putInLocation']['geopoint'].latitude,
