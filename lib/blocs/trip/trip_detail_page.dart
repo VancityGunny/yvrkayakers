@@ -100,10 +100,29 @@ class TripDetailPageState extends State<TripDetailPage> {
                                       TripParticipant.fromJson(snapshot
                                           .data.docs.first
                                           .data()['participants'][index]);
+                                  var paddlerWeight = (currentParticipant
+                                              .skillLevel <
+                                          widget._foundTrip.river.difficulty)
+                                      ? "-1"
+                                      : (currentParticipant.skillLevel >
+                                              widget
+                                                  ._foundTrip.river.difficulty)
+                                          ? "+1"
+                                          : "";
                                   return Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
+                                        RichText(
+                                            text: TextSpan(
+                                          text: paddlerWeight,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: (paddlerWeight == "-1")
+                                                  ? Colors.red
+                                                  : Colors.green,
+                                              fontSize: 20),
+                                        )),
                                         Text(
                                             currentParticipant.userDisplayName),
                                         Container(
