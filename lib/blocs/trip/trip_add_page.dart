@@ -120,15 +120,21 @@ class TripAddPageState extends State<TripAddPage> {
     var currentUserId = (await session.get("currentUserId"));
     var uuid = new Uuid();
     var tripId = uuid.v1();
+    var userSkill = currentUser.userSkill;
+    var userSkillVerified = currentUser.userSkillVerified;
     //(widget._selectedRiver as RiverbetaShortModel).toJson()
     var newTripParticipants = List<TripParticipant>();
-    newTripParticipants.add(TripParticipant(
-        currentUserId,
-        currentUser.displayName,
-        blnNeedRide,
-        (txtAvailableSpace.text == "")
-            ? 0
-            : int.parse(txtAvailableSpace.text)));
+    newTripParticipants.add(
+      TripParticipant(
+          currentUserId,
+          currentUser.displayName,
+          blnNeedRide,
+          (txtAvailableSpace.text == "")
+              ? 0
+              : int.parse(txtAvailableSpace.text),
+          userSkill,
+          userSkillVerified),
+    );
     DateTime tmpDateTime = DateTime(_tripDate.year, _tripDate.month,
         _tripDate.day, _tripTime.hour, _tripTime.minute);
     TripModel newTrip = TripModel(

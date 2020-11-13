@@ -55,7 +55,7 @@ class AuthRepository {
 
     List<UserExperienceModel> experience = new List<UserExperienceModel>();
     MyConstants.RIVER_GRADES.forEach((element) {
-      experience.add(UserExperienceModel(element, 0));
+      experience.add(UserExperienceModel(element, 0, 0));
     });
     // update user add phone number and marked as verified
     var foundUsers = await _firestore
@@ -73,7 +73,9 @@ class AuthRepository {
               currentUser.displayName,
               phoneNumber,
               currentUser.photoURL,
-              experience));
+              experience,
+              0.0,
+              0.0));
       var session = FlutterSession();
       await session.set("currentUserId", foundUsers.docs.first.id);
       return; // if existing then just update this and return
@@ -98,7 +100,9 @@ class AuthRepository {
                 currentUser.displayName,
                 phoneNumber,
                 currentUser.photoURL,
-                experience));
+                experience,
+                0.0,
+                0.0));
         var session = FlutterSession();
         await session.set("currentUserId", userId);
       } else {
@@ -111,7 +115,9 @@ class AuthRepository {
                 currentUser.displayName,
                 phoneNumber,
                 currentUser.photoURL,
-                experience));
+                experience,
+                0.0,
+                0.0));
         var session = FlutterSession();
         await session.set("currentUserId", foundUsersByPhone.docs.first.id);
       }

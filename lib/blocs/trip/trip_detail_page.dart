@@ -7,6 +7,7 @@ import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
+import 'package:yvrkayakers/common/common_functions.dart';
 
 class TripDetailPage extends StatefulWidget {
   TripModel _foundTrip;
@@ -91,23 +92,61 @@ class TripDetailPageState extends State<TripDetailPage> {
                             ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
-                                itemCount:
-                                    widget._foundTrip.participants.length,
+                                itemCount: snapshot.data.docs.first
+                                    .data()['participants']
+                                    .length,
                                 itemBuilder: (context, index) {
+                                  TripParticipant currentParticipant =
+                                      TripParticipant.fromJson(snapshot
+                                          .data.docs.first
+                                          .data()['participants'][index]);
                                   return Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Text(widget
-                                            ._foundTrip
-                                            .participants[index]
-                                            .userDisplayName),
-                                        Text(widget._foundTrip
-                                            .participants[index].needRide
-                                            .toString()),
-                                        Text(widget._foundTrip
-                                            .participants[index].availableSpace
-                                            .toString()),
+                                        Text(
+                                            currentParticipant.userDisplayName),
+                                        Container(
+                                            alignment: Alignment.center,
+                                            height: 20.0,
+                                            width: 20.0,
+                                            decoration: new BoxDecoration(
+                                                color: Colors.deepOrange,
+                                                borderRadius:
+                                                    new BorderRadius.circular(
+                                                        10.0)),
+                                            child: Text(
+                                              CommonFunctions
+                                                  .translateRiverDifficulty(
+                                                      currentParticipant
+                                                          .skillLevel),
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.white),
+                                            )),
+                                        (currentParticipant.needRide == true)
+                                            ? FaIcon(FontAwesomeIcons.child,
+                                                size: 20, color: Colors.red)
+                                            : FaIcon(FontAwesomeIcons.car,
+                                                size: 20,
+                                                color: (currentParticipant
+                                                            .availableSpace >
+                                                        0)
+                                                    ? Colors.green
+                                                    : Colors.blue),
+                                        (currentParticipant.availableSpace > 0)
+                                            ? RichText(
+                                                text: TextSpan(
+                                                text: currentParticipant
+                                                        .availableSpace
+                                                        .toString() +
+                                                    ' space',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.green,
+                                                    fontSize: 20),
+                                              ))
+                                            : Text(''),
                                       ]);
                                 }),
                             carpoolWidget(blnParticipated),
@@ -127,11 +166,15 @@ class TripDetailPageState extends State<TripDetailPage> {
     var session = FlutterSession();
     var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
     var currentUserId = (await session.get("currentUserId"));
+    var userSkill = currentUser.userSkill;
+    var userSkillVerified = currentUser.userSkillVerified;
     TripParticipant newParticipant = new TripParticipant(
         currentUserId,
         currentUser.displayName,
         blnNeedRide,
-        (txtAvailableSpace.text == "") ? 0 : int.parse(txtAvailableSpace.text));
+        (txtAvailableSpace.text == "") ? 0 : int.parse(txtAvailableSpace.text),
+        userSkill,
+        userSkillVerified);
     BlocProvider.of<TripBloc>(context)
         .add(new JoinTripEvent(widget._foundTrip.id, newParticipant));
   }

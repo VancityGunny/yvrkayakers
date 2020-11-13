@@ -128,7 +128,7 @@ class TripScreenState extends State<TripScreen> {
                                                   SizedBox(
                                                     width: 10,
                                                   ),
-                                                  riverChangeIcon(),
+                                                  riverChangeIcon(curTrip),
                                                   SizedBox(
                                                     width: 20,
                                                   )
@@ -205,35 +205,70 @@ class TripScreenState extends State<TripScreen> {
   }
 
   Widget participantsList(TripModel curTrip) {
+    var supportCount = 0;
+    var newbieCount = 0;
+    curTrip.participants.forEach((element) {
+      if (element.skillLevel >= curTrip.river.difficulty) {
+        supportCount++;
+      } else if (element.skillLevel < curTrip.river.difficulty) {
+        newbieCount++;
+      }
+    });
+
     var startBy = curTrip.startByUserId;
     return Align(
       alignment: Alignment.topRight,
       child: RichText(
         text: TextSpan(
-          text: '${curTrip.participants.length.toString()}',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.green, fontSize: 20),
-          children: <TextSpan>[
-            TextSpan(
-                text: '\n${startBy}',
-                style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold)),
-          ],
-        ),
+            text: '${supportCount.toString()}',
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.green, fontSize: 20),
+            children: [
+              WidgetSpan(
+                child: Icon(Icons.person, size: 20, color: Colors.green),
+              ),
+              TextSpan(
+                  text: '${newbieCount.toString()}',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                      fontSize: 20),
+                  children: [
+                    WidgetSpan(
+                      child: Icon(Icons.person, size: 20, color: Colors.red),
+                    ),
+                  ]),
+            ]),
       ),
     );
   }
 
-  Widget riverChangeIcon() {
-    return Align(
-        alignment: Alignment.topRight,
-        child: Icon(
-          FontAwesomeIcons.arrowCircleUp,
-          color: Colors.green,
-          size: 30,
-        ));
+  Widget riverChangeIcon(TripModel curTrip) {
+    var tripBalance = 0;
+    curTrip.participants.forEach((element) {
+      if (element.skillLevel > curTrip.river.difficulty) {
+        tripBalance++;
+      } else if (element.skillLevel < curTrip.river.difficulty) {
+        tripBalance--;
+      }
+    });
+    if (tripBalance >= 0) {
+      return Align(
+          alignment: Alignment.topRight,
+          child: Icon(
+            FontAwesomeIcons.arrowCircleUp,
+            color: Colors.green,
+            size: 30,
+          ));
+    } else if (tripBalance < 0) {
+      return Align(
+          alignment: Alignment.topRight,
+          child: Icon(
+            FontAwesomeIcons.arrowCircleDown,
+            color: Colors.red,
+            size: 30,
+          ));
+    }
   }
 
   void goToTripDetail(TripModel curTrip) {

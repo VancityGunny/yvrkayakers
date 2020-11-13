@@ -47,8 +47,27 @@ class RiverlogProvider {
         .forEach((element) {
       element.runCount = element.runCount + 1;
     });
-    userRef
-        .update({'experience': newExperiences.map((e) => e.toJson()).toList()});
+
+    var userSkill = newExperiences
+        .where((element) => element.runCount >= 5)
+        .fold(
+            2.0,
+            (previousValue, element) => (element.riverGrade > previousValue)
+                ? element.riverGrade
+                : previousValue);
+    var verifiedUserSkill = newExperiences
+        .where((element) => element.verifiedRunCount >= 3)
+        .fold(
+            2.0,
+            (previousValue, element) => (element.riverGrade > previousValue)
+                ? element.riverGrade
+                : previousValue);
+
+    userRef.update({
+      'experience': newExperiences.map((e) => e.toJson()).toList(),
+      'userSkill': userSkill,
+      'userSkillVerified': verifiedUserSkill
+    });
     return newRiverLog.id;
   }
 
