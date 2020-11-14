@@ -1,8 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:group_list_view/group_list_view.dart';
 import 'package:intl/intl.dart';
+import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
@@ -48,13 +51,36 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                   child: FaIcon(FontAwesomeIcons.userPlus,
                       size: 150, color: Color.fromARGB(15, 0, 0, 0)));
             }
+
+            List<RiverlogModel> tempData = snapshot.data;
+            var newGroupedData = groupBy(tempData,
+                (RiverlogModel obj) => DateFormat.yMMM().format(obj.logDate));
             return LimitedBox(
                 maxHeight: 480,
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      var curRiver = snapshot.data[index];
+                child: GroupListView(
+                    sectionsCount: newGroupedData.length,
+                    countOfItemInSection: (int section) {
+                      return newGroupedData[
+                              newGroupedData.keys.toList()[section]]
+                          .length;
+                    },
+                    groupHeaderBuilder: (BuildContext context, int section) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 8),
+                        child: Text(
+                          newGroupedData.keys.toList()[section].toString(),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => SizedBox(height: 10),
+                    sectionSeparatorBuilder: (context, section) =>
+                        SizedBox(height: 10),
+                    itemBuilder: (BuildContext context, IndexPath index) {
+                      var curRiver = newGroupedData[newGroupedData.keys
+                          .toList()[index.section]][index.index];
                       return Card(
                         elevation: 5,
                         child: Padding(
@@ -93,21 +119,13 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                                             ],
                                           ),
                                           Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              riverIcon(curRiver),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
+                                              riverGradeIcon(curRiver),
                                               riverNameSymbol(curRiver),
                                               Spacer(),
-                                              riverChange(curRiver),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              riverChangeIcon(),
-                                              SizedBox(
-                                                width: 20,
-                                              )
+                                              waterLevelGauge(curRiver)
                                             ],
                                           )
                                         ],
@@ -135,23 +153,13 @@ class RiverlogScreenState extends State<RiverlogScreen> {
     });
   }
 
-  Widget riverIcon(RiverlogModel curRiver) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 0, right: 5.0),
-        child: Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-                alignment: Alignment.center,
-                height: 60.0,
-                width: 60.0,
-                decoration: new BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: new BorderRadius.circular(10.0)),
-                child: Text(
-                  CommonFunctions.translateRiverDifficulty(
-                      curRiver.riverDifficulty),
-                  style: TextStyle(fontSize: 40, color: Colors.amber),
-                ))));
+  Widget riverGradeIcon(RiverlogModel curRiver) {
+    return Container(
+        alignment: Alignment.topLeft,
+        child: Text(
+          CommonFunctions.translateRiverDifficulty(curRiver.riverDifficulty),
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ));
   }
 
   Widget riverNameSymbol(RiverlogModel curRiver) {
@@ -175,34 +183,32 @@ class RiverlogScreenState extends State<RiverlogScreen> {
     );
   }
 
-  Widget riverChange(RiverlogModel curRiver) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: RichText(
-        text: TextSpan(
-          text: '${curRiver.waterLevel.toString()} ${curRiver.gaugeUnit}',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.green, fontSize: 15),
-          children: <TextSpan>[
-            TextSpan(
-                text: '\n${curRiver.minFlow}/${curRiver.maxFlow}',
-                style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold)),
-          ],
+  Widget waterLevelGauge(RiverlogModel curRiver) {
+    try {
+      var maxUnits = curRiver.maxFlow - curRiver.minFlow;
+      var currentUnit = (curRiver.waterLevel - curRiver.minFlow) / maxUnits;
+      return SizedBox(
+        height: 30,
+        width: 150,
+        child: LiquidLinearProgressIndicator(
+          value: currentUnit,
+          valueColor: AlwaysStoppedAnimation(Colors.lightBlue),
+          backgroundColor: Colors.lightBlue[100],
+          borderColor: Colors.blue,
+          borderWidth: 5.0,
+          borderRadius: 12.0,
+          direction: Axis.horizontal,
+          center: Text(
+            '${curRiver.waterLevel}/${curRiver.maxFlow} ${curRiver.gaugeUnit}',
+            style: TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w600,
+                color: Colors.black),
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget riverChangeIcon() {
-    return Align(
-        alignment: Alignment.topRight,
-        child: Icon(
-          FontAwesomeIcons.arrowCircleUp,
-          color: Colors.green,
-          size: 30,
-        ));
+      );
+    } catch (exception) {
+      return Text('');
+    }
   }
 }

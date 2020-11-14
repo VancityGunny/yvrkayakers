@@ -26,7 +26,7 @@ class TripDetailPageState extends State<TripDetailPage> {
   bool blnNeedRide = false;
   TextEditingController txtAvailableSpace = TextEditingController();
   bool blnParticipated = false;
-
+  TextEditingController txtAddComment = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -78,96 +78,20 @@ class TripDetailPageState extends State<TripDetailPage> {
                       ],
                     );
                   }
-
+                  var allParticipants = snapshot.data.docs.first
+                      .data()['participants']
+                      .toList()
+                      .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+                      .toList();
                   return FutureBuilder(
                       future: FlutterSession().get("currentUserId"),
                       builder: (context, sessionSnapshot) {
-                        blnParticipated = snapshot.data.docs.first
-                            .data()['participants']
-                            .any((element) =>
-                                element['userId'] == sessionSnapshot.data);
+                        blnParticipated = allParticipants.any((element) =>
+                            element.userId == sessionSnapshot.data);
                         return Expanded(
                             child: Column(
                           children: [
-                            ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: snapshot.data.docs.first
-                                    .data()['participants']
-                                    .length,
-                                itemBuilder: (context, index) {
-                                  TripParticipant currentParticipant =
-                                      TripParticipant.fromJson(snapshot
-                                          .data.docs.first
-                                          .data()['participants'][index]);
-                                  var paddlerWeight = (currentParticipant
-                                              .skillLevel <
-                                          widget._foundTrip.river.difficulty)
-                                      ? "-1"
-                                      : (currentParticipant.skillLevel >
-                                              widget
-                                                  ._foundTrip.river.difficulty)
-                                          ? "+1"
-                                          : "";
-                                  return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        RichText(
-                                            text: TextSpan(
-                                          text: paddlerWeight,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: (paddlerWeight == "-1")
-                                                  ? Colors.red
-                                                  : Colors.green,
-                                              fontSize: 20),
-                                        )),
-                                        Text(
-                                            currentParticipant.userDisplayName),
-                                        Container(
-                                            alignment: Alignment.center,
-                                            height: 20.0,
-                                            width: 20.0,
-                                            decoration: new BoxDecoration(
-                                                color: Colors.deepOrange,
-                                                borderRadius:
-                                                    new BorderRadius.circular(
-                                                        10.0)),
-                                            child: Text(
-                                              CommonFunctions
-                                                  .translateRiverDifficulty(
-                                                      currentParticipant
-                                                          .skillLevel),
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white),
-                                            )),
-                                        (currentParticipant.needRide == true)
-                                            ? FaIcon(FontAwesomeIcons.child,
-                                                size: 20, color: Colors.red)
-                                            : FaIcon(FontAwesomeIcons.car,
-                                                size: 20,
-                                                color: (currentParticipant
-                                                            .availableSpace >
-                                                        0)
-                                                    ? Colors.green
-                                                    : Colors.blue),
-                                        (currentParticipant.availableSpace > 0)
-                                            ? RichText(
-                                                text: TextSpan(
-                                                text: currentParticipant
-                                                        .availableSpace
-                                                        .toString() +
-                                                    ' space',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.green,
-                                                    fontSize: 20),
-                                              ))
-                                            : Text(''),
-                                      ]);
-                                }),
+                            participantListWidget(allParticipants),
                             carpoolWidget(blnParticipated),
                           ],
                         ));
@@ -255,5 +179,67 @@ class TripDetailPageState extends State<TripDetailPage> {
     var currentUserId = (await session.get("currentUserId"));
     BlocProvider.of<TripBloc>(context)
         .add(new LeaveTripEvent(widget._foundTrip.id, currentUserId));
+  }
+
+  Widget participantListWidget(List<TripParticipant> allParticipants) {
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemCount: allParticipants.length,
+        itemBuilder: (context, index) {
+          TripParticipant currentParticipant = allParticipants[index];
+          var paddlerWeight = (currentParticipant.skillLevel <
+                  widget._foundTrip.river.difficulty)
+              ? "-1"
+              : (currentParticipant.skillLevel >
+                      widget._foundTrip.river.difficulty)
+                  ? "+1"
+                  : "";
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RichText(
+                    text: TextSpan(
+                  text: paddlerWeight,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color:
+                          (paddlerWeight == "-1") ? Colors.red : Colors.green,
+                      fontSize: 20),
+                )),
+                Text(currentParticipant.userDisplayName),
+                Container(
+                    alignment: Alignment.center,
+                    height: 20.0,
+                    width: 20.0,
+                    decoration: new BoxDecoration(
+                        color: Colors.deepOrange,
+                        borderRadius: new BorderRadius.circular(10.0)),
+                    child: Text(
+                      CommonFunctions.translateRiverDifficulty(
+                          currentParticipant.skillLevel),
+                      style: TextStyle(fontSize: 15, color: Colors.white),
+                    )),
+                (currentParticipant.needRide == true)
+                    ? FaIcon(FontAwesomeIcons.child,
+                        size: 20, color: Colors.red)
+                    : FaIcon(FontAwesomeIcons.car,
+                        size: 20,
+                        color: (currentParticipant.availableSpace > 0)
+                            ? Colors.green
+                            : Colors.blue),
+                (currentParticipant.availableSpace > 0)
+                    ? RichText(
+                        text: TextSpan(
+                        text: currentParticipant.availableSpace.toString() +
+                            ' space',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                            fontSize: 20),
+                      ))
+                    : Text(''),
+              ]);
+        });
   }
 }
