@@ -10,6 +10,7 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
+import 'package:yvrkayakers/widgets/widgets.dart';
 
 class TripDetailPage extends StatefulWidget {
   TripModel _foundTrip;
@@ -203,7 +204,7 @@ class TripDetailPageState extends State<TripDetailPage> {
   }
 
   Widget commentWidget(Future<dynamic> allComments) {
-    return Expanded(
+    return Flexible(
         child: Column(
       children: [
         Row(
@@ -226,21 +227,17 @@ class TripDetailPageState extends State<TripDetailPage> {
           future: allComments,
           builder: (context, snapshot) {
             if (snapshot.hasData == false) return Text('');
-            return Expanded(
+            return Flexible(
                 child: ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                return Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20.0,
-                      backgroundColor: Colors.grey[200],
-                      backgroundImage: CachedNetworkImageProvider(
-                          snapshot.data[index].userPicUrl),
-                    ),
-                    Text(snapshot.data[index].message)
-                  ],
-                );
+                return SpeechBubble(
+                    avatarUrl: snapshot.data[index].userPicUrl,
+                    message: snapshot.data[index].message,
+                    time: CommonFunctions.formatPostDateForDisplay(
+                        snapshot.data[index].createdDate),
+                    delivered: true,
+                    isMe: false);
               },
             ));
           },

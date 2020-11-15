@@ -62,4 +62,21 @@ class CommonFunctions {
     _locationData = await location.getLocation();
     return GeoFirePoint(_locationData.latitude, _locationData.longitude);
   }
+
+  static String formatPostDateForDisplay(DateTime postedDate) {
+    var timeElapsed = DateTime.now().difference(postedDate);
+    if (timeElapsed.inDays < 1) {
+      if (timeElapsed.inHours < 1) {
+        if (timeElapsed.inMinutes < 1) {
+          return "just now";
+        } else {
+          return timeElapsed.inMinutes.toString() + ' minute(s) ago';
+        }
+      } else {
+        return timeElapsed.inHours.toString() + ' hour(s) ago';
+      }
+    } else {
+      return timeElapsed.inDays.toString() + ' day(s) ago';
+    }
+  }
 }
