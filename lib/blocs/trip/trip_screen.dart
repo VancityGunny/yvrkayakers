@@ -132,7 +132,13 @@ class TripScreenState extends State<TripScreen> {
                                                   riverChangeIcon(curTrip),
                                                   SizedBox(
                                                     width: 20,
-                                                  )
+                                                  ),
+                                                  FaIcon(
+                                                      FontAwesomeIcons.comments,
+                                                      size: 20,
+                                                      color: Colors.blue),
+                                                  Text(curTrip.commentCount
+                                                      .toString()),
                                                 ],
                                               ),
                                               Container(

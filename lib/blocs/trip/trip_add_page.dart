@@ -144,7 +144,8 @@ class TripAddPageState extends State<TripAddPage> {
         tmpDateTime,
         txtNote.text,
         newTripParticipants,
-        currentUserId);
+        currentUserId,
+        0);
     BlocProvider.of<TripBloc>(context).add(AddingTripEvent(newTrip));
     Navigator.of(context).pop();
   }

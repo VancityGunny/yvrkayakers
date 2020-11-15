@@ -41,13 +41,14 @@ class TripModel extends Equatable {
   final String startByUserId;
 
   final List<TripParticipantModel> participants;
+  final int commentCount;
 
   TripModel(this.id, this.river, this.tripDate, this.note, this.participants,
-      this.startByUserId);
+      this.startByUserId, this.commentCount);
 
   @override
   List<Object> get props =>
-      [id, river, tripDate, note, participants, startByUserId];
+      [id, river, tripDate, note, participants, startByUserId, commentCount];
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
@@ -57,7 +58,8 @@ class TripModel extends Equatable {
         json['meetingPlace'] as String,
         TripParticipantModel.fromJson(json['participants'])
             as List<TripParticipantModel>,
-        json['startByUserId'] as String);
+        json['startByUserId'] as String,
+        json['commentCount'] as int);
   }
   factory TripModel.fromFire(DocumentSnapshot doc) {
     var json = doc.data();
@@ -70,7 +72,8 @@ class TripModel extends Equatable {
             .map<TripParticipantModel>((e) => TripParticipantModel.fromJson(e))
             .toList(),
         //TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
-        json['startByUserId'] as String);
+        json['startByUserId'] as String,
+        json['commentCount'] as int);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -80,6 +83,7 @@ class TripModel extends Equatable {
     data['meetingPlace'] = note;
     data['participants'] = participants.map((e) => e.toJson()).toList();
     data['startByUserId'] = startByUserId;
+    data['commentCount'] = commentCount;
     return data;
   }
 }
@@ -161,8 +165,8 @@ class TripParticipantModel extends Equatable {
         json['userDisplayName'] as String,
         json['needRide'] as bool,
         json['availableSpace'] as int,
-        json['skillLevel'] as double,
-        json['skillLevelVerified'] as double,
+        double.tryParse(json['skillLevel'].toString()),
+        double.tryParse(json['skillLevelVerified'].toString()),
         json['userPhotoUrl'] as String);
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:yvrkayakers/blocs/trip/trip_model.dart';
 
 class TripProvider {
@@ -29,10 +30,12 @@ class TripProvider {
 
   Future<String> addTripComment(
       String tripId, TripCommentModel newComment) async {
-    var newTripRef =
+    var foundTripRef = _firestore.collection('/trips').doc(tripId);
+    var newTripCommentRef =
         _firestore.collection('/trips').doc(tripId).collection('/comments');
-    var newCommentRef = newTripRef.doc();
+    var newCommentRef = newTripCommentRef.doc();
     newCommentRef.set(newComment.toJson());
+    foundTripRef.update({'commentCount': FieldValue.increment(1)});
     return newCommentRef.id;
   }
 

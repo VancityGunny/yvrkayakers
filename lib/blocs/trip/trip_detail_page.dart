@@ -53,13 +53,16 @@ class TripDetailPageState extends State<TripDetailPage> {
           title: Text(widget._foundTrip.river.riverName),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(widget._foundTrip.tripDate.toString()),
-            Text(widget._foundTrip.river.riverName,
-                style: TextStyle(fontSize: 20.0)),
-            Text(widget._foundTrip.river.sectionName),
-            Text(
-                'Difficulty: ' + widget._foundTrip.river.difficulty.toString()),
+            Row(
+              children: [
+                tripDetailWidget(),
+                Column(
+                  children: [],
+                )
+              ],
+            ),
             StreamBuilder(
                 stream: this.currentTripController.stream,
                 builder: (context, snapshot) {
@@ -110,6 +113,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                             element.userId == sessionSnapshot.data);
                         return Expanded(
                             child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             participantListWidget(allParticipants),
                             carpoolWidget(blnParticipated),
@@ -201,6 +205,18 @@ class TripDetailPageState extends State<TripDetailPage> {
     var currentUserId = (await session.get("currentUserId"));
     BlocProvider.of<TripBloc>(context)
         .add(new LeaveTripEvent(widget._foundTrip.id, currentUserId));
+  }
+
+  Widget tripDetailWidget() {
+    return Column(
+      children: [
+        Text(widget._foundTrip.tripDate.toString()),
+        Text(widget._foundTrip.river.riverName,
+            style: TextStyle(fontSize: 20.0)),
+        Text(widget._foundTrip.river.sectionName),
+        Text('Difficulty: ' + widget._foundTrip.river.difficulty.toString()),
+      ],
+    );
   }
 
   Widget commentWidget(Future<dynamic> allComments) {
@@ -303,8 +319,8 @@ class TripDetailPageState extends State<TripDetailPage> {
                 (currentParticipant.availableSpace > 0)
                     ? RichText(
                         text: TextSpan(
-                        text: currentParticipant.availableSpace.toString() +
-                            ' space',
+                        text:
+                            '+' + currentParticipant.availableSpace.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
