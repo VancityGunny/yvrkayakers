@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/rendering.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
@@ -39,7 +40,7 @@ class TripModel extends Equatable {
 
   final String startByUserId;
 
-  final List<TripParticipant> participants;
+  final List<TripParticipantModel> participants;
 
   TripModel(this.id, this.river, this.tripDate, this.note, this.participants,
       this.startByUserId);
@@ -52,9 +53,10 @@ class TripModel extends Equatable {
     return TripModel(
         null, //json['id'] as String,
         RiverbetaShortModel.fromFire(json['river']),
-        json['tripDate'] as DateTime,
+        json['tripDate'].toDate() as DateTime,
         json['meetingPlace'] as String,
-        TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
+        TripParticipantModel.fromJson(json['participants'])
+            as List<TripParticipantModel>,
         json['startByUserId'] as String);
   }
   factory TripModel.fromFire(DocumentSnapshot doc) {
@@ -65,7 +67,7 @@ class TripModel extends Equatable {
         (json['tripDate'] == null) ? null : json['tripDate'].toDate(),
         json['meetingPlace'] as String,
         json['participants']
-            .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+            .map<TripParticipantModel>((e) => TripParticipantModel.fromJson(e))
             .toList(),
         //TripParticipant.fromJson(json['participants']) as List<TripParticipant>,
         json['startByUserId'] as String);
@@ -82,16 +84,65 @@ class TripModel extends Equatable {
   }
 }
 
-class TripParticipant extends Equatable {
+class TripCommentModel extends Equatable {
+  final String userId;
+  final String userDisplayName;
+  final String userPicUrl;
+  final String message;
+  final DateTime createdDate;
+
+  TripCommentModel(this.userId, this.userDisplayName, this.userPicUrl,
+      this.message, this.createdDate);
+
+  @override
+  List<Object> get props =>
+      [userId, userDisplayName, userPicUrl, message, createdDate];
+
+  factory TripCommentModel.fromJson(Map<String, dynamic> json) {
+    return TripCommentModel(
+        json['userId'] as String,
+        json['userDisplayName'] as String,
+        json['userPicUrl'] as String,
+        json['message'] as String,
+        json['createdDate'].toDate() as DateTime);
+  }
+  factory TripCommentModel.fromFire(DocumentSnapshot doc) {
+    var json = doc.data();
+    return TripCommentModel(
+        json['userId'] as String,
+        json['userDisplayName'] as String,
+        json['userPicUrl'] as String,
+        json['message'] as String,
+        json['createdDate'].toDate() as DateTime);
+  }
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['userId'] = userId;
+    data['userDisplayName'] = userDisplayName;
+    data['userPicUrl'] = userPicUrl;
+    data['message'] = message;
+    data['createdDate'] = createdDate;
+    return data;
+  }
+}
+
+class TripParticipantModel extends Equatable {
   final String userId;
   final String userDisplayName;
   final bool needRide;
   final int availableSpace;
   final double skillLevel;
   final double skillLevelVerified;
+  final String userPhotoUrl;
 
-  TripParticipant(this.userId, this.userDisplayName, this.needRide,
-      this.availableSpace, this.skillLevel, this.skillLevelVerified);
+  TripParticipantModel(
+      this.userId,
+      this.userDisplayName,
+      this.needRide,
+      this.availableSpace,
+      this.skillLevel,
+      this.skillLevelVerified,
+      this.userPhotoUrl);
 
   @override
   List<Object> get props => [
@@ -100,17 +151,19 @@ class TripParticipant extends Equatable {
         needRide,
         availableSpace,
         skillLevel,
-        skillLevelVerified
+        skillLevelVerified,
+        userPhotoUrl
       ];
 
-  factory TripParticipant.fromJson(Map<String, dynamic> json) {
-    return TripParticipant(
+  factory TripParticipantModel.fromJson(Map<String, dynamic> json) {
+    return TripParticipantModel(
         json['userId'] as String,
         json['userDisplayName'] as String,
         json['needRide'] as bool,
         json['availableSpace'] as int,
         json['skillLevel'] as double,
-        json['skillLevelVerified'] as double);
+        json['skillLevelVerified'] as double,
+        json['userPhotoUrl'] as String);
   }
 
   Map<String, dynamic> toJson() {
@@ -121,6 +174,7 @@ class TripParticipant extends Equatable {
     data['availableSpace'] = availableSpace;
     data['skillLevel'] = skillLevel;
     data['skillLevelVerified'] = skillLevelVerified;
+    data['userPhotoUrl'] = userPhotoUrl;
     return data;
   }
 }

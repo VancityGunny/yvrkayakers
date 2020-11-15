@@ -27,13 +27,22 @@ class TripProvider {
     return newTrip.id;
   }
 
+  Future<String> addTripComment(
+      String tripId, TripCommentModel newComment) async {
+    var newTripRef =
+        _firestore.collection('/trips').doc(tripId).collection('/comments');
+    var newCommentRef = newTripRef.doc();
+    newCommentRef.set(newComment.toJson());
+    return newCommentRef.id;
+  }
+
   Future<String> addTripParticipant(
-      String tripId, TripParticipant newTripParticipant) async {
+      String tripId, TripParticipantModel newTripParticipant) async {
     var foundTripRef = _firestore.collection('/trips').doc(tripId);
     var foundTripObj = await foundTripRef.get();
-    List<TripParticipant> updatedParticipants = foundTripObj
+    List<TripParticipantModel> updatedParticipants = foundTripObj
         .data()['participants']
-        .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+        .map<TripParticipantModel>((e) => TripParticipantModel.fromJson(e))
         .toList();
     updatedParticipants.add(newTripParticipant);
     foundTripRef.update(
@@ -44,9 +53,9 @@ class TripProvider {
       String tripId, String removeUserId) async {
     var foundTripRef = _firestore.collection('/trips').doc(tripId);
     var foundTripObj = await foundTripRef.get();
-    List<TripParticipant> updatedParticipants = foundTripObj
+    List<TripParticipantModel> updatedParticipants = foundTripObj
         .data()['participants']
-        .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+        .map<TripParticipantModel>((e) => TripParticipantModel.fromJson(e))
         .toList();
     updatedParticipants
         .removeWhere((element) => element.userId == removeUserId);

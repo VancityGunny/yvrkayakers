@@ -13,8 +13,13 @@ class TripRepository {
     return _tripProvider.addTrip(newTrip);
   }
 
+  Future<String> addTripComment(
+      String tripId, TripCommentModel newComment) async {
+    return _tripProvider.addTripComment(tripId, newComment);
+  }
+
   Future<String> addTripParticipant(
-      String tripId, TripParticipant newTripParticipant) async {
+      String tripId, TripParticipantModel newTripParticipant) async {
     return _tripProvider.addTripParticipant(tripId, newTripParticipant);
   }
 

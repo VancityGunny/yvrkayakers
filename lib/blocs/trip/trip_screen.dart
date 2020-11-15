@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,7 +134,29 @@ class TripScreenState extends State<TripScreen> {
                                                     width: 20,
                                                   )
                                                 ],
-                                              )
+                                              ),
+                                              Container(
+                                                  height: 50.0,
+                                                  child: ListView.builder(
+                                                    itemCount: curTrip
+                                                        .participants.length,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return CircleAvatar(
+                                                        radius: 20.0,
+                                                        backgroundColor:
+                                                            Colors.grey[200],
+                                                        backgroundImage:
+                                                            CachedNetworkImageProvider(
+                                                                curTrip
+                                                                    .participants[
+                                                                        index]
+                                                                    .userPhotoUrl),
+                                                      );
+                                                    },
+                                                  ))
                                             ],
                                           ))
                                     ],

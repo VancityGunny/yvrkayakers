@@ -123,9 +123,9 @@ class TripAddPageState extends State<TripAddPage> {
     var userSkill = currentUser.userSkill;
     var userSkillVerified = currentUser.userSkillVerified;
     //(widget._selectedRiver as RiverbetaShortModel).toJson()
-    var newTripParticipants = List<TripParticipant>();
+    var newTripParticipants = List<TripParticipantModel>();
     newTripParticipants.add(
-      TripParticipant(
+      TripParticipantModel(
           currentUserId,
           currentUser.displayName,
           blnNeedRide,
@@ -133,7 +133,8 @@ class TripAddPageState extends State<TripAddPage> {
               ? 0
               : int.parse(txtAvailableSpace.text),
           userSkill,
-          userSkillVerified),
+          userSkillVerified,
+          currentUser.photoUrl),
     );
     DateTime tmpDateTime = DateTime(_tripDate.year, _tripDate.month,
         _tripDate.day, _tripTime.hour, _tripTime.minute);

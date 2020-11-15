@@ -80,6 +80,17 @@ class AddedTripState extends TripState {
   String toString() => 'AddedTripState';
 }
 
+class AddedCommentTripState extends TripState {
+  final String newLogId;
+  AddedCommentTripState(int version, {@required this.newLogId})
+      : super(version);
+  @override
+  List<Object> get props => [newLogId];
+
+  @override
+  String toString() => 'AddedCommentTripState';
+}
+
 class JoinedTripState extends TripState {
   final String newLogId;
   JoinedTripState(int version, {@required this.newLogId}) : super(version);

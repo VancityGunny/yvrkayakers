@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/date_time_patterns.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
@@ -21,7 +23,7 @@ class TripDetailPage extends StatefulWidget {
 class TripDetailPageState extends State<TripDetailPage> {
   TripDetailPageState();
 
-  StreamController tripController =
+  StreamController currentTripController =
       StreamController.broadcast(); //Add .broadcast here
   bool blnNeedRide = false;
   TextEditingController txtAvailableSpace = TextEditingController();
@@ -33,7 +35,7 @@ class TripDetailPageState extends State<TripDetailPage> {
     var tripReference = FirebaseFirestore.instance
         .collection('trips')
         .where("id", isEqualTo: widget._foundTrip.id);
-    tripController.addStream(tripReference.snapshots());
+    currentTripController.addStream(tripReference.snapshots());
 
     _load();
   }
@@ -58,7 +60,7 @@ class TripDetailPageState extends State<TripDetailPage> {
             Text(
                 'Difficulty: ' + widget._foundTrip.river.difficulty.toString()),
             StreamBuilder(
-                stream: this.tripController.stream,
+                stream: this.currentTripController.stream,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -81,8 +83,25 @@ class TripDetailPageState extends State<TripDetailPage> {
                   var allParticipants = snapshot.data.docs.first
                       .data()['participants']
                       .toList()
-                      .map<TripParticipant>((e) => TripParticipant.fromJson(e))
+                      .map<TripParticipantModel>(
+                          (e) => TripParticipantModel.fromJson(e))
                       .toList();
+                  var allComments = snapshot.data.docs.first.reference
+                      .collection('/comments')
+                      .get()
+                      .then((event) {
+                    return event.docs
+                        .map<TripCommentModel>(
+                            (e) => TripCommentModel.fromFire(e))
+                        .toList();
+                  });
+
+                  // snapshot.data.docs.first
+                  //     .data()['comments']
+                  //     .toList()
+                  //     .map<TripCommentModel>(
+                  //         (e) => TripCommentModel.fromJson(e))
+                  //     .toList();
                   return FutureBuilder(
                       future: FlutterSession().get("currentUserId"),
                       builder: (context, sessionSnapshot) {
@@ -93,6 +112,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                           children: [
                             participantListWidget(allParticipants),
                             carpoolWidget(blnParticipated),
+                            commentWidget(allComments)
                           ],
                         ));
                       });
@@ -111,13 +131,14 @@ class TripDetailPageState extends State<TripDetailPage> {
     var currentUserId = (await session.get("currentUserId"));
     var userSkill = currentUser.userSkill;
     var userSkillVerified = currentUser.userSkillVerified;
-    TripParticipant newParticipant = new TripParticipant(
+    TripParticipantModel newParticipant = new TripParticipantModel(
         currentUserId,
         currentUser.displayName,
         blnNeedRide,
         (txtAvailableSpace.text == "") ? 0 : int.parse(txtAvailableSpace.text),
         userSkill,
-        userSkillVerified);
+        userSkillVerified,
+        currentUser.photoUrl);
     BlocProvider.of<TripBloc>(context)
         .add(new JoinTripEvent(widget._foundTrip.id, newParticipant));
   }
@@ -181,13 +202,61 @@ class TripDetailPageState extends State<TripDetailPage> {
         .add(new LeaveTripEvent(widget._foundTrip.id, currentUserId));
   }
 
-  Widget participantListWidget(List<TripParticipant> allParticipants) {
+  Widget commentWidget(Future<dynamic> allComments) {
+    return Expanded(
+        child: Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: this.txtAddComment,
+                decoration: InputDecoration(
+                    border: InputBorder.none, hintText: "Add Comment..."),
+              ),
+            ),
+            RaisedButton(
+                child: Text('Add Comment'),
+                onPressed: () {
+                  addComment(context);
+                })
+          ],
+        ),
+        FutureBuilder(
+          future: allComments,
+          builder: (context, snapshot) {
+            if (snapshot.hasData == false) return Text('');
+            return Expanded(
+                child: ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20.0,
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: CachedNetworkImageProvider(
+                          snapshot.data[index].userPicUrl),
+                    ),
+                    Text(snapshot.data[index].message)
+                  ],
+                );
+              },
+            ));
+          },
+        )
+        // ignore: missing_required_param
+      ],
+    ));
+  }
+
+  Widget participantListWidget(List<TripParticipantModel> allParticipants) {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemCount: allParticipants.length,
         itemBuilder: (context, index) {
-          TripParticipant currentParticipant = allParticipants[index];
+          TripParticipantModel currentParticipant = allParticipants[index];
           var paddlerWeight = (currentParticipant.skillLevel <
                   widget._foundTrip.river.difficulty)
               ? "-1"
@@ -198,6 +267,12 @@ class TripDetailPageState extends State<TripDetailPage> {
           return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                CircleAvatar(
+                  radius: 20.0,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: CachedNetworkImageProvider(
+                      currentParticipant.userPhotoUrl),
+                ),
                 RichText(
                     text: TextSpan(
                   text: paddlerWeight,
@@ -241,5 +316,21 @@ class TripDetailPageState extends State<TripDetailPage> {
                     : Text(''),
               ]);
         });
+  }
+
+  void addComment(BuildContext context) async {
+    var session = FlutterSession();
+    var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
+    var currentUserId = (await session.get("currentUserId"));
+
+    var newComment = new TripCommentModel(
+        currentUserId,
+        currentUser.displayName,
+        currentUser.photoUrl,
+        txtAddComment.text,
+        DateTime.now());
+    txtAddComment.text = "";
+    BlocProvider.of<TripBloc>(context)
+        .add(new AddingCommentTripEvent(widget._foundTrip.id, newComment));
   }
 }

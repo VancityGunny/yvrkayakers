@@ -62,9 +62,33 @@ class AddingTripEvent extends TripEvent {
   }
 }
 
+class AddingCommentTripEvent extends TripEvent {
+  final TripCommentModel newComment;
+  final String tripId;
+  @override
+  String toString() => 'AddingCommentTripEvent';
+
+  AddingCommentTripEvent(this.tripId, this.newComment);
+
+  @override
+  Stream<TripState> applyAsync({TripState currentState, TripBloc bloc}) async* {
+    try {
+      yield UnTripState(0);
+      // load river
+      var result =
+          await _tripRepository.addTripComment(this.tripId, this.newComment);
+      yield AddedCommentTripState(0, newLogId: result);
+    } catch (_, stackTrace) {
+      developer.log('$_',
+          name: 'AddingCommentTripEvent', error: _, stackTrace: stackTrace);
+      yield ErrorTripState(0, _?.toString());
+    }
+  }
+}
+
 class JoinTripEvent extends TripEvent {
   final String tripId;
-  final TripParticipant newTripParticipant;
+  final TripParticipantModel newTripParticipant;
   @override
   String toString() => 'JoinTripEvent';
 
