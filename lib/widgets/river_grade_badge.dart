@@ -1,0 +1,23 @@
+import 'package:flutter/material.dart';
+import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/common/common_functions.dart';
+
+class RiverGradeBadge extends StatelessWidget {
+  RiverbetaShortModel _curRiver;
+  RiverGradeBadge(this._curRiver);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+        alignment: Alignment.center,
+        height: 60.0,
+        width: 60.0,
+        decoration: new BoxDecoration(
+            color: Colors.black87,
+            borderRadius: new BorderRadius.circular(10.0)),
+        child: Text(
+          CommonFunctions.translateRiverDifficulty(_curRiver.difficulty),
+          style: TextStyle(fontSize: 40, color: Colors.amber),
+        ));
+  }
+}

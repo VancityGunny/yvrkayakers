@@ -10,6 +10,7 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
+import 'package:yvrkayakers/widgets/river_grade_badge.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 
 class TripDetailPage extends StatefulWidget {
@@ -73,18 +74,18 @@ class TripDetailPageState extends State<TripDetailPage> {
                   );
                 }
 
-                if (snapshot.data.docs.first.data()['participants'].length ==
-                    0) {
-                  return Row(
-                    children: [
-                      Container(
-                          alignment: Alignment.center,
-                          child: FaIcon(FontAwesomeIcons.userPlus,
-                              size: 20, color: Color.fromARGB(15, 0, 0, 0))),
-                      carpoolWidget(false)
-                    ],
-                  );
-                }
+                // if (snapshot.data.docs.first.data()['participants'].length ==
+                //     0) {
+                //   return Row(
+                //     children: [
+                //       Container(
+                //           alignment: Alignment.center,
+                //           child: FaIcon(FontAwesomeIcons.userPlus,
+                //               size: 20, color: Color.fromARGB(15, 0, 0, 0))),
+                //       carpoolWidget(false)
+                //     ],
+                //   );
+                // }
                 var allParticipants = snapshot.data.docs.first
                     .data()['participants']
                     .toList()
@@ -114,11 +115,13 @@ class TripDetailPageState extends State<TripDetailPage> {
                           (element) => element.userId == sessionSnapshot.data);
 
                       return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          participantListWidget(allParticipants),
-                          carpoolWidget(blnParticipated),
-                          commentWidget(allComments)
+                          Container(
+                            child: participantListWidget(allParticipants),
+                          ),
+                          Container(child: carpoolWidget(blnParticipated)),
+                          Container(child: commentWidget(allComments))
                         ],
                       );
                     });
@@ -167,7 +170,7 @@ class TripDetailPageState extends State<TripDetailPage> {
         children: [
           Row(
             children: [
-              Expanded(
+              Container(
                   child: Checkbox(
                 onChanged: (value) {
                   setState(() {
@@ -181,7 +184,8 @@ class TripDetailPageState extends State<TripDetailPage> {
           ),
           Row(
             children: [
-              Expanded(
+              Container(
+                width: 200.0,
                 child: TextField(
                   controller: this.txtAvailableSpace,
                   decoration: InputDecoration(
@@ -211,12 +215,16 @@ class TripDetailPageState extends State<TripDetailPage> {
 
   Widget tripDetailWidget() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(widget._foundTrip.tripDate.toString()),
         Text(widget._foundTrip.river.riverName,
+            style: TextStyle(
+              fontSize: 30.0,
+            )),
+        Text(widget._foundTrip.river.sectionName,
             style: TextStyle(fontSize: 20.0)),
-        Text(widget._foundTrip.river.sectionName),
-        Text('Difficulty: ' + widget._foundTrip.river.difficulty.toString()),
+        RiverGradeBadge(widget._foundTrip.river)
       ],
     );
   }
@@ -266,6 +274,17 @@ class TripDetailPageState extends State<TripDetailPage> {
   }
 
   Widget participantListWidget(List<TripParticipantModel> allParticipants) {
+    if (allParticipants.length == 0) {
+      return Row(
+        children: [
+          Container(
+              alignment: Alignment.center,
+              child: FaIcon(FontAwesomeIcons.userPlus,
+                  size: 20, color: Color.fromARGB(15, 0, 0, 0))),
+          carpoolWidget(false)
+        ],
+      );
+    }
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
