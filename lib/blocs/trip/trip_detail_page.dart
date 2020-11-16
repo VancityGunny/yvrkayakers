@@ -49,81 +49,83 @@ class TripDetailPageState extends State<TripDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget._foundTrip.river.riverName),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                tripDetailWidget(),
-                Column(
-                  children: [],
-                )
-              ],
-            ),
-            StreamBuilder(
-                stream: this.currentTripController.stream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+      appBar: AppBar(
+        title: Text(widget._foundTrip.river.riverName),
+      ),
+      body: SingleChildScrollView(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              tripDetailWidget(),
+              Column(
+                children: [],
+              )
+            ],
+          ),
+          StreamBuilder(
+              stream: this.currentTripController.stream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-                  if (snapshot.data.docs.first.data()['participants'].length ==
-                      0) {
-                    return Column(
-                      children: [
-                        Container(
-                            alignment: Alignment.center,
-                            child: FaIcon(FontAwesomeIcons.userPlus,
-                                size: 20, color: Color.fromARGB(15, 0, 0, 0))),
-                        carpoolWidget(false)
-                      ],
-                    );
-                  }
-                  var allParticipants = snapshot.data.docs.first
-                      .data()['participants']
-                      .toList()
-                      .map<TripParticipantModel>(
-                          (e) => TripParticipantModel.fromJson(e))
+                if (snapshot.data.docs.first.data()['participants'].length ==
+                    0) {
+                  return Row(
+                    children: [
+                      Container(
+                          alignment: Alignment.center,
+                          child: FaIcon(FontAwesomeIcons.userPlus,
+                              size: 20, color: Color.fromARGB(15, 0, 0, 0))),
+                      carpoolWidget(false)
+                    ],
+                  );
+                }
+                var allParticipants = snapshot.data.docs.first
+                    .data()['participants']
+                    .toList()
+                    .map<TripParticipantModel>(
+                        (e) => TripParticipantModel.fromJson(e))
+                    .toList();
+                var allComments = snapshot.data.docs.first.reference
+                    .collection('/comments')
+                    .get()
+                    .then((event) {
+                  return event.docs
+                      .map<TripCommentModel>(
+                          (e) => TripCommentModel.fromFire(e))
                       .toList();
-                  var allComments = snapshot.data.docs.first.reference
-                      .collection('/comments')
-                      .get()
-                      .then((event) {
-                    return event.docs
-                        .map<TripCommentModel>(
-                            (e) => TripCommentModel.fromFire(e))
-                        .toList();
-                  });
+                });
 
-                  // snapshot.data.docs.first
-                  //     .data()['comments']
-                  //     .toList()
-                  //     .map<TripCommentModel>(
-                  //         (e) => TripCommentModel.fromJson(e))
-                  //     .toList();
-                  return FutureBuilder(
-                      future: FlutterSession().get("currentUserId"),
-                      builder: (context, sessionSnapshot) {
-                        blnParticipated = allParticipants.any((element) =>
-                            element.userId == sessionSnapshot.data);
-                        return Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            participantListWidget(allParticipants),
-                            carpoolWidget(blnParticipated),
-                            commentWidget(allComments)
-                          ],
-                        ));
-                      });
-                }),
-          ],
-        ));
+                // snapshot.data.docs.first
+                //     .data()['comments']
+                //     .toList()
+                //     .map<TripCommentModel>(
+                //         (e) => TripCommentModel.fromJson(e))
+                //     .toList();
+                return FutureBuilder(
+                    future: FlutterSession().get("currentUserId"),
+                    builder: (context, sessionSnapshot) {
+                      blnParticipated = allParticipants.any(
+                          (element) => element.userId == sessionSnapshot.data);
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          participantListWidget(allParticipants),
+                          carpoolWidget(blnParticipated),
+                          commentWidget(allComments)
+                        ],
+                      );
+                    });
+              }),
+        ],
+      )),
+    );
   }
 
   void _load([bool isError = false]) {
@@ -220,8 +222,7 @@ class TripDetailPageState extends State<TripDetailPage> {
   }
 
   Widget commentWidget(Future<dynamic> allComments) {
-    return Flexible(
-        child: Column(
+    return Column(
       children: [
         Row(
           children: [
@@ -243,8 +244,9 @@ class TripDetailPageState extends State<TripDetailPage> {
           future: allComments,
           builder: (context, snapshot) {
             if (snapshot.hasData == false) return Text('');
-            return Flexible(
-                child: ListView.builder(
+            return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return SpeechBubble(
@@ -255,12 +257,12 @@ class TripDetailPageState extends State<TripDetailPage> {
                     delivered: true,
                     isMe: false);
               },
-            ));
+            );
           },
         )
         // ignore: missing_required_param
       ],
-    ));
+    );
   }
 
   Widget participantListWidget(List<TripParticipantModel> allParticipants) {
