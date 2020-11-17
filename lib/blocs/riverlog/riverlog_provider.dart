@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 
@@ -41,9 +43,9 @@ class RiverlogProvider {
     var userRef = _firestore.collection('/users').doc(newRiverLog.userId);
     var userObj = await userRef.get();
     var foundUser = UserModel.fromJson(userObj.data());
-    var newExperiences = foundUser.experience;
+    List<UserExperienceModel> newExperiences = foundUser.experience;
     newExperiences
-        .where((element) => element.riverGrade == newRiverLog.riverDifficulty)
+        .where((element) => element.riverGrade == newRiverLog.river.difficulty)
         .forEach((element) {
       element.runCount = element.runCount + 1;
     });
@@ -68,6 +70,44 @@ class RiverlogProvider {
       'userSkill': userSkill,
       'userSkillVerified': verifiedUserSkill
     });
+    UserStatModel userStatObj;
+
+    if (userObj.data()['userStat'] == null) {
+      //this is the first log so log this
+      userStatObj = new UserStatModel(newRiverLog.river, newRiverLog.logDate,
+          (newRiverLog.didSwim) ? 1 : 0, (newRiverLog.didRescue) ? 1 : 0);
+
+      //wait for
+    } else {
+      userStatObj = UserStatModel.fromJson(userObj.data()['userStat']);
+      //modify with new value
+      userStatObj.lastWetness =
+          (userStatObj.lastWetness.isBefore(newRiverLog.logDate))
+              ? newRiverLog.logDate
+              : userStatObj.lastWetness;
+      userStatObj.swimCount = (newRiverLog.didSwim)
+          ? userStatObj.swimCount + 1
+          : userStatObj.swimCount;
+      userStatObj.rescueCount = (newRiverLog.didRescue)
+          ? userStatObj.rescueCount + 1
+          : userStatObj.rescueCount;
+      // check if favorite river still the same
+      var allUserRiverlogs = await newRiverLogs.collection('/logs').get();
+      var allUserRiverlogsObj =
+          allUserRiverlogs.docs.map((e) => RiverlogModel.fromFire(e)).toList();
+
+      var newGroupedData =
+          groupBy(allUserRiverlogsObj, (RiverlogModel obj) => obj.river.id)
+              .map((key, value) => MapEntry(value.first.river, value.length));
+
+      var sortedKeys = newGroupedData.keys.toList(growable: false)
+        ..sort((k1, k2) => newGroupedData[k1].compareTo(newGroupedData[k2]));
+      LinkedHashMap sortedMap = new LinkedHashMap.fromIterable(sortedKeys,
+          key: (k) => k, value: (k) => newGroupedData[k]);
+
+      userStatObj.favoriteRiver = sortedKeys.last;
+    }
+    userRef.update({'userStat': userStatObj.toJson()});
     return newRiverLog.id;
   }
 

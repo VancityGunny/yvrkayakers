@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
 class UserExperienceModel extends Equatable {
   final double riverGrade;
@@ -25,6 +26,40 @@ class UserExperienceModel extends Equatable {
   }
 }
 
+class UserStatModel extends Equatable {
+  RiverbetaShortModel favoriteRiver;
+  DateTime lastWetness;
+  int swimCount;
+  int rescueCount;
+  UserStatModel(
+      this.favoriteRiver, this.lastWetness, this.swimCount, this.rescueCount);
+
+  @override
+  // TODO: implement props
+  List<Object> get props =>
+      [favoriteRiver, lastWetness, swimCount, rescueCount];
+
+  factory UserStatModel.fromJson(Map<dynamic, dynamic> json) {
+    if (json == null) {
+      return null;
+    }
+    return UserStatModel(
+        RiverbetaShortModel.fromJson(json['favoriteRiver']),
+        json['lastWetness'].toDate(),
+        int.parse(json['swimCount']),
+        int.parse(json['rescueCount']));
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['favoriteRiver'] = this.favoriteRiver.toJson();
+    data['lastWetness'] = this.lastWetness;
+    data['swimCount'] = this.swimCount;
+    data['rescueCount'] = this.rescueCount;
+    return data;
+  }
+}
+
 class UserModel extends Equatable {
   final String uid;
   final String email;
@@ -34,9 +69,10 @@ class UserModel extends Equatable {
   final List<UserExperienceModel> experience;
   final double userSkill;
   final double userSkillVerified;
+  final UserStatModel userStat;
 
   UserModel(this.uid, this.email, this.displayName, this.phone, this.photoUrl,
-      this.experience, this.userSkill, this.userSkillVerified);
+      this.experience, this.userSkill, this.userSkillVerified, this.userStat);
 
   @override
   List<Object> get props => [
@@ -47,7 +83,8 @@ class UserModel extends Equatable {
         photoUrl,
         experience,
         userSkill,
-        userSkillVerified
+        userSkillVerified,
+        userStat
       ];
 
   factory UserModel.fromJson(Map<dynamic, dynamic> json) {
@@ -61,7 +98,8 @@ class UserModel extends Equatable {
             .map<UserExperienceModel>((e) => UserExperienceModel.fromJson(e))
             .toList(),
         json['userSkill'] as double,
-        json['userSkillVerified'] as double);
+        json['userSkillVerified'] as double,
+        UserStatModel.fromJson(json['userStat']));
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +112,7 @@ class UserModel extends Equatable {
     data['experience'] = this.experience.map((e) => e.toJson()).toList();
     data['userSkill'] = this.userSkill;
     data['userSkillVerified'] = this.userSkillVerified;
+    data['userStat'] = (this.userStat == null) ? null : this.userStat.toJson();
     return data;
   }
 }

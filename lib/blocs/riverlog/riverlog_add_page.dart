@@ -148,7 +148,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     var logId = uuid.v1();
     RiverlogModel newRiverlog = RiverlogModel(
         logId,
-        widget._selectedRiver.id,
         null,
         currentUserId,
         blnDidSwim,
@@ -157,22 +156,12 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null,
         null,
         null,
-        widget._selectedRiver.riverName,
         double.parse(txtRiverLevel.text), //waterlevel
-        BlocProvider.of<RiverbetaBloc>(context)
-            .allRiverbetas
-            .value
-            .where((x) => x.id == widget._selectedRiver.id)
-            .first
-            .difficulty, //riverdifficulty
         _logDate, //logdate
         null, //friends
         0, //totalround
         0, //riverround
-        widget._selectedRiver.sectionName,
-        widget._selectedRiver.maxFlow,
-        widget._selectedRiver.minFlow,
-        widget._selectedRiver.gaugeUnit);
+        widget._selectedRiver);
     BlocProvider.of<RiverlogBloc>(context)
         .add(AddingRiverlogEvent(newRiverlog));
     Navigator.of(context).pop();

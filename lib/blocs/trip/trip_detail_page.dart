@@ -57,14 +57,6 @@ class TripDetailPageState extends State<TripDetailPage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              tripDetailWidget(),
-              Column(
-                children: [],
-              )
-            ],
-          ),
           StreamBuilder(
               stream: this.currentTripController.stream,
               builder: (context, snapshot) {
@@ -117,10 +109,15 @@ class TripDetailPageState extends State<TripDetailPage> {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Row(
+                            children: [
+                              tripDetailWidget(),
+                              Container(child: carpoolWidget(blnParticipated)),
+                            ],
+                          ),
                           Container(
                             child: participantListWidget(allParticipants),
                           ),
-                          Container(child: carpoolWidget(blnParticipated)),
                           Container(child: commentWidget(allComments))
                         ],
                       );
@@ -267,26 +264,16 @@ class TripDetailPageState extends State<TripDetailPage> {
               },
             );
           },
-        )
+        ),
+        Text('')
         // ignore: missing_required_param
       ],
     );
   }
 
   Widget participantListWidget(List<TripParticipantModel> allParticipants) {
-    if (allParticipants.length == 0) {
-      return Row(
-        children: [
-          Container(
-              alignment: Alignment.center,
-              child: FaIcon(FontAwesomeIcons.userPlus,
-                  size: 20, color: Color.fromARGB(15, 0, 0, 0))),
-          carpoolWidget(false)
-        ],
-      );
-    }
     return ListView.builder(
-        scrollDirection: Axis.vertical,
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: allParticipants.length,
         itemBuilder: (context, index) {

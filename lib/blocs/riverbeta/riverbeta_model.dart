@@ -118,12 +118,18 @@ class RiverbetaModel extends RiverbetaShortModel {
 
   factory RiverbetaModel.fromJson(Map<String, dynamic> json) {
     return RiverbetaModel(
-        null,
+        json['id'] as String,
         json['riverName'] as String,
         json['sectionName'] as String,
         json['difficulty'] as double,
-        json['putInLocation'] as GeoFirePoint,
-        json['takeOutLocation'] as GeoFirePoint,
+        (json['putInLocation'] == null)
+            ? null
+            : GeoFirePoint(json['putInLocation']['geopoint'].latitude,
+                json['putInLocation']['geopoint'].longitude),
+        (json['takeOutLocation'] == null)
+            ? null
+            : GeoFirePoint(json['takeOutLocation']['geopoint'].latitude,
+                json['takeOutLocation']['geopoint'].longitude),
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
@@ -138,6 +144,22 @@ class RiverbetaModel extends RiverbetaShortModel {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     //data['id'] = id;
+    data['riverName'] = riverName;
+    data['sectionName'] = sectionName;
+    data['difficulty'] = difficulty;
+    data['putInLocation'] = (putInLocation == null) ? null : putInLocation.data;
+    data['takeOutLocation'] =
+        (takeOutLocation == null) ? null : takeOutLocation.data;
+    data['minFlow'] = minFlow;
+    data['maxFlow'] = maxFlow;
+    data['gaugeUnit'] = gaugeUnit;
+    data['levelIncrement'] = flowIncrement;
+    return data;
+  }
+
+  Map<String, dynamic> toJsonIncludeId() {
+    final data = <String, dynamic>{};
+    data['id'] = id;
     data['riverName'] = riverName;
     data['sectionName'] = sectionName;
     data['difficulty'] = difficulty;

@@ -75,7 +75,8 @@ class AuthRepository {
               currentUser.photoURL,
               experience,
               0.0,
-              0.0));
+              0.0,
+              null));
       var session = FlutterSession();
       await session.set("currentUserId", foundUsers.docs.first.id);
       return; // if existing then just update this and return
@@ -102,7 +103,8 @@ class AuthRepository {
                 currentUser.photoURL,
                 experience,
                 0.0,
-                0.0));
+                0.0,
+                null));
         var session = FlutterSession();
         await session.set("currentUserId", userId);
       } else {
@@ -117,7 +119,8 @@ class AuthRepository {
                 currentUser.photoURL,
                 experience,
                 0.0,
-                0.0));
+                0.0,
+                null));
         var session = FlutterSession();
         await session.set("currentUserId", foundUsersByPhone.docs.first.id);
       }
