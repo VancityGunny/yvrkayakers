@@ -43,11 +43,8 @@ class UserStatModel extends Equatable {
     if (json == null) {
       return null;
     }
-    return UserStatModel(
-        RiverbetaShortModel.fromJson(json['favoriteRiver']),
-        json['lastWetness'].toDate(),
-        int.parse(json['swimCount']),
-        int.parse(json['rescueCount']));
+    return UserStatModel(RiverbetaShortModel.fromJson(json['favoriteRiver']),
+        json['lastWetness'].toDate(), json['swimCount'], json['rescueCount']);
   }
 
   Map<String, dynamic> toJson() {

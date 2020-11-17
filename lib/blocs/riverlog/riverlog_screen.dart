@@ -9,6 +9,7 @@ import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
+import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
 class RiverlogScreen extends StatefulWidget {
@@ -75,8 +76,19 @@ class UserExperienceCard extends StatelessWidget {
   UserExperienceCard(this._riverlogs);
   @override
   Widget build(BuildContext context) {
+    var session = FlutterSession();
+
     // TODO: implement build
-    return Text('');
+    return FutureBuilder(
+        future: session.get("loggedInUser"),
+        builder: (context, snapshot) {
+          var currentUser = UserModel.fromJson(snapshot.data);
+          return Column(children: [
+            Text("Favorite: " + currentUser.userStat.favoriteRiver.riverName),
+            Text("Last Paddle: " +
+                DateFormat.yMMMd().format(currentUser.userStat.lastWetness)),
+          ]);
+        });
   }
 }
 

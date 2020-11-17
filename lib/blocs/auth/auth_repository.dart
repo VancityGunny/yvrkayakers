@@ -150,7 +150,8 @@ class AuthRepository {
         .where('uid', isEqualTo: user.uid)
         .get();
     if (foundUsers.docs.length > 0) {
-      var loggedInUser = UserModel.fromJson(foundUsers.docs[0].data());
+      var rawFoundUser = foundUsers.docs[0].data();
+      var loggedInUser = UserModel.fromJson(rawFoundUser);
       var session = FlutterSession();
       await session.set("loggedInUser", loggedInUser);
       await session.set("currentUserId", foundUsers.docs[0].id);
