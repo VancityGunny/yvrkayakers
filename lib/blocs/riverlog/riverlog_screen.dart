@@ -82,6 +82,7 @@ class UserExperienceCard extends StatelessWidget {
     return FutureBuilder(
         future: session.get("loggedInUser"),
         builder: (context, snapshot) {
+          if (snapshot.data == null) return Text('');
           var currentUser = UserModel.fromJson(snapshot.data);
           return Column(children: [
             Text("Favorite: " + currentUser.userStat.favoriteRiver.riverName),
