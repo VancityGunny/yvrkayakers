@@ -151,19 +151,19 @@ class HomeScreenState extends State<HomeScreen> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.home),
+        icon: FaIcon(FontAwesomeIcons.water),
         title: ("Rivers"),
         activeColor: CupertinoColors.activeBlue,
         inactiveColor: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.favorite),
+        icon: FaIcon(FontAwesomeIcons.book),
         title: ("Logbook"),
         activeColor: CupertinoColors.activeGreen,
         inactiveColor: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.person_pin),
+        icon: FaIcon(FontAwesomeIcons.calendarAlt),
         title: ("Trip"),
         activeColor: CupertinoColors.systemRed,
         inactiveColor: CupertinoColors.systemGrey,

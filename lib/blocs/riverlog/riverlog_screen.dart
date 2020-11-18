@@ -11,6 +11,7 @@ import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class RiverlogScreen extends StatefulWidget {
   @override
@@ -84,10 +85,51 @@ class UserExperienceCard extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.data == null) return Text('');
           var currentUser = UserModel.fromJson(snapshot.data);
+          var groupExperience = groupBy(currentUser.experience,
+                  (UserExperienceModel obj) => obj.riverGrade.roundToDouble())
+              .map((key, value) => MapEntry<double, int>(
+                  key, value.fold(0, (a, b) => a + b.runCount)));
+
           return Column(children: [
-            Text("Favorite: " + currentUser.userStat.favoriteRiver.riverName),
-            Text("Last Paddle: " +
-                DateFormat.yMMMd().format(currentUser.userStat.lastWetness)),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 50.0,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage:
+                      CachedNetworkImageProvider(currentUser.photoUrl),
+                ),
+                Column(
+                  children: [
+                    Text(
+                      currentUser.displayName,
+                      style: TextStyle(fontSize: 30.0),
+                    ),
+                    Text("Favorite: " +
+                        currentUser.userStat.favoriteRiver.riverName),
+                    Text("Last Paddle: " +
+                        DateFormat.yMMMd()
+                            .format(currentUser.userStat.lastWetness)),
+                  ],
+                )
+              ],
+            ),
+            LimitedBox(
+                maxHeight: 20.0,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: groupExperience.length,
+                  itemBuilder: (context, index) {
+                    var gradeLabel = CommonFunctions.translateRiverDifficulty(
+                        groupExperience.keys.elementAt(index));
+                    return Text('Class:' +
+                        gradeLabel +
+                        " (" +
+                        groupExperience.values.elementAt(index).toString() +
+                        ")");
+                  },
+                ))
           ]);
         });
   }

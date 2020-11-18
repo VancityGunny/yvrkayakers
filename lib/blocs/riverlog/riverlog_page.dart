@@ -16,7 +16,7 @@ class _RiverlogPageState extends State<RiverlogPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Riverlog'),
+        title: Text('My Logbook'),
       ),
       body: RiverlogScreen(),
       // floatingActionButton: new Visibility(

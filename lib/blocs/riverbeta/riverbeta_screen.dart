@@ -59,12 +59,48 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
             ),
           ],
         ),
-        RaisedButton(
-          onPressed: () {
-            goToAddRiverPage();
-          },
-          child: Text('Add River Beta'),
-        ),
+        StreamBuilder(
+            stream:
+                BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (snapshot.data.length == 0) {
+                return Container(
+                    alignment: Alignment.center,
+                    child: FaIcon(FontAwesomeIcons.userPlus,
+                        size: 150, color: Color.fromARGB(15, 0, 0, 0)));
+              }
+              //filter data here
+              List<RiverbetaModel> allRivers = snapshot.data;
+              var allRiverCount = allRivers.length;
+              var filteredRiverCount = allRivers
+                  .where((element) => _selectedGrades
+                      .contains(element.difficulty.roundToDouble()))
+                  .toList()
+                  .length;
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text("Showing " +
+                      filteredRiverCount.toString() +
+                      " of " +
+                      allRiverCount.toString() +
+                      " rivers"),
+                  RaisedButton(
+                    onPressed: () {
+                      goToAddRiverPage();
+                    },
+                    child: Text('Add River Beta'),
+                  ),
+                ],
+              );
+            }),
         StreamBuilder(
             stream:
                 BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
@@ -88,6 +124,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                   .where((element) => _selectedGrades
                       .contains(element.difficulty.roundToDouble()))
                   .toList();
+              filteredRivers.sort((a, b) => a.riverName.compareTo(b.riverName));
               // filteredRivers.where((element) {
               //   element.difficulty
               // });
