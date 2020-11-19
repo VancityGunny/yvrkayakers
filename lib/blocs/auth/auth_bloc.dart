@@ -71,8 +71,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authRepository.signInWithGoogle();
 
       yield LogInSuccessAuthState(0);
-    } catch (_) {
-      yield LogInFailureAuthState(0);
+    } catch (error) {
+      yield LogInFailureAuthState(0, error.toString());
     }
   }
 
@@ -84,8 +84,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final user = await _authRepository.getUser();
       yield AuthenticatedAuthState(0, user.displayName);
-    } catch (_) {
-      yield LogInFailureAuthState(0);
+    } catch (error) {
+      yield LogInFailureAuthState(0, error.toString());
     }
   }
 }

@@ -112,8 +112,15 @@ class _MyHomePageState extends State<MyHomePage> {
               }
               if (state is LogInFailureAuthState) {
                 return Scaffold(
-                    body: Container(
-                  child: Text(delegate.loginFailed),
+                    body: Column(
+                  children: [
+                    Icon(Icons.error),
+                    Text(
+                      delegate.loginFailed,
+                      style: TextStyle(fontSize: 30.0),
+                    ),
+                    Text(state.errorMessage, style: TextStyle(fontSize: 20.0)),
+                  ],
                 ));
               }
               return Center(

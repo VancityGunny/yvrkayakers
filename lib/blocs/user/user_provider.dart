@@ -5,16 +5,16 @@ import 'package:yvrkayakers/common/myconstants.dart';
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class UserProvider {
-  Future<String> addUser(String userId, UserModel newUser) async {
+  Future<String> addUser(UserModel newUser) async {
     // if it's not already exists then add new user first
-    var newUserObj = _firestore.collection('/users').doc(userId);
+    var newUserObj = _firestore.collection('/users').doc(newUser.id);
 
     newUserObj.set(newUser.toJson());
     return newUserObj.id;
   }
 
-  Future<void> assumeUser(String foundUserId, UserModel userModel) async {
-    _firestore.collection('/users').doc(foundUserId).update({
+  Future<void> assumeUser(UserModel userModel) async {
+    _firestore.collection('/users').doc(userModel.id).update({
       'uid': userModel.uid,
       'phone': userModel.phone,
       'displayName': userModel.displayName,

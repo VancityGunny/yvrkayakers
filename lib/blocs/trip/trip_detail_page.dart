@@ -103,8 +103,8 @@ class TripDetailPageState extends State<TripDetailPage> {
                 return FutureBuilder(
                     future: FlutterSession().get("currentUserId"),
                     builder: (context, sessionSnapshot) {
-                      blnParticipated = allParticipants.any(
-                          (element) => element.userId == sessionSnapshot.data);
+                      blnParticipated = allParticipants
+                          .any((element) => element.id == sessionSnapshot.data);
 
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

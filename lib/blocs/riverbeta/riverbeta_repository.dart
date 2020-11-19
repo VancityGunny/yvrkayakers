@@ -19,6 +19,15 @@ class RiverbetaRepository {
     return _riverbetaProvider.addRiver(newRiver);
   }
 
+  Future<String> updateRiverStat(
+      String riverId, RiverAnnualStat newRiverStat) async {
+    return _riverbetaProvider.updateRiverStat(riverId, newRiverStat);
+  }
+
+  Future<RiverAnnualStat> getRiverStat(String riverId) async {
+    return _riverbetaProvider.getRiverStat(riverId);
+  }
+
   void test(bool isError) {
     _riverbetaProvider.test(isError);
   }

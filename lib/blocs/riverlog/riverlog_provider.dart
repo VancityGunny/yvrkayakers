@@ -42,7 +42,14 @@ class RiverlogProvider {
     // also update user experience
     var userRef = _firestore.collection('/users').doc(newRiverLog.userId);
     var userObj = await userRef.get();
-    var foundUser = UserModel.fromJson(userObj.data());
+    updateUserExperience(userObj, newRiverLog, userRef);
+    await updateUserStat(userObj, newRiverLog, newRiverLogs, userRef);
+    return newRiverLog.id;
+  }
+
+  void updateUserExperience(DocumentSnapshot userObj, RiverlogModel newRiverLog,
+      DocumentReference userRef) {
+    var foundUser = UserModel.fromFire(userObj);
     List<UserExperienceModel> newExperiences = foundUser.experience;
     newExperiences
         .where((element) => element.riverGrade == newRiverLog.river.difficulty)
@@ -70,6 +77,10 @@ class RiverlogProvider {
       'userSkill': userSkill,
       'userSkillVerified': verifiedUserSkill
     });
+  }
+
+  Future updateUserStat(DocumentSnapshot userObj, RiverlogModel newRiverLog,
+      DocumentReference newRiverLogs, DocumentReference userRef) async {
     UserStatModel userStatObj;
 
     if (userObj.data()['userStat'] == null) {
@@ -108,7 +119,6 @@ class RiverlogProvider {
       userStatObj.favoriteRiver = sortedKeys.last;
     }
     userRef.update({'userStat': userStatObj.toJson()});
-    return newRiverLog.id;
   }
 
   Future<void> loadAsync(String token) async {

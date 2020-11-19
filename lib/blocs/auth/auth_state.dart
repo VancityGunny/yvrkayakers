@@ -76,7 +76,8 @@ class LogInSuccessAuthState extends AuthState {
 }
 
 class LogInFailureAuthState extends AuthState {
-  LogInFailureAuthState(int version) : super(version);
+  final String errorMessage;
+  LogInFailureAuthState(int version, this.errorMessage) : super(version);
 
   @override
   String toString() => 'LogInFailureAuthState';

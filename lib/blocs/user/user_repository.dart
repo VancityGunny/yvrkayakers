@@ -7,7 +7,7 @@ class UserRepository {
   UserRepository();
 
   // Return new userId
-  Future<String> addUser(String userId, UserModel newUser) {
-    return this._userProvider.addUser(userId, newUser);
+  Future<String> addUser(UserModel newUser) {
+    return this._userProvider.addUser(newUser);
   }
 }

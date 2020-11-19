@@ -65,18 +65,17 @@ class AuthRepository {
 
     // assume account found by id
     if (foundUsers.docs.length > 0) {
-      await userProvider.assumeUser(
+      await userProvider.assumeUser(new UserModel(
           foundUsers.docs.first.id,
-          new UserModel(
-              currentUser.uid,
-              currentUser.email,
-              currentUser.displayName,
-              phoneNumber,
-              currentUser.photoURL,
-              experience,
-              0.0,
-              0.0,
-              null));
+          currentUser.uid,
+          currentUser.email,
+          currentUser.displayName,
+          phoneNumber,
+          currentUser.photoURL,
+          experience,
+          0.0,
+          0.0,
+          null));
       var session = FlutterSession();
       await session.set("currentUserId", foundUsers.docs.first.id);
       return; // if existing then just update this and return
@@ -93,34 +92,32 @@ class AuthRepository {
         // check if user record does not exist then create the record
         var uuid = new Uuid();
         var userId = uuid.v1();
-        await userProvider.addUser(
-            userId.toString(),
-            new UserModel(
-                currentUser.uid,
-                currentUser.email,
-                currentUser.displayName,
-                phoneNumber,
-                currentUser.photoURL,
-                experience,
-                0.0,
-                0.0,
-                null));
+        await userProvider.addUser(new UserModel(
+            userId,
+            currentUser.uid,
+            currentUser.email,
+            currentUser.displayName,
+            phoneNumber,
+            currentUser.photoURL,
+            experience,
+            0.0,
+            0.0,
+            null));
         var session = FlutterSession();
         await session.set("currentUserId", userId);
       } else {
         // assume user
-        await userProvider.assumeUser(
+        await userProvider.assumeUser(new UserModel(
             foundUsersByPhone.docs.first.id,
-            new UserModel(
-                currentUser.uid,
-                currentUser.email,
-                currentUser.displayName,
-                phoneNumber,
-                currentUser.photoURL,
-                experience,
-                0.0,
-                0.0,
-                null));
+            currentUser.uid,
+            currentUser.email,
+            currentUser.displayName,
+            phoneNumber,
+            currentUser.photoURL,
+            experience,
+            0.0,
+            0.0,
+            null));
         var session = FlutterSession();
         await session.set("currentUserId", foundUsersByPhone.docs.first.id);
       }
@@ -150,8 +147,7 @@ class AuthRepository {
         .where('uid', isEqualTo: user.uid)
         .get();
     if (foundUsers.docs.length > 0) {
-      var rawFoundUser = foundUsers.docs[0].data();
-      var loggedInUser = UserModel.fromJson(rawFoundUser);
+      var loggedInUser = UserModel.fromFire(foundUsers.docs[0]);
       var session = FlutterSession();
       await session.set("loggedInUser", loggedInUser);
       await session.set("currentUserId", foundUsers.docs[0].id);

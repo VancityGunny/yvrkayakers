@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/blocs/user/user_model.dart';
 
 class RiverbetaProvider {
   static final _firestore = FirebaseFirestore.instance;
@@ -34,6 +35,25 @@ class RiverbetaProvider {
     var newRiverObj = _firestore.collection('/riverbetas').doc(newRiver.id);
     newRiverObj.set(newRiver.toJson());
     return newRiverObj.id;
+  }
+
+  Future<String> updateRiverStat(
+      String riverId, RiverAnnualStat newRiverStat) async {
+    var newRiverStatObj = _firestore.collection('/riverstats').doc(riverId);
+    newRiverStatObj.set(newRiverStat.toJson());
+  }
+
+  Future<RiverAnnualStat> getRiverStat(String riverId) async {
+    var newRiverStatRef = _firestore.collection('/riverstats').doc(riverId);
+    var newRiverStatObj = await newRiverStatRef.get();
+    if (newRiverStatObj.exists == false) {
+      //create it if it doesn't exists
+      var newBlankStat = (new RiverAnnualStat(
+          List<RiverStatUserEntry>(), List<UserShortModel>()));
+      newRiverStatRef.set(newBlankStat.toJson());
+      newRiverStatObj = await newRiverStatRef.get();
+    }
+    return RiverAnnualStat.fromJson(newRiverStatObj.data());
   }
 
   Future<void> loadAsync(String token) async {
