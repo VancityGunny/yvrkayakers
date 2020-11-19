@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 
 class SpeechBubble extends StatelessWidget {
   SpeechBubble(
-      {this.avatarUrl, this.message, this.time, this.delivered, this.isMe});
+      {this.avatarUrl,
+      this.message,
+      this.time,
+      this.delivered,
+      this.isMe,
+      this.userDisplayName});
 
-  final String message, time, avatarUrl;
+  final String message, time, avatarUrl, userDisplayName;
   final delivered, isMe;
 
   @override
@@ -51,7 +56,8 @@ class SpeechBubble extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(right: 48.0),
-                  child: Text(message),
+                  child: Text(message,
+                      style: Theme.of(context).textTheme.bodyText2),
                 ),
                 Positioned(
                   bottom: 0.0,
@@ -70,11 +76,19 @@ class SpeechBubble extends StatelessWidget {
               ],
             ),
           ),
-          Text(time,
-              style: TextStyle(
-                color: Colors.black38,
-                fontSize: 10.0,
-              ))
+          Row(
+            crossAxisAlignment: align,
+            children: [
+              Text(userDisplayName,
+                  style: TextStyle(
+                    fontSize: 10.0,
+                  )),
+              Text(time,
+                  style: TextStyle(
+                    fontSize: 10.0,
+                  ))
+            ],
+          )
         ],
       ))
     ]);

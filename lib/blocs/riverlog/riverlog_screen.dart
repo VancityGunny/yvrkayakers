@@ -188,15 +188,13 @@ class RiverlogList extends StatelessWidget {
                                         Icon(
                                           Icons.date_range,
                                           size: 18.0,
-                                          color: Colors.teal,
+                                          color: Theme.of(context).accentColor,
                                         ),
                                         Text(
-                                          " ${DateFormat.yMMMd().format(curRiver.logDate)}",
-                                          style: TextStyle(
-                                              color: Colors.teal,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18.0),
-                                        ),
+                                            " ${DateFormat.yMMMd().format(curRiver.logDate)}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2)
                                       ],
                                     ),
                                   )
@@ -206,9 +204,9 @@ class RiverlogList extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   riverGradeIcon(curRiver),
-                                  riverNameSymbol(curRiver),
+                                  riverNameSymbol(curRiver, context),
                                   Spacer(),
-                                  waterLevelGauge(curRiver)
+                                  waterLevelGauge(curRiver, context)
                                 ],
                               )
                             ],
@@ -231,28 +229,24 @@ class RiverlogList extends StatelessWidget {
         ));
   }
 
-  Widget riverNameSymbol(RiverlogModel curRiverlog) {
+  Widget riverNameSymbol(RiverlogModel curRiverlog, BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
       child: RichText(
         text: TextSpan(
           text: curRiverlog.river.riverName,
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+          style: Theme.of(context).textTheme.caption,
           children: <TextSpan>[
             TextSpan(
                 text: '\n${curRiverlog.river.sectionName}',
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold)),
+                style: Theme.of(context).textTheme.subtitle1),
           ],
         ),
       ),
     );
   }
 
-  Widget waterLevelGauge(RiverlogModel curRiverlog) {
+  Widget waterLevelGauge(RiverlogModel curRiverlog, BuildContext context) {
     try {
       var maxUnits = curRiverlog.river.maxFlow - curRiverlog.river.minFlow;
       var currentUnit =
@@ -262,9 +256,9 @@ class RiverlogList extends StatelessWidget {
         width: 150,
         child: LiquidLinearProgressIndicator(
           value: currentUnit,
-          valueColor: AlwaysStoppedAnimation(Colors.lightBlue),
-          backgroundColor: Colors.lightBlue[100],
-          borderColor: Colors.blue,
+          valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),
+          backgroundColor: Theme.of(context).backgroundColor,
+          borderColor: Theme.of(context).primaryColor,
           borderWidth: 5.0,
           borderRadius: 12.0,
           direction: Axis.horizontal,

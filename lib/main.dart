@@ -90,8 +90,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           supportedLocales: S.delegate.supportedLocales,
           theme: ThemeData(
-              primaryColor: Colors.yellow[800],
-              accentColor: Colors.yellow[600]),
+            // Define the default brightness and colors.
+            brightness: Brightness.dark,
+            primaryColor: Colors.blue[800],
+            accentColor: Colors.lightBlue[600],
+            backgroundColor: Colors.cyan[200],
+
+            // Define the default font family.
+            fontFamily: 'Georgia',
+
+            // Define the default TextTheme. Use this to specify the default
+            // text styling for headlines, titles, bodies of text, and more.
+            textTheme: TextTheme(
+                headline1:
+                    TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
+                headline2:
+                    TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+                headline6:
+                    TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+                button: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+                bodyText2: TextStyle(
+                    fontSize: 14.0, fontFamily: 'Hind', color: Colors.black87),
+                caption: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Hind'),
+                subtitle1: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+                subtitle2: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic)),
+          ),
           debugShowCheckedModeBanner: false,
           home: BlocBuilder(
             bloc: _authenticationBloc,

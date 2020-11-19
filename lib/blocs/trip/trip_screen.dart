@@ -218,15 +218,11 @@ class TripScreenState extends State<TripScreen> {
       child: RichText(
         text: TextSpan(
           text: curRiver.riverName,
-          style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+          style: Theme.of(context).textTheme.caption,
           children: <TextSpan>[
             TextSpan(
                 text: '\n${curRiver.sectionName}',
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold)),
+                style: Theme.of(context).textTheme.subtitle1),
           ],
         ),
       ),

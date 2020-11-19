@@ -103,8 +103,8 @@ class TripDetailPageState extends State<TripDetailPage> {
                 return FutureBuilder(
                     future: FlutterSession().get("currentUserId"),
                     builder: (context, sessionSnapshot) {
-                      blnParticipated = allParticipants
-                          .any((element) => element.id == sessionSnapshot.data);
+                      blnParticipated = allParticipants.any(
+                          (element) => element.userId == sessionSnapshot.data);
 
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -255,12 +255,14 @@ class TripDetailPageState extends State<TripDetailPage> {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return SpeechBubble(
-                    avatarUrl: snapshot.data[index].userPicUrl,
-                    message: snapshot.data[index].message,
-                    time: CommonFunctions.formatPostDateForDisplay(
-                        snapshot.data[index].createdDate),
-                    delivered: true,
-                    isMe: false);
+                  avatarUrl: snapshot.data[index].userPicUrl,
+                  message: snapshot.data[index].message,
+                  time: CommonFunctions.formatPostDateForDisplay(
+                      snapshot.data[index].createdDate),
+                  delivered: true,
+                  isMe: true,
+                  userDisplayName: snapshot.data[index].userDisplayName,
+                );
               },
             );
           },

@@ -4,6 +4,7 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
+import 'package:intl/intl.dart';
 
 class RiverbetaDetailPage extends StatefulWidget {
   String _currentRiverId;
@@ -84,8 +85,10 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
             ),
             body: Column(
               children: [
-                Text(foundRiver.riverName, style: TextStyle(fontSize: 20.0)),
-                Text(foundRiver.sectionName),
+                Text(foundRiver.riverName,
+                    style: Theme.of(context).textTheme.headline1),
+                Text(foundRiver.sectionName,
+                    style: Theme.of(context).textTheme.headline2),
                 Text('Difficulty: ' + foundRiver.difficulty.toString()),
                 Text('Level: ' +
                     foundRiver.minFlow.toString() +
@@ -111,7 +114,24 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                         },
                         child: Text("Make New Trip"),
                       )
-                    ])
+                    ]),
+                LimitedBox(
+                  maxHeight: 300.0,
+                  child: ListView.builder(
+                    itemCount: foundRiverStat.entries.length,
+                    itemBuilder: (context, index) {
+                      var paddler = foundRiverStat.visitors.firstWhere(
+                          (element) =>
+                              element.id ==
+                              foundRiverStat.entries[index].userId);
+                      return Text('Paddled by ' +
+                          paddler.displayName +
+                          ' on ' +
+                          DateFormat.yMMMd()
+                              .format(foundRiverStat.entries[index].logDate));
+                    },
+                  ),
+                )
               ],
             ));
       }
