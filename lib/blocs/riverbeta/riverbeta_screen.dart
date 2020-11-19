@@ -196,7 +196,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
           BlocProvider<RiverbetaBloc>.value(
             value: BlocProvider.of<RiverbetaBloc>(context),
           ),
-        ], child: RiverbetaDetailPage(curRiver));
+        ], child: RiverbetaDetailPage(curRiver.id));
       }),
     );
   }

@@ -38,22 +38,22 @@ class RiverbetaProvider {
   }
 
   Future<String> updateRiverStat(
-      String riverId, RiverAnnualStat newRiverStat) async {
+      String riverId, RiverAnnualStatModel newRiverStat) async {
     var newRiverStatObj = _firestore.collection('/riverstats').doc(riverId);
     newRiverStatObj.set(newRiverStat.toJson());
   }
 
-  Future<RiverAnnualStat> getRiverStat(String riverId) async {
+  Future<RiverAnnualStatModel> getRiverStat(String riverId) async {
     var newRiverStatRef = _firestore.collection('/riverstats').doc(riverId);
     var newRiverStatObj = await newRiverStatRef.get();
     if (newRiverStatObj.exists == false) {
       //create it if it doesn't exists
-      var newBlankStat = (new RiverAnnualStat(
+      var newBlankStat = (new RiverAnnualStatModel(
           List<RiverStatUserEntry>(), List<UserShortModel>()));
       newRiverStatRef.set(newBlankStat.toJson());
       newRiverStatObj = await newRiverStatRef.get();
     }
-    return RiverAnnualStat.fromJson(newRiverStatObj.data());
+    return RiverAnnualStatModel.fromJson(newRiverStatObj.data());
   }
 
   Future<void> loadAsync(String token) async {

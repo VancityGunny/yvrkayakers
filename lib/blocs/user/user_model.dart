@@ -3,7 +3,7 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserShortModel extends Equatable {
-  final String id;
+  String id;
   final String displayName;
   final String photoUrl;
 

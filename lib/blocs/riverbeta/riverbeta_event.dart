@@ -75,7 +75,10 @@ class FetchingRiverbetaEvent extends RiverbetaEvent {
   @override
   Stream<RiverbetaState> applyAsync(
       {RiverbetaState currentState, RiverbetaBloc bloc}) async* {
+    yield UnRiverbetaState(0);
     var foundRiver = await _riverbetaRepository.getRiverById(riverId);
-    yield FoundRiverbetaState(0, foundRiver: foundRiver);
+    var foundRiverStat = await _riverbetaRepository.getRiverStat(riverId);
+    yield FoundRiverbetaState(0,
+        foundRiver: foundRiver, foundRiverStat: foundRiverStat);
   }
 }

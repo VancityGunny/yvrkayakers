@@ -59,6 +59,8 @@ class FoundNearbyRiverbetaState extends RiverbetaState {
 
 class FoundRiverbetaState extends RiverbetaState {
   final RiverbetaModel foundRiver;
-  FoundRiverbetaState(int version, {@required this.foundRiver})
+  final RiverAnnualStatModel foundRiverStat;
+  FoundRiverbetaState(int version,
+      {@required this.foundRiver, this.foundRiverStat})
       : super(version);
 }

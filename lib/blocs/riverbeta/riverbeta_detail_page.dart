@@ -6,8 +6,8 @@ import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
 
 class RiverbetaDetailPage extends StatefulWidget {
-  RiverbetaModel _foundRiver;
-  RiverbetaDetailPage(this._foundRiver);
+  String _currentRiverId;
+  RiverbetaDetailPage(this._currentRiverId);
   @override
   RiverbetaDetailPageState createState() {
     return RiverbetaDetailPageState();
@@ -34,7 +34,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
       BuildContext context,
       RiverbetaState currentState,
     ) {
-       if (currentState is UnRiverbetaState) {
+      if (currentState is UnRiverbetaState) {
         return Center(
           child: CircularProgressIndicator(),
         );
@@ -75,46 +75,60 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
           ),
         );
       }
-      return Scaffold(
-          appBar: AppBar(
-            title: Text(widget._foundRiver.riverName),
-          ),
-          body: Column(
-            children: [
-              Text(widget._foundRiver.riverName,
-                  style: TextStyle(fontSize: 20.0)),
-              Text(widget._foundRiver.sectionName),
-              Text('Difficulty: ' + widget._foundRiver.difficulty.toString()),
-              Text('Level: ' +
-                  widget._foundRiver.minFlow.toString() +
-                  ' to ' +
-                  widget._foundRiver.maxFlow.toString() +
-                  ' ' +
-                  widget._foundRiver.gaugeUnit),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                RaisedButton(
-                  onPressed: () {
-                    goToAddRiverLogPage();
-                  },
-                  child: Text("Add New Log"),
-                ),
-                RaisedButton(
-                  onPressed: () {
-                    goToAddTripPage();
-                  },
-                  child: Text("Make New Trip"),
-                )
-              ])
-            ],
-          ));
+      if (currentState is FoundRiverbetaState) {
+        var foundRiver = currentState.foundRiver;
+        var foundRiverStat = currentState.foundRiverStat;
+        return Scaffold(
+            appBar: AppBar(
+              title: Text(foundRiver.riverName),
+            ),
+            body: Column(
+              children: [
+                Text(foundRiver.riverName, style: TextStyle(fontSize: 20.0)),
+                Text(foundRiver.sectionName),
+                Text('Difficulty: ' + foundRiver.difficulty.toString()),
+                Text('Level: ' +
+                    foundRiver.minFlow.toString() +
+                    ' to ' +
+                    foundRiver.maxFlow.toString() +
+                    ' ' +
+                    foundRiver.gaugeUnit),
+                Text('Total Runs:' + foundRiverStat.entries.length.toString()),
+                Text('Total Paddlers:' +
+                    foundRiverStat.visitors.length.toString()),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      RaisedButton(
+                        onPressed: () {
+                          goToAddRiverLogPage(foundRiver);
+                        },
+                        child: Text("Add New Log"),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          goToAddTripPage(foundRiver);
+                        },
+                        child: Text("Make New Trip"),
+                      )
+                    ])
+              ],
+            ));
+      }
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     });
   }
 
   void _load([bool isError = false]) {
     //widget._riverbetaBloc.add(LoadRiverbetaEvent(isError));
+
+    BlocProvider.of<RiverbetaBloc>(context)
+        .add(FetchingRiverbetaEvent(this.widget._currentRiverId));
   }
 
-  void goToAddRiverLogPage() {
+  void goToAddRiverLogPage(RiverbetaModel foundRiver) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (BuildContext context) {
@@ -125,12 +139,12 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
           BlocProvider.value(
             value: BlocProvider.of<RiverbetaBloc>(context),
           ),
-        ], child: RiverlogAddPage(widget._foundRiver));
+        ], child: RiverlogAddPage(foundRiver));
       }),
     );
   }
 
-  void goToAddTripPage() {
+  void goToAddTripPage(RiverbetaModel foundRiver) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (BuildContext context) {
@@ -141,7 +155,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
           BlocProvider.value(
             value: BlocProvider.of<RiverbetaBloc>(context),
           ),
-        ], child: TripAddPage(widget._foundRiver));
+        ], child: TripAddPage(foundRiver));
       }),
     );
   }

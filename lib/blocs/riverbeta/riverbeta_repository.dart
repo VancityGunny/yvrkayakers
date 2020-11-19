@@ -20,11 +20,11 @@ class RiverbetaRepository {
   }
 
   Future<String> updateRiverStat(
-      String riverId, RiverAnnualStat newRiverStat) async {
+      String riverId, RiverAnnualStatModel newRiverStat) async {
     return _riverbetaProvider.updateRiverStat(riverId, newRiverStat);
   }
 
-  Future<RiverAnnualStat> getRiverStat(String riverId) async {
+  Future<RiverAnnualStatModel> getRiverStat(String riverId) async {
     return _riverbetaProvider.getRiverStat(riverId);
   }
 

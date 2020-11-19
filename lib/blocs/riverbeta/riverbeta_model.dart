@@ -175,16 +175,16 @@ class RiverbetaModel extends RiverbetaShortModel {
   }
 }
 
-class RiverAnnualStat extends Equatable {
+class RiverAnnualStatModel extends Equatable {
   List<RiverStatUserEntry> entries;
   List<UserShortModel> visitors; // collection of short usermodel
 
-  RiverAnnualStat(this.entries, this.visitors);
+  RiverAnnualStatModel(this.entries, this.visitors);
   @override
   // TODO: implement props
   List<Object> get props => [entries, visitors];
 
-  factory RiverAnnualStat.fromJson(Map<String, dynamic> json) {
+  factory RiverAnnualStatModel.fromJson(Map<String, dynamic> json) {
     List<RiverStatUserEntry> tempEntries = new List<RiverStatUserEntry>();
     List<UserShortModel> tempVisitors = new List<UserShortModel>();
     json['entries'].forEach((v) {
@@ -193,7 +193,7 @@ class RiverAnnualStat extends Equatable {
     json['visitors'].forEach((v) {
       tempVisitors.add(UserShortModel.fromJson(v as Map<String, dynamic>));
     });
-    return RiverAnnualStat(tempEntries, tempVisitors);
+    return RiverAnnualStatModel(tempEntries, tempVisitors);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};

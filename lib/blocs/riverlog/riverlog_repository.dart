@@ -20,7 +20,7 @@ class RiverlogRepository {
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {
     var result = _riverlogProvider.addRiverLog(newRiverLog);
     //also update RiverBeta stat
-    RiverAnnualStat newRiverStat =
+    RiverAnnualStatModel newRiverStat =
         await _riverbetaRepository.getRiverStat(newRiverLog.river.id);
     newRiverStat.entries.add(new RiverStatUserEntry(
         newRiverLog.userId, newRiverLog.logDate, newRiverLog.id));
@@ -30,7 +30,9 @@ class RiverlogRepository {
         false) {
       // add user to visitor list if this is missing
       var session = FlutterSession();
-      var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
+      var currentUser =
+          UserShortModel.fromJson(await session.get("loggedInUser"));
+      currentUser.id = await session.get("currentUserId");
       newRiverStat.visitors.add(currentUser);
     }
     _riverbetaRepository.updateRiverStat(newRiverLog.river.id, newRiverStat);
