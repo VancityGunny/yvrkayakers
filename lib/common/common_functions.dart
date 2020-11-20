@@ -63,6 +63,26 @@ class CommonFunctions {
     return GeoFirePoint(_locationData.latitude, _locationData.longitude);
   }
 
+  static String formatOrdinalNumber(int number) {
+    if (number == 11 || number == 12 || number == 13) {
+      return number.toString() + "th";
+    }
+    switch (number % 10) {
+      case 1:
+        return number.toString() + "st";
+        break;
+      case 2:
+        return number.toString() + "nd";
+        break;
+      case 3:
+        return number.toString() + "rd";
+        break;
+      default:
+        return number.toString() + "th";
+        break;
+    }
+  }
+
   static String formatPostDateForDisplay(DateTime postedDate) {
     var timeElapsed = DateTime.now().difference(postedDate);
     if (timeElapsed.inDays < 1) {

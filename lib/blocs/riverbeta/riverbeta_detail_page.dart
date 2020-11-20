@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_api/youtube_api.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
@@ -7,6 +8,9 @@ import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
 import 'package:intl/intl.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
+import 'package:yvrkayakers/widgets/widgets.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
 
 class RiverbetaDetailPage extends StatefulWidget {
   String _currentRiverId;
@@ -89,20 +93,32 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
             body: SingleChildScrollView(
                 child: Column(
               children: [
-                Text(foundRiver.riverName,
-                    style: Theme.of(context).textTheme.headline1),
+                Row(
+                  children: [
+                    RiverGradeBadge(foundRiver),
+                    Text(foundRiver.riverName,
+                        style: Theme.of(context).textTheme.headline1),
+                  ],
+                ),
                 Text(foundRiver.sectionName,
                     style: Theme.of(context).textTheme.headline2),
-                Text('Difficulty: ' + foundRiver.difficulty.toString()),
-                Text('Level: ' +
-                    foundRiver.minFlow.toString() +
-                    ' to ' +
-                    foundRiver.maxFlow.toString() +
-                    ' ' +
-                    foundRiver.gaugeUnit),
-                Text('Total Runs:' + foundRiverStat.entries.length.toString()),
-                Text('Total Paddlers:' +
-                    foundRiverStat.visitors.length.toString()),
+                (foundRiver.minFlow == null)
+                    ? Text('')
+                    : Text('Level: ' +
+                        foundRiver.minFlow.toString() +
+                        ' to ' +
+                        foundRiver.maxFlow.toString() +
+                        ' ' +
+                        foundRiver.gaugeUnit),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text('Total Runs:' +
+                        foundRiverStat.entries.length.toString()),
+                    Text('Total Paddlers:' +
+                        foundRiverStat.visitors.length.toString()),
+                  ],
+                ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -138,11 +154,19 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                     var paddler = foundRiverStat.visitors.firstWhere(
                         (element) =>
                             element.id == foundRiverStat.entries[index].userId);
-                    return Text('Paddled by ' +
-                        paddler.displayName +
-                        ' on ' +
-                        DateFormat.yMMMd()
-                            .format(foundRiverStat.entries[index].logDate));
+                    return Row(children: [
+                      CircleAvatar(
+                        radius: 20.0,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage:
+                            CachedNetworkImageProvider(paddler.photoUrl),
+                      ),
+                      Text('Paddled by ' +
+                          paddler.displayName +
+                          ' on ' +
+                          DateFormat.yMMMd()
+                              .format(foundRiverStat.entries[index].logDate))
+                    ]);
                   },
                 ),
                 Text('')
@@ -163,41 +187,49 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
   }
 
   Future<Widget> hashtagYoutubeVDO(RiverbetaShortModel foundRiver) async {
-    String key = await MyConstants.googleApiKey();
-    YoutubeAPI ytApi = new YoutubeAPI(key);
-    List<YT_API> ytResult = [];
-    String query = "#" + foundRiver.riverHashtag();
-    var value = await ytApi.search(query);
-    if (value.length == 0) {
-      //then try hashtag for normal river
-      value =
-          await ytApi.search("#" + foundRiver.riverName.replaceAll(" ", ""));
+    try {
+      String key = await MyConstants.googleApiKey();
+      YoutubeAPI ytApi = new YoutubeAPI(key);
+      List<YT_API> ytResult = [];
+      String query = "#" + foundRiver.riverHashtag();
+      var value = await ytApi.search(query);
+      if (value.length == 0) {
+        //then try hashtag for normal river
+        value =
+            await ytApi.search("#" + foundRiver.riverName.replaceAll(" ", ""));
+      }
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: value.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              FlatButton(
+                  onPressed: () async {
+                    var url = value[index].url;
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                  child:
+                      Image.network(value[index].thumbnail['default']['url'])),
+              Text(
+                value[index].title,
+                overflow: TextOverflow.ellipsis,
+              )
+            ],
+          );
+        },
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+        ),
+      );
+    } catch (error) {
+      return Text('');
     }
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: value.length,
-      itemBuilder: (context, index) {
-        return Column(
-          children: [
-            Image.network(value[index].thumbnail['default']['url']),
-            Text(value[index].title),
-            Text('by ' + value[index].channelTitle),
-          ],
-        );
-      },
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-      ),
-    );
-
-// data which are available in ytResult are shown below
-    // return LimitedBox(
-    //   maxHeight: 300.0,
-    //   child: WebView(
-    //       initialUrl:
-    //           'https://www.youtube.com/results?search_query=%23capilanoriver'),
-    // );
   }
 
   void goToAddRiverLogPage(RiverbetaModel foundRiver) {

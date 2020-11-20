@@ -53,7 +53,7 @@ class RiverlogModel extends Equatable {
   final List<String> friends; // store userId
 
   final int totalRound; // count how many time user run any river
-  final int riverRound; // count how many time user run this river
+  int riverRound; // count how many time user run this river
 
   final RiverbetaModel river;
 

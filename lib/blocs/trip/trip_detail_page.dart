@@ -10,7 +10,6 @@ import 'package:intl/date_time_patterns.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
-import 'package:yvrkayakers/widgets/river_grade_badge.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 
 class TripDetailPage extends StatefulWidget {

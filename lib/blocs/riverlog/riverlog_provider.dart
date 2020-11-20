@@ -34,16 +34,25 @@ class RiverlogProvider {
   }
 
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {
-    var newRiverLogs =
-        _firestore.collection('/riverlogs').doc(newRiverLog.userId);
-    var newUserRiverLogs = newRiverLogs.collection('/logs').doc(newRiverLog.id);
-    newUserRiverLogs.set(newRiverLog.toJson());
+    var userRiverLogsRef = _firestore
+        .collection('/riverlogs')
+        .doc(newRiverLog.userId)
+        .collection('/logs');
+    var userRiverLogsDocRef = userRiverLogsRef.doc(newRiverLog.id);
+
+    var countRiverRuns = await userRiverLogsRef
+        .where('river.id', isEqualTo: newRiverLog.river.id)
+        .get();
+
+    newRiverLog.riverRound = countRiverRuns.docs.length + 1;
+
+    userRiverLogsDocRef.set(newRiverLog.toJson());
 
     // also update user experience
     var userRef = _firestore.collection('/users').doc(newRiverLog.userId);
     var userObj = await userRef.get();
     updateUserExperience(userObj, newRiverLog, userRef);
-    await updateUserStat(userObj, newRiverLog, newRiverLogs, userRef);
+    await updateUserStat(userObj, newRiverLog, userRiverLogsRef, userRef);
     return newRiverLog.id;
   }
 
@@ -80,7 +89,7 @@ class RiverlogProvider {
   }
 
   Future updateUserStat(DocumentSnapshot userObj, RiverlogModel newRiverLog,
-      DocumentReference newRiverLogs, DocumentReference userRef) async {
+      CollectionReference userRiverLogsRef, DocumentReference userRef) async {
     UserStatModel userStatObj;
 
     if (userObj.data()['userStat'] == null) {
@@ -103,7 +112,7 @@ class RiverlogProvider {
           ? userStatObj.rescueCount + 1
           : userStatObj.rescueCount;
       // check if favorite river still the same
-      var allUserRiverlogs = await newRiverLogs.collection('/logs').get();
+      var allUserRiverlogs = await userRiverLogsRef.get();
       var allUserRiverlogsObj =
           allUserRiverlogs.docs.map((e) => RiverlogModel.fromFire(e)).toList();
 

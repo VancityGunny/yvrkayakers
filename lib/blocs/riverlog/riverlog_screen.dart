@@ -12,6 +12,7 @@ import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:yvrkayakers/widgets/widgets.dart';
 
 class RiverlogScreen extends StatefulWidget {
   @override
@@ -54,6 +55,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
               }
 
               List<RiverlogModel> tempData = snapshot.data;
+              tempData.sort((a, b) => b.logDate.compareTo(a.logDate));
               var newGroupedData = groupBy(tempData,
                   (RiverlogModel obj) => DateFormat.yMMM().format(obj.logDate));
               return Column(children: [
@@ -182,28 +184,29 @@ class RiverlogList extends StatelessWidget {
                             children: <Widget>[
                               Row(
                                 children: <Widget>[
+                                  Icon(
+                                    Icons.date_range,
+                                    size: 18.0,
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                  Text(
+                                      " ${DateFormat.yMMMd().format(curRiver.logDate)}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2),
+                                  Spacer(),
                                   Container(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.date_range,
-                                          size: 18.0,
-                                          color: Theme.of(context).accentColor,
-                                        ),
-                                        Text(
-                                            " ${DateFormat.yMMMd().format(curRiver.logDate)}",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2)
-                                      ],
-                                    ),
-                                  )
+                                    child: Text(
+                                        CommonFunctions.formatOrdinalNumber(
+                                                curRiver.riverRound) +
+                                            ' runs'),
+                                  ),
                                 ],
                               ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  riverGradeIcon(curRiver),
+                                  RiverGradeMedal(curRiver.river),
                                   riverNameSymbol(curRiver, context),
                                   Spacer(),
                                   waterLevelGauge(curRiver, context)
@@ -218,15 +221,6 @@ class RiverlogList extends StatelessWidget {
             ),
           );
         });
-  }
-
-  Widget riverGradeIcon(RiverlogModel curRiver) {
-    return Container(
-        alignment: Alignment.topLeft,
-        child: Text(
-          CommonFunctions.translateRiverDifficulty(curRiver.river.difficulty),
-          style: TextStyle(fontSize: 20, color: Colors.black),
-        ));
   }
 
   Widget riverNameSymbol(RiverlogModel curRiverlog, BuildContext context) {
