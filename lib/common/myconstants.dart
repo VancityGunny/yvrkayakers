@@ -1,3 +1,5 @@
+import 'package:flutter_native_config/flutter_native_config.dart';
+
 class MyConstants {
   static List<double> RIVER_GRADES = [
     2.0,
@@ -10,4 +12,11 @@ class MyConstants {
     4.25,
     5.0
   ];
+
+  static Future<String> googleApiKey() {
+    return FlutterNativeConfig.getConfig<String>(
+      android: 'com.google.android.geo.API_KEY',
+      ios: 'CFBundleName',
+    );
+  }
 }

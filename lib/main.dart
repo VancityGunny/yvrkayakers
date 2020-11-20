@@ -91,10 +91,10 @@ class _MyHomePageState extends State<MyHomePage> {
           supportedLocales: S.delegate.supportedLocales,
           theme: ThemeData(
             // Define the default brightness and colors.
-            brightness: Brightness.dark,
-            primaryColor: Colors.blue[800],
-            accentColor: Colors.lightBlue[600],
-            backgroundColor: Colors.cyan[200],
+            // brightness: Brightness.dark,
+            // primaryColor: Colors.blue[800],
+            // accentColor: Colors.lightBlue[600],
+            // backgroundColor: Colors.cyan[200],
 
             // Define the default font family.
             fontFamily: 'Georgia',

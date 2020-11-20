@@ -36,6 +36,10 @@ class RiverbetaShortModel extends Equatable {
   final String sectionName;
   final double difficulty; // 2.75 for grade III- and 3.25 for grade III+
 
+  String riverHashtag() {
+    return "YKR_" + riverName.replaceAll(" ", "");
+  }
+
   RiverbetaShortModel(
       this.id, this.riverName, this.sectionName, this.difficulty);
   @override

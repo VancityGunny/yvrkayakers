@@ -56,6 +56,8 @@ dependencies:
   intl: ^0.16.1
   liquid_progress_indicator: ^0.3.2
   cached_network_image: ^2.3.3
+  youtube_api: ^0.8.0
+  flutter_native_config: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
