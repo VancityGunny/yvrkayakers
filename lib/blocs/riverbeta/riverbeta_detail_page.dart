@@ -9,6 +9,7 @@ import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
 import 'package:intl/intl.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
+import 'package:yvrkayakers/common/common_functions.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -163,9 +164,9 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                       ),
                       Text('Paddled by ' +
                           paddler.displayName +
-                          ' on ' +
-                          DateFormat.yMMMd()
-                              .format(foundRiverStat.entries[index].logDate))
+                          ' ' +
+                          CommonFunctions.formatDateForDisplay(
+                              foundRiverStat.entries[index].logDate))
                     ]);
                   },
                 ),

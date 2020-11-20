@@ -103,15 +103,18 @@ class UserExperienceCard extends StatelessWidget {
                 ),
                 Column(
                   children: [
+                    Text(currentUser.displayName,
+                        style: Theme.of(context).textTheme.headline1),
                     Text(
-                      currentUser.displayName,
-                      style: TextStyle(fontSize: 30.0),
+                      "Favorite: " +
+                          currentUser.userStat.favoriteRiver.riverName,
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
-                    Text("Favorite: " +
-                        currentUser.userStat.favoriteRiver.riverName),
-                    Text("Last Paddle: " +
-                        DateFormat.yMMMd()
-                            .format(currentUser.userStat.lastWetness)),
+                    Text(
+                        "Last Paddle: " +
+                            DateFormat.yMMMd()
+                                .format(currentUser.userStat.lastWetness),
+                        style: Theme.of(context).textTheme.subtitle1),
                   ],
                 )
               ],
@@ -125,11 +128,16 @@ class UserExperienceCard extends StatelessWidget {
                   itemBuilder: (context, index) {
                     var gradeLabel = CommonFunctions.translateRiverDifficulty(
                         groupExperience.keys.elementAt(index));
-                    return Text('Class:' +
-                        gradeLabel +
-                        " (" +
-                        groupExperience.values.elementAt(index).toString() +
-                        ")");
+                    return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          RiverGradeIcon(groupExperience.keys.elementAt(index)),
+                          Text(" " +
+                              groupExperience.values
+                                  .elementAt(index)
+                                  .toString() +
+                              " runs ")
+                        ]);
                   },
                 ))
           ]);

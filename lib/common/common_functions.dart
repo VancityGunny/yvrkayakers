@@ -99,4 +99,13 @@ class CommonFunctions {
       return timeElapsed.inDays.toString() + ' day(s) ago';
     }
   }
+
+  static String formatDateForDisplay(DateTime postedDate) {
+    var timeElapsed = DateTime.now().difference(postedDate);
+    if (timeElapsed.inDays < 1) {
+      return "today";
+    } else {
+      return timeElapsed.inDays.toString() + ' day(s) ago';
+    }
+  }
 }

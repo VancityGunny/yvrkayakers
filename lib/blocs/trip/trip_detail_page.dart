@@ -24,6 +24,13 @@ class TripDetailPage extends StatefulWidget {
 class TripDetailPageState extends State<TripDetailPage> {
   TripDetailPageState();
 
+  // not allow change 1 hour before the trip date
+  bool get isLocked {
+    return DateTime.now()
+        .add(Duration(hours: -1))
+        .isAfter(widget._foundTrip.tripDate);
+  }
+
   StreamController currentTripController =
       StreamController.broadcast(); //Add .broadcast here
   bool blnNeedRide = false;
@@ -65,18 +72,6 @@ class TripDetailPageState extends State<TripDetailPage> {
                   );
                 }
 
-                // if (snapshot.data.docs.first.data()['participants'].length ==
-                //     0) {
-                //   return Row(
-                //     children: [
-                //       Container(
-                //           alignment: Alignment.center,
-                //           child: FaIcon(FontAwesomeIcons.userPlus,
-                //               size: 20, color: Color.fromARGB(15, 0, 0, 0))),
-                //       carpoolWidget(false)
-                //     ],
-                //   );
-                // }
                 var allParticipants = snapshot.data.docs.first
                     .data()['participants']
                     .toList()
@@ -93,12 +88,6 @@ class TripDetailPageState extends State<TripDetailPage> {
                       .toList();
                 });
 
-                // snapshot.data.docs.first
-                //     .data()['comments']
-                //     .toList()
-                //     .map<TripCommentModel>(
-                //         (e) => TripCommentModel.fromJson(e))
-                //     .toList();
                 return FutureBuilder(
                     future: FlutterSession().get("currentUserId"),
                     builder: (context, sessionSnapshot) {
@@ -109,6 +98,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               tripDetailWidget(),
                               Container(child: carpoolWidget(blnParticipated)),
@@ -154,48 +144,47 @@ class TripDetailPageState extends State<TripDetailPage> {
       return Column(
         children: [
           RaisedButton(
-            onPressed: () {
-              leaveThisTrip();
-            },
-            child: Text("Leave this trip"),
+            onPressed: isLocked
+                ? null
+                : () {
+                    leaveThisTrip();
+                  },
+            child: Text("Leave"),
           )
         ],
       );
     } else {
       return Column(
         children: [
+          Text('Ride?'),
+          Container(
+              child: Checkbox(
+            onChanged: (value) {
+              setState(() {
+                this.blnNeedRide = value;
+              });
+            },
+            value: blnNeedRide,
+          )),
           Row(
             children: [
               Container(
-                  child: Checkbox(
-                onChanged: (value) {
-                  setState(() {
-                    this.blnNeedRide = value;
-                  });
-                },
-                value: blnNeedRide,
-              )),
-              Text('Need a Ride?')
-            ],
-          ),
-          Row(
-            children: [
-              Container(
-                width: 200.0,
+                width: 60.0,
                 child: TextField(
                   controller: this.txtAvailableSpace,
                   decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Available Space in Car?"),
+                      border: InputBorder.none, hintText: "Space?"),
                 ),
               )
             ],
           ),
           RaisedButton(
-            onPressed: () {
-              joinThisTrip();
-            },
-            child: Text("Join this trip"),
+            onPressed: isLocked
+                ? null
+                : () {
+                    joinThisTrip();
+                  },
+            child: Text("Join"),
           ),
         ],
       );
@@ -213,14 +202,20 @@ class TripDetailPageState extends State<TripDetailPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        Row(
+          children: [
+            RiverGradeBadge(widget._foundTrip.river),
+            Column(
+              children: [
+                Text(widget._foundTrip.river.riverName,
+                    style: Theme.of(context).textTheme.headline2),
+                Text(widget._foundTrip.river.sectionName,
+                    style: Theme.of(context).textTheme.subtitle1),
+              ],
+            )
+          ],
+        ),
         Text(widget._foundTrip.tripDate.toString()),
-        Text(widget._foundTrip.river.riverName,
-            style: TextStyle(
-              fontSize: 30.0,
-            )),
-        Text(widget._foundTrip.river.sectionName,
-            style: TextStyle(fontSize: 20.0)),
-        RiverGradeBadge(widget._foundTrip.river)
       ],
     );
   }

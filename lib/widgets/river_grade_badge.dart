@@ -21,6 +21,25 @@ class RiverGradeMedal extends StatelessWidget {
   }
 }
 
+class RiverGradeIcon extends StatelessWidget {
+  double _riverGrade;
+  RiverGradeIcon(this._riverGrade);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+        alignment: Alignment.center,
+        height: 18.0,
+        width: 18.0,
+        decoration: new BoxDecoration(
+            color: Colors.blue, borderRadius: new BorderRadius.circular(2.0)),
+        child: Text(
+          CommonFunctions.translateRiverDifficulty(_riverGrade),
+          style: TextStyle(fontSize: 12, color: Colors.white),
+        ));
+  }
+}
+
 class RiverGradeBadge extends StatelessWidget {
   RiverbetaShortModel _curRiver;
   RiverGradeBadge(this._curRiver);
