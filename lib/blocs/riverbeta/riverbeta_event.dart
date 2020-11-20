@@ -82,3 +82,18 @@ class FetchingRiverbetaEvent extends RiverbetaEvent {
         foundRiver: foundRiver, foundRiverStat: foundRiverStat);
   }
 }
+
+class UpdatingVideosRiverbetaEvent extends RiverbetaEvent {
+  final String riverId;
+  final List<ExtObjectLink> videoList;
+  UpdatingVideosRiverbetaEvent(this.riverId, this.videoList);
+  @override
+  Stream<RiverbetaState> applyAsync(
+      {RiverbetaState currentState, RiverbetaBloc bloc}) async* {
+    var success =
+        await _riverbetaRepository.updateRiverVideos(riverId, videoList);
+    if (success != null) {
+      yield UpdatedRiverbetaState(0, riverId: riverId);
+    }
+  }
+}

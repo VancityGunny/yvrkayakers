@@ -64,6 +64,28 @@ class RiverbetaShortModel extends Equatable {
   }
 }
 
+class ExtObjectLink extends Equatable {
+  final String thumbnail;
+  final String caption;
+  final String url;
+  ExtObjectLink(this.thumbnail, this.caption, this.url);
+  @override
+  // TODO: implement props
+  List<Object> get props => [thumbnail, caption, url];
+
+  factory ExtObjectLink.fromJson(Map<String, dynamic> json) {
+    return ExtObjectLink(json['thumbnail'] as String, json['caption'].toDate(),
+        json['url'] as String);
+  }
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['thumbnail'] = thumbnail;
+    data['caption'] = caption;
+    data['url'] = url;
+    return data;
+  }
+}
+
 class RiverbetaModel extends RiverbetaShortModel {
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
@@ -72,6 +94,8 @@ class RiverbetaModel extends RiverbetaShortModel {
   final String gaugeUnit;
 
   final double flowIncrement; // incremental for the gauge
+  List<ExtObjectLink> relatedVideos;
+  final DateTime lastFetchVideos;
 
   RiverbetaModel(
       id,
@@ -83,7 +107,9 @@ class RiverbetaModel extends RiverbetaShortModel {
       this.minFlow,
       this.maxFlow,
       this.gaugeUnit,
-      this.flowIncrement)
+      this.flowIncrement,
+      this.relatedVideos,
+      this.lastFetchVideos)
       : super(id, riverName, sectionName, difficulty);
 
   @override
@@ -97,7 +123,9 @@ class RiverbetaModel extends RiverbetaShortModel {
         minFlow,
         maxFlow,
         gaugeUnit,
-        flowIncrement
+        flowIncrement,
+        relatedVideos,
+        lastFetchVideos
       ];
 
   factory RiverbetaModel.fromFire(DocumentSnapshot doc) {
@@ -118,7 +146,15 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        json['flowIncrement'] as double);
+        json['flowIncrement'] as double,
+        (json['relatedVideos'] == null)
+            ? List<ExtObjectLink>()
+            : json['relatedVideos']
+                .map<ExtObjectLink>((e) => ExtObjectLink.fromJson(e))
+                .toList(),
+        (json['lastFetchVideos'] == null)
+            ? null
+            : json['lastFetchVideos'].toDate());
   }
 
   factory RiverbetaModel.fromJson(Map<String, dynamic> json) {
@@ -138,7 +174,15 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        json['flowIncrement'] as double);
+        json['flowIncrement'] as double,
+        (json['relatedVideos'] == null)
+            ? List<ExtObjectLink>()
+            : json['relatedVideos']
+                .map<ExtObjectLink>((e) => ExtObjectLink.fromJson(e))
+                .toList(),
+        (json['lastFetchVideos'] == null)
+            ? null
+            : json['lastFetchVideos'].toDate());
   }
 
   RiverbetaShortModel getRiverbetaShort() {
@@ -159,6 +203,8 @@ class RiverbetaModel extends RiverbetaShortModel {
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
     data['levelIncrement'] = flowIncrement;
+    data['relatedVideos'] = relatedVideos.map((e) => e.toJson()).toList();
+    data['lastFetchVideos'] = lastFetchVideos;
     return data;
   }
 
@@ -175,6 +221,8 @@ class RiverbetaModel extends RiverbetaShortModel {
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
     data['levelIncrement'] = flowIncrement;
+    data['relatedVideos'] = relatedVideos.map((e) => e.toJson()).toList();
+    data['lastFetchVideos'] = lastFetchVideos;
     return data;
   }
 }

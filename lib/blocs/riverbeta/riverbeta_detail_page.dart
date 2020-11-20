@@ -187,38 +187,52 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
         .add(FetchingRiverbetaEvent(this.widget._currentRiverId));
   }
 
-  Future<Widget> hashtagYoutubeVDO(RiverbetaShortModel foundRiver) async {
+  Future<Widget> hashtagYoutubeVDO(RiverbetaModel foundRiver) async {
     try {
-      String key = await MyConstants.googleApiKey();
-      YoutubeAPI ytApi = new YoutubeAPI(key);
-      List<YT_API> ytResult = [];
-      String query = "#" + foundRiver.riverHashtag();
-      var value = await ytApi.search(query);
-      if (value.length == 0) {
-        //then try hashtag for normal river
-        value =
-            await ytApi.search("#" + foundRiver.riverName.replaceAll(" ", ""));
+      List<ExtObjectLink> newSampleVideos;
+      //only fetch if it's older than 1 week
+      if (foundRiver.lastFetchVideos != null &&
+          DateTime.now()
+              .isBefore(foundRiver.lastFetchVideos.add(Duration(days: 7)))) {
+        newSampleVideos = foundRiver.relatedVideos;
+      } else {
+        String key = await MyConstants.googleApiKey();
+        YoutubeAPI ytApi = new YoutubeAPI(key);
+        String query = "#" + foundRiver.riverHashtag();
+        var value = await ytApi.search(query);
+        if (value.length == 0) {
+          //then try hashtag for normal river
+          value = await ytApi
+              .search("#" + foundRiver.riverName.replaceAll(" ", ""));
+        }
+
+        newSampleVideos = value.map((e) =>
+            new ExtObjectLink(e.thumbnail['default']['url'], e.title, e.url));
       }
+
+      // update the fetch videos
+      BlocProvider.of<RiverbetaBloc>(context).add(
+          new UpdatingVideosRiverbetaEvent(foundRiver.id, newSampleVideos));
+
       return GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: value.length,
+        itemCount: newSampleVideos.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
               FlatButton(
                   onPressed: () async {
-                    var url = value[index].url;
+                    var url = newSampleVideos[index].url;
                     if (await canLaunch(url)) {
                       await launch(url);
                     } else {
                       throw 'Could not launch $url';
                     }
                   },
-                  child:
-                      Image.network(value[index].thumbnail['default']['url'])),
+                  child: Image.network(newSampleVideos[index].thumbnail)),
               Text(
-                value[index].title,
+                newSampleVideos[index].caption,
                 overflow: TextOverflow.ellipsis,
               )
             ],

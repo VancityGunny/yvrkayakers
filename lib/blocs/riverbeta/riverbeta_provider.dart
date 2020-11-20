@@ -43,6 +43,12 @@ class RiverbetaProvider {
     newRiverStatObj.set(newRiverStat.toJson());
   }
 
+  Future<String> updateRiverVideos(
+      String riverId, List<ExtObjectLink> videoList) async {
+    var foundRiverObj = _firestore.collection('/riverbetas').doc(riverId);
+    foundRiverObj.update({'relatedVideos': videoList.map((e) => e.toJson())});
+  }
+
   Future<RiverAnnualStatModel> getRiverStat(String riverId) async {
     var newRiverStatRef = _firestore.collection('/riverstats').doc(riverId);
     var newRiverStatObj = await newRiverStatRef.get();

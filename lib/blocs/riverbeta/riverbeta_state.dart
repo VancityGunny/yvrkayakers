@@ -64,3 +64,8 @@ class FoundRiverbetaState extends RiverbetaState {
       {@required this.foundRiver, this.foundRiverStat})
       : super(version);
 }
+
+class UpdatedRiverbetaState extends RiverbetaState {
+  final String riverId;
+  UpdatedRiverbetaState(int version, {@required this.riverId}) : super(version);
+}
