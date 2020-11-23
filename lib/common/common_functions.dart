@@ -1,7 +1,36 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:hashids2/hashids2.dart';
 import 'package:location/location.dart';
+import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/blocs/riverlog/index.dart';
+import 'package:yvrkayakers/blocs/user/user_model.dart';
+import 'package:yvrkayakers/common/myconstants.dart';
 
 class CommonFunctions {
+  static String getHashtag(
+      {RiverbetaShortModel river, RiverlogModel riverlog}) {
+    //get hashtage for each type of object
+    if (river != null) {
+      return "#" +
+          MyConstants.hashtagRiverPrefix +
+          MyConstants.hashtagDelimiter +
+          river.riverName.replaceAll(" ", "");
+    }
+    if (riverlog != null) {
+      final hashids = HashIds(
+        salt: 'YVRKayakers',
+        minHashLength: 5,
+        alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
+      );
+      return "#" +
+          MyConstants.hashtagRiverPrefix +
+          MyConstants.hashtagDelimiter +
+          riverlog.userId +
+          MyConstants.hashtagDelimiter +
+          hashids.encode(riverlog.totalRound);
+    }
+  }
+
   static String translateRiverDifficulty(double riverDifficulty) {
     if (riverDifficulty == null) return '';
     switch ((riverDifficulty * 100).round()) {

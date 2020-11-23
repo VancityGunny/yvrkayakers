@@ -18,12 +18,19 @@ class RiverlogRepository {
   }
 
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {
-    var result = _riverlogProvider.addRiverLog(newRiverLog);
-    //also update RiverBeta stat
+    // check current river stat
     RiverAnnualStatModel newRiverStat =
         await _riverbetaRepository.getRiverStat(newRiverLog.river.id);
-    newRiverStat.entries.add(new RiverStatUserEntry(
-        newRiverLog.userId, newRiverLog.logDate, newRiverLog.id));
+
+    var currentSequence = newRiverStat.entries
+        .reduce((current, next) =>
+            current.sequenceNumber > next.sequenceNumber ? current : next)
+        .sequenceNumber;
+    var result = _riverlogProvider.addRiverLog(newRiverLog);
+    //also update RiverBeta stat
+
+    newRiverStat.entries.add(new RiverStatUserEntry(newRiverLog.userId,
+        newRiverLog.logDate, newRiverLog.id, (currentSequence + 1)));
     // check if user already exist in visitors
     if (newRiverStat.visitors
             .any((element) => element.id == newRiverLog.userId) ==

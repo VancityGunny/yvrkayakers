@@ -206,8 +206,10 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
               .search("#" + foundRiver.riverName.replaceAll(" ", ""));
         }
 
-        newSampleVideos = value.map((e) =>
-            new ExtObjectLink(e.thumbnail['default']['url'], e.title, e.url));
+        newSampleVideos = value
+            .map((e) => new ExtObjectLink(
+                e.thumbnail['default']['url'], e.title, e.url))
+            .toList();
       }
 
       // update the fetch videos

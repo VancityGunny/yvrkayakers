@@ -1,6 +1,11 @@
 import 'package:flutter_native_config/flutter_native_config.dart';
 
 class MyConstants {
+  //hashtag prefix to be use to identify our post in social media
+  static String hashtagRiverPrefix = "YKR";
+  static String hashtagLogPrefix = "YKL";
+  static String hashtagUserPrefix = "YKU";
+  static String hashtagDelimiter = "_";
   static List<double> RIVER_GRADES = [
     2.0,
     2.25,

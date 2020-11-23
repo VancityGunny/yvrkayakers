@@ -74,8 +74,8 @@ class ExtObjectLink extends Equatable {
   List<Object> get props => [thumbnail, caption, url];
 
   factory ExtObjectLink.fromJson(Map<String, dynamic> json) {
-    return ExtObjectLink(json['thumbnail'] as String, json['caption'].toDate(),
-        json['url'] as String);
+    return ExtObjectLink(
+        json['thumbnail'] as String, json['caption'], json['url'] as String);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -259,20 +259,26 @@ class RiverStatUserEntry extends Equatable {
   final String userId;
   final DateTime logDate;
   final String userRiverlogId;
+  final int sequenceNumber; // arbitary sequence just so we can identify log run
 
-  RiverStatUserEntry(this.userId, this.logDate, this.userRiverlogId);
+  RiverStatUserEntry(
+      this.userId, this.logDate, this.userRiverlogId, this.sequenceNumber);
   @override
   // TODO: implement props
   List<Object> get props => [userId, logDate, userRiverlogId];
   factory RiverStatUserEntry.fromJson(Map<String, dynamic> json) {
-    return RiverStatUserEntry(json['userId'] as String,
-        json['logDate'].toDate(), json['userRiverlogId'] as String);
+    return RiverStatUserEntry(
+        json['userId'] as String,
+        json['logDate'].toDate(),
+        json['userRiverlogId'] as String,
+        (json['sequenceNumber'] == null) ? 0 : json['sequenceNumber'] as int);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['userId'] = userId;
     data['logDate'] = logDate;
     data['userRiverlogId'] = userRiverlogId;
+    data['sequenceNumber'] = sequenceNumber;
     return data;
   }
 }
