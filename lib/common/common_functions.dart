@@ -3,7 +3,6 @@ import 'package:hashids2/hashids2.dart';
 import 'package:location/location.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
-import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 
 class CommonFunctions {
@@ -25,7 +24,7 @@ class CommonFunctions {
       return "#" +
           MyConstants.hashtagRiverPrefix +
           MyConstants.hashtagDelimiter +
-          riverlog.userId +
+          riverlog.uid +
           MyConstants.hashtagDelimiter +
           hashids.encode(riverlog.totalRound);
     }

@@ -22,24 +22,24 @@ class RiverlogRepository {
     RiverAnnualStatModel newRiverStat =
         await _riverbetaRepository.getRiverStat(newRiverLog.river.id);
 
-    var currentSequence = newRiverStat.entries
-        .reduce((current, next) =>
-            current.sequenceNumber > next.sequenceNumber ? current : next)
-        .sequenceNumber;
+    var currentSequence = newRiverStat.entries.fold(
+        0,
+        (previousValue, element) => element.sequenceNumber > previousValue
+            ? element.sequenceNumber
+            : previousValue);
     var result = _riverlogProvider.addRiverLog(newRiverLog);
     //also update RiverBeta stat
 
-    newRiverStat.entries.add(new RiverStatUserEntry(newRiverLog.userId,
+    newRiverStat.entries.add(new RiverStatUserEntry(newRiverLog.uid,
         newRiverLog.logDate, newRiverLog.id, (currentSequence + 1)));
     // check if user already exist in visitors
     if (newRiverStat.visitors
-            .any((element) => element.id == newRiverLog.userId) ==
+            .any((element) => element.uid == newRiverLog.uid) ==
         false) {
       // add user to visitor list if this is missing
       var session = FlutterSession();
       var currentUser =
           UserShortModel.fromJson(await session.get("loggedInUser"));
-      currentUser.id = await session.get("currentUserId");
       newRiverStat.visitors.add(currentUser);
     }
     _riverbetaRepository.updateRiverStat(newRiverLog.river.id, newRiverStat);

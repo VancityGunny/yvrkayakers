@@ -6,8 +6,6 @@ import 'package:package_info/package_info.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
-import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
-import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/trip/trip_bloc.dart';
 import 'package:yvrkayakers/blocs/trip/trip_page.dart';
@@ -48,6 +46,7 @@ class HomeScreenState extends State<HomeScreen> {
     _riverbetaBloc.initStream();
     _riverlogBloc.initStream();
     _tripBloc.initStream();
+    BlocProvider.of<AuthBloc>(context).initStream();
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

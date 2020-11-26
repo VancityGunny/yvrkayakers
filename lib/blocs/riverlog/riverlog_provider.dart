@@ -36,20 +36,20 @@ class RiverlogProvider {
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {
     var userRiverLogsRef = _firestore
         .collection('/riverlogs')
-        .doc(newRiverLog.userId)
+        .doc(newRiverLog.uid)
         .collection('/logs');
     var userRiverLogsDocRef = userRiverLogsRef.doc(newRiverLog.id);
-
+    var countTotalRuns = await userRiverLogsRef.get();
     var countRiverRuns = await userRiverLogsRef
         .where('river.id', isEqualTo: newRiverLog.river.id)
         .get();
-
+    newRiverLog.totalRound = countTotalRuns.docs.length + 1;
     newRiverLog.riverRound = countRiverRuns.docs.length + 1;
 
     userRiverLogsDocRef.set(newRiverLog.toJson());
 
     // also update user experience
-    var userRef = _firestore.collection('/users').doc(newRiverLog.userId);
+    var userRef = _firestore.collection('/users').doc(newRiverLog.uid);
     var userObj = await userRef.get();
     updateUserExperience(userObj, newRiverLog, userRef);
     await updateUserStat(userObj, newRiverLog, userRiverLogsRef, userRef);

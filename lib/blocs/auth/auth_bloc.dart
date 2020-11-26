@@ -1,10 +1,32 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
+import 'package:yvrkayakers/blocs/user/user_model.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
+
+  StreamController authController;
+  final BehaviorSubject<UserModel> currentAuth = BehaviorSubject<UserModel>();
+
+  initStream() {
+    var collectionReference = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid);
+    authController = StreamController.broadcast();
+
+    authController.addStream(collectionReference
+        .snapshots()); // get all river for now, to be limit to nearby later
+    authController.stream.listen((event) {
+      DocumentSnapshot docSnapshot = event;
+      currentAuth.add(UserModel.fromFire(docSnapshot));
+      //also update loggedinuser
+    });
+  }
 
   AuthBloc({@required AuthRepository authRepository})
       : assert(AuthRepository != null),

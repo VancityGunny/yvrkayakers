@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/blocs/user/user_provider.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
@@ -58,16 +57,12 @@ class AuthRepository {
       experience.add(UserExperienceModel(element, 0, 0));
     });
     // update user add phone number and marked as verified
-    var foundUsers = await _firestore
-        .collection('/users')
-        .where('uid', isEqualTo: currentUser.uid)
-        .get();
+    var foundUsers =
+        await _firestore.collection('/users').doc(currentUser.uid).get();
 
     // assume account found by id
-    if (foundUsers.docs.length > 0) {
+    if (foundUsers.exists) {
       await userProvider.assumeUser(new UserModel(
-          foundUsers.docs.first.id,
-          currentUser.uid,
           currentUser.email,
           currentUser.displayName,
           phoneNumber,
@@ -75,9 +70,8 @@ class AuthRepository {
           experience,
           0.0,
           0.0,
-          null));
-      var session = FlutterSession();
-      await session.set("currentUserId", foundUsers.docs.first.id);
+          null,
+          currentUser.uid));
       return; // if existing then just update this and return
     } else {
       // can't find match by uid
@@ -90,11 +84,7 @@ class AuthRepository {
 
       if (foundUsersByPhone.docs.length == 0) {
         // check if user record does not exist then create the record
-        var uuid = new Uuid();
-        var userId = uuid.v1();
         await userProvider.addUser(new UserModel(
-            userId,
-            currentUser.uid,
             currentUser.email,
             currentUser.displayName,
             phoneNumber,
@@ -102,14 +92,11 @@ class AuthRepository {
             experience,
             0.0,
             0.0,
-            null));
-        var session = FlutterSession();
-        await session.set("currentUserId", userId);
+            null,
+            FirebaseAuth.instance.currentUser.uid));
       } else {
         // assume user
         await userProvider.assumeUser(new UserModel(
-            foundUsersByPhone.docs.first.id,
-            currentUser.uid,
             currentUser.email,
             currentUser.displayName,
             phoneNumber,
@@ -117,9 +104,8 @@ class AuthRepository {
             experience,
             0.0,
             0.0,
-            null));
-        var session = FlutterSession();
-        await session.set("currentUserId", foundUsersByPhone.docs.first.id);
+            null,
+            FirebaseAuth.instance.currentUser.uid));
       }
       return;
     }
@@ -135,22 +121,18 @@ class AuthRepository {
   Future<bool> isSignedIn() async {
     final currentUser = _firebaseAuth.currentUser;
     var session = FlutterSession();
-    var logCurrentUser = await session.get("currentUserId");
+    var logCurrentUser = await session.get("loggedInUser");
     return currentUser != null && logCurrentUser != null;
   }
 
   Future<UserModel> getUser() async {
     var user = _firebaseAuth.currentUser;
 
-    var foundUsers = await _firestore
-        .collection('/users')
-        .where('uid', isEqualTo: user.uid)
-        .get();
-    if (foundUsers.docs.length > 0) {
-      var loggedInUser = UserModel.fromFire(foundUsers.docs[0]);
+    var foundUsers = await _firestore.collection('/users').doc(user.uid).get();
+    if (foundUsers.exists) {
+      UserShortModel loggedInUser = UserModel.fromFire(foundUsers);
       var session = FlutterSession();
       await session.set("loggedInUser", loggedInUser);
-      await session.set("currentUserId", foundUsers.docs[0].id);
       return loggedInUser;
     } else {
       return null;

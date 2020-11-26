@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_session/flutter_session.dart';
@@ -6,9 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:group_list_view/group_list_view.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
-import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
-import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -66,11 +65,9 @@ class RiverlogScreenState extends State<RiverlogScreen> {
   }
 
   void _load([bool isError = false]) {
-    var session = FlutterSession();
-    session.get("currentUserId").then((value) {
-      BlocProvider.of<RiverlogBloc>(context)
-          .add(LoadUserRiverlogEvent(value.toString()));
-    });
+    var currentUserId = FirebaseAuth.instance.currentUser.uid;
+    BlocProvider.of<RiverlogBloc>(context)
+        .add(LoadUserRiverlogEvent(currentUserId));
   }
 }
 
@@ -107,13 +104,17 @@ class UserExperienceCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.headline1),
                     Text(
                       "Favorite: " +
-                          currentUser.userStat.favoriteRiver.riverName,
+                          ((currentUser.userStat != null)
+                              ? currentUser.userStat.favoriteRiver.riverName
+                              : ""),
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                     Text(
                         "Last Paddle: " +
-                            DateFormat.yMMMd()
-                                .format(currentUser.userStat.lastWetness),
+                            ((currentUser.userStat != null)
+                                ? DateFormat.yMMMd()
+                                    .format(currentUser.userStat.lastWetness)
+                                : ""),
                         style: Theme.of(context).textTheme.subtitle1),
                   ],
                 )

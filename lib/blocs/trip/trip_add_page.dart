@@ -1,8 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_session/flutter_session.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
@@ -117,7 +116,7 @@ class TripAddPageState extends State<TripAddPage> {
   void addNewTrip(BuildContext context) async {
     var session = FlutterSession();
     var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
-    var currentUserId = (await session.get("currentUserId"));
+    var currentUserId = FirebaseAuth.instance.currentUser.uid;
     var uuid = new Uuid();
     var tripId = uuid.v1();
     var userSkill = currentUser.userSkill;

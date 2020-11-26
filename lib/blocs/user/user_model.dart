@@ -3,26 +3,27 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserShortModel extends Equatable {
-  String id;
   final String displayName;
   final String photoUrl;
+  final String uid;
 
-  UserShortModel(this.id, this.displayName, this.photoUrl);
+  UserShortModel(this.displayName, this.photoUrl, this.uid);
 
   @override
   // TODO: implement props
-  List<Object> get props => [id, displayName, photoUrl];
+  List<Object> get props => [displayName, photoUrl, uid];
 
   factory UserShortModel.fromJson(Map<dynamic, dynamic> json) {
-    return UserShortModel(json['id'] as String, json['displayName'] as String,
-        json['photoUrl'] as String);
+    return UserShortModel(json['displayName'] as String,
+        json['photoUrl'] as String, json['uid'] as String);
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['id'] = this.id;
+
     data['displayName'] = this.displayName;
     data['photoUrl'] = this.photoUrl;
+    data['uid'] = this.uid;
     return data;
   }
 }
@@ -87,7 +88,6 @@ class UserStatModel extends Equatable {
 }
 
 class UserModel extends UserShortModel {
-  final String uid;
   final String email;
   final String phone;
   final List<UserExperienceModel> experience;
@@ -95,14 +95,12 @@ class UserModel extends UserShortModel {
   final double userSkillVerified;
   final UserStatModel userStat;
 
-  UserModel(id, this.uid, this.email, displayName, this.phone, photoUrl,
-      this.experience, this.userSkill, this.userSkillVerified, this.userStat)
-      : super(id, displayName, photoUrl);
+  UserModel(this.email, displayName, this.phone, photoUrl, this.experience,
+      this.userSkill, this.userSkillVerified, this.userStat, uid)
+      : super(displayName, photoUrl, uid);
 
   @override
   List<Object> get props => [
-        id,
-        uid,
         email,
         displayName,
         phone,
@@ -110,14 +108,13 @@ class UserModel extends UserShortModel {
         experience,
         userSkill,
         userSkillVerified,
-        userStat
+        userStat,
+        uid
       ];
 
   factory UserModel.fromFire(DocumentSnapshot doc) {
     var json = doc.data();
     return UserModel(
-        doc.id,
-        json['uid'] as String,
         json['email'] as String,
         json['displayName'] as String,
         json['phone'] as String,
@@ -127,13 +124,12 @@ class UserModel extends UserShortModel {
             .toList(),
         json['userSkill'] as double,
         json['userSkillVerified'] as double,
-        UserStatModel.fromJson(json['userStat']));
+        UserStatModel.fromJson(json['userStat']),
+        doc.id);
   }
 
   factory UserModel.fromJson(Map<dynamic, dynamic> json) {
     return UserModel(
-        null,
-        json['uid'] as String,
         json['email'] as String,
         json['displayName'] as String,
         json['phone'] as String,
@@ -143,12 +139,26 @@ class UserModel extends UserShortModel {
             .toList(),
         json['userSkill'] as double,
         json['userSkillVerified'] as double,
-        UserStatModel.fromJson(json['userStat']));
+        UserStatModel.fromJson(json['userStat']),
+        json['uid'] as String);
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['uid'] = this.uid;
+    data['email'] = this.email;
+    data['displayName'] = this.displayName;
+    data['phone'] = this.phone;
+    data['photoUrl'] = this.photoUrl;
+    data['experience'] = this.experience.map((e) => e.toJson()).toList();
+    data['userSkill'] = this.userSkill;
+    data['userSkillVerified'] = this.userSkillVerified;
+    data['userStat'] = (this.userStat == null) ? null : this.userStat.toJson();
+    return data;
+  }
+
+  Map<String, dynamic> toFire() {
+    final data = <String, dynamic>{};
     data['email'] = this.email;
     data['displayName'] = this.displayName;
     data['phone'] = this.phone;

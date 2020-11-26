@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/date_time_patterns.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
@@ -88,29 +88,25 @@ class TripDetailPageState extends State<TripDetailPage> {
                       .toList();
                 });
 
-                return FutureBuilder(
-                    future: FlutterSession().get("currentUserId"),
-                    builder: (context, sessionSnapshot) {
-                      blnParticipated = allParticipants.any(
-                          (element) => element.userId == sessionSnapshot.data);
+                blnParticipated = allParticipants.any((element) =>
+                    element.userId == FirebaseAuth.instance.currentUser.uid);
 
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              tripDetailWidget(),
-                              Container(child: carpoolWidget(blnParticipated)),
-                            ],
-                          ),
-                          Container(
-                            child: participantListWidget(allParticipants),
-                          ),
-                          Container(child: commentWidget(allComments))
-                        ],
-                      );
-                    });
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        tripDetailWidget(),
+                        Container(child: carpoolWidget(blnParticipated)),
+                      ],
+                    ),
+                    Container(
+                      child: participantListWidget(allParticipants),
+                    ),
+                    Container(child: commentWidget(allComments))
+                  ],
+                );
               }),
         ],
       )),
@@ -124,11 +120,10 @@ class TripDetailPageState extends State<TripDetailPage> {
   Future<void> joinThisTrip() async {
     var session = FlutterSession();
     var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
-    var currentUserId = (await session.get("currentUserId"));
     var userSkill = currentUser.userSkill;
     var userSkillVerified = currentUser.userSkillVerified;
     TripParticipantModel newParticipant = new TripParticipantModel(
-        currentUserId,
+        FirebaseAuth.instance.currentUser.uid,
         currentUser.displayName,
         blnNeedRide,
         (txtAvailableSpace.text == "") ? 0 : int.parse(txtAvailableSpace.text),
@@ -192,10 +187,8 @@ class TripDetailPageState extends State<TripDetailPage> {
   }
 
   Future<void> leaveThisTrip() async {
-    var session = FlutterSession();
-    var currentUserId = (await session.get("currentUserId"));
-    BlocProvider.of<TripBloc>(context)
-        .add(new LeaveTripEvent(widget._foundTrip.id, currentUserId));
+    BlocProvider.of<TripBloc>(context).add(new LeaveTripEvent(
+        widget._foundTrip.id, FirebaseAuth.instance.currentUser.uid));
   }
 
   Widget tripDetailWidget() {
@@ -338,10 +331,9 @@ class TripDetailPageState extends State<TripDetailPage> {
   void addComment(BuildContext context) async {
     var session = FlutterSession();
     var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
-    var currentUserId = (await session.get("currentUserId"));
 
     var newComment = new TripCommentModel(
-        currentUserId,
+        FirebaseAuth.instance.currentUser.uid,
         currentUser.displayName,
         currentUser.photoUrl,
         txtAddComment.text,

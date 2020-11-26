@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 
@@ -35,24 +34,40 @@ class RiverbetaShortModel extends Equatable {
   final String riverName;
   final String sectionName;
   final double difficulty; // 2.75 for grade III- and 3.25 for grade III+
+  final double minFlow; // minimum runnable flow in cms
+  final double maxFlow; // maximum runnable flow in cms
+  final String gaugeUnit;
 
   String riverHashtag() {
     return "YKR_" + riverName.replaceAll(" ", "");
   }
 
-  RiverbetaShortModel(
-      this.id, this.riverName, this.sectionName, this.difficulty);
+  RiverbetaShortModel(this.id, this.riverName, this.sectionName,
+      this.difficulty, this.minFlow, this.maxFlow, this.gaugeUnit);
   @override
-  List<Object> get props => [id, riverName, sectionName, difficulty];
+  List<Object> get props =>
+      [id, riverName, sectionName, difficulty, minFlow, maxFlow, gaugeUnit];
 
   factory RiverbetaShortModel.fromFire(DocumentSnapshot doc) {
     var json = doc.data();
-    return RiverbetaShortModel(doc.id, json['riverName'] as String,
-        json['sectionName'] as String, json['difficulty'] as double);
+    return RiverbetaShortModel(
+        doc.id,
+        json['riverName'] as String,
+        json['sectionName'] as String,
+        json['difficulty'] as double,
+        json['minFlow'] as double,
+        json['maxFlow'] as double,
+        json['gaugeUnit'] as String);
   }
   factory RiverbetaShortModel.fromJson(Map<String, dynamic> json) {
-    return RiverbetaShortModel(null, json['riverName'] as String,
-        json['sectionName'] as String, json['difficulty'] as double);
+    return RiverbetaShortModel(
+        null,
+        json['riverName'] as String,
+        json['sectionName'] as String,
+        json['difficulty'] as double,
+        json['minFlow'] as double,
+        json['maxFlow'] as double,
+        json['gaugeUnit'] as String);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -60,6 +75,9 @@ class RiverbetaShortModel extends Equatable {
     data['riverName'] = riverName;
     data['sectionName'] = sectionName;
     data['difficulty'] = difficulty;
+    data['minFlow'] = minFlow;
+    data['maxFlow'] = maxFlow;
+    data['gaugeUnit'] = gaugeUnit;
     return data;
   }
 }
@@ -89,9 +107,6 @@ class ExtObjectLink extends Equatable {
 class RiverbetaModel extends RiverbetaShortModel {
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
-  final double minFlow; // minimum runnable flow in cms
-  final double maxFlow; // maximum runnable flow in cms
-  final String gaugeUnit;
 
   final double flowIncrement; // incremental for the gauge
   List<ExtObjectLink> relatedVideos;
@@ -104,13 +119,21 @@ class RiverbetaModel extends RiverbetaShortModel {
       difficulty,
       this.putInLocation,
       this.takeOutLocation,
-      this.minFlow,
-      this.maxFlow,
-      this.gaugeUnit,
+      minFlow,
+      maxFlow,
+      gaugeUnit,
       this.flowIncrement,
       this.relatedVideos,
       this.lastFetchVideos)
-      : super(id, riverName, sectionName, difficulty);
+      : super(
+          id,
+          riverName,
+          sectionName,
+          difficulty,
+          minFlow,
+          maxFlow,
+          gaugeUnit,
+        );
 
   @override
   List<Object> get props => [
@@ -186,7 +209,15 @@ class RiverbetaModel extends RiverbetaShortModel {
   }
 
   RiverbetaShortModel getRiverbetaShort() {
-    return RiverbetaShortModel(id, riverName, sectionName, difficulty);
+    return RiverbetaShortModel(
+      id,
+      riverName,
+      sectionName,
+      difficulty,
+      minFlow,
+      maxFlow,
+      gaugeUnit,
+    );
   }
 
   @override
@@ -256,16 +287,16 @@ class RiverAnnualStatModel extends Equatable {
 }
 
 class RiverStatUserEntry extends Equatable {
-  final String userId;
+  final String uid;
   final DateTime logDate;
   final String userRiverlogId;
   final int sequenceNumber; // arbitary sequence just so we can identify log run
 
   RiverStatUserEntry(
-      this.userId, this.logDate, this.userRiverlogId, this.sequenceNumber);
+      this.uid, this.logDate, this.userRiverlogId, this.sequenceNumber);
   @override
   // TODO: implement props
-  List<Object> get props => [userId, logDate, userRiverlogId];
+  List<Object> get props => [uid, logDate, userRiverlogId];
   factory RiverStatUserEntry.fromJson(Map<String, dynamic> json) {
     return RiverStatUserEntry(
         json['userId'] as String,
@@ -275,7 +306,7 @@ class RiverStatUserEntry extends Equatable {
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['userId'] = userId;
+    data['userId'] = uid;
     data['logDate'] = logDate;
     data['userRiverlogId'] = userRiverlogId;
     data['sequenceNumber'] = sequenceNumber;

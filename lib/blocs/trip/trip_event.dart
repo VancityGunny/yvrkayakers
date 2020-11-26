@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:meta/meta.dart';
-import 'package:yvrkayakers/blocs/user/user_model.dart';
 
 @immutable
 abstract class TripEvent {

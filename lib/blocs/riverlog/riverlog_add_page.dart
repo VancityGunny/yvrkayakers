@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_session/flutter_session.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
@@ -142,8 +142,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   }
 
   void addNewRiverlog(BuildContext context) async {
-    var session = FlutterSession();
-    var currentUserId = (await session.get("currentUserId")).toString();
+    var currentUserId = FirebaseAuth.instance.currentUser.uid;
     var uuid = new Uuid();
     var logId = uuid.v1();
     RiverlogModel newRiverlog = RiverlogModel(
@@ -161,7 +160,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null, //friends
         0, //totalround
         0, //riverround
-        widget._selectedRiver);
+        widget._selectedRiver.getRiverbetaShort());
     BlocProvider.of<RiverlogBloc>(context)
         .add(AddingRiverlogEvent(newRiverlog));
     Navigator.of(context).pop();

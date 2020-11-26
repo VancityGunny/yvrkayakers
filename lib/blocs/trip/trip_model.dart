@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/rendering.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 
 /// generate by https://javiercbk.github.io/json_to_dart/

@@ -6,7 +6,6 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
-import 'package:intl/intl.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
@@ -154,7 +153,11 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                   itemBuilder: (context, index) {
                     var paddler = foundRiverStat.visitors.firstWhere(
                         (element) =>
-                            element.id == foundRiverStat.entries[index].userId);
+                            element.uid == foundRiverStat.entries[index].uid,
+                        orElse: () => null);
+                    if (paddler == null) {
+                      return Text('');
+                    }
                     return Row(children: [
                       CircleAvatar(
                         radius: 20.0,

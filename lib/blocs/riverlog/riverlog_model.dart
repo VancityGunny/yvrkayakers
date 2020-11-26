@@ -40,7 +40,7 @@ class SwimmerLog extends Equatable {
 class RiverlogModel extends Equatable {
   final String id;
   final String tripId;
-  final String userId;
+  final String uid;
   final bool didSwim;
   final bool didRescue;
   final List<String> swimmerRescued; //store userId
@@ -52,15 +52,15 @@ class RiverlogModel extends Equatable {
   final DateTime logDate;
   final List<String> friends; // store userId
 
-  final int totalRound; // count how many time user run any river
+  int totalRound; // count how many time user run any river
   int riverRound; // count how many time user run this river
 
-  final RiverbetaModel river;
+  final RiverbetaShortModel river;
 
   RiverlogModel(
       this.id,
       this.tripId,
-      this.userId,
+      this.uid,
       this.didSwim,
       this.didRescue,
       this.swimmerRescued,
@@ -78,7 +78,7 @@ class RiverlogModel extends Equatable {
   List<Object> get props => [
         id,
         tripId,
-        userId,
+        uid,
         didSwim,
         didRescue,
         swimmerRescued,
@@ -135,7 +135,7 @@ class RiverlogModel extends Equatable {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['tripId'] = tripId;
-    data['userId'] = userId;
+    data['userId'] = uid;
     data['didSwim'] = didSwim;
     data['didRescue'] = didRescue;
     data['swimmerRescued'] = swimmerRescued;
@@ -147,7 +147,7 @@ class RiverlogModel extends Equatable {
     data['friends'] = friends;
     data['totalRound'] = totalRound;
     data['riverRound'] = riverRound;
-    data['river'] = river.toJsonIncludeId();
+    data['river'] = river.toJson();
     return data;
   }
 }

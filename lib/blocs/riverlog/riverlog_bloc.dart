@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_session/flutter_session.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 
@@ -17,23 +17,22 @@ class RiverlogBloc extends Bloc<RiverlogEvent, RiverlogState> {
 
   initStream() {
     riverLogController = StreamController.broadcast();
-    var session = FlutterSession();
-    session.get("currentUserId").then((value) {
-      riverLogController.addStream(FirebaseFirestore.instance
-          .collection('/riverlogs')
-          .doc(value)
-          .collection('/logs')
-          .snapshots());
-      riverLogController.stream.listen((event) {
-        QuerySnapshot querySnapshot = event;
-        var newRiverlogs = new List<RiverlogModel>();
-        if (querySnapshot.docs.length > 0) {
-          event.docs.forEach((f) {
-            newRiverlogs.add(RiverlogModel.fromFire(f));
-          });
-        }
-        allRiverLogs.add(newRiverlogs);
-      });
+
+    var currentUserId = FirebaseAuth.instance.currentUser.uid;
+    riverLogController.addStream(FirebaseFirestore.instance
+        .collection('/riverlogs')
+        .doc(currentUserId)
+        .collection('/logs')
+        .snapshots());
+    riverLogController.stream.listen((event) {
+      QuerySnapshot querySnapshot = event;
+      var newRiverlogs = new List<RiverlogModel>();
+      if (querySnapshot.docs.length > 0) {
+        event.docs.forEach((f) {
+          newRiverlogs.add(RiverlogModel.fromFire(f));
+        });
+      }
+      allRiverLogs.add(newRiverlogs);
     });
   }
 
