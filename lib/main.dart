@@ -7,6 +7,7 @@ import 'package:yvrkayakers/ui/home_screen.dart';
 import 'package:yvrkayakers/ui/login_screen.dart';
 import 'package:yvrkayakers/ui/login_with_phone.dart';
 import 'package:yvrkayakers/ui/splash_screen.dart';
+import 'package:yvrkayakers/ui/username_selection_screen.dart';
 
 import 'blocs/auth/index.dart';
 import 'common/common_bloc.dart';
@@ -138,6 +139,9 @@ class _MyHomePageState extends State<MyHomePage> {
               if (state is PhoneVerificationAuthState) {
                 // now go do phone verification
                 return LoginOTP();
+              }
+              if (state is UserNameVerificationAuthState) {
+                return UserNameSelectionScreen();
               }
               if (state is AuthenticatedAuthState) {
                 return HomeScreen(state.displayName);

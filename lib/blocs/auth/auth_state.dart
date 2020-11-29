@@ -97,3 +97,14 @@ class PhoneVerificationAuthState extends AuthState {
   // TODO: implement props
   List<Object> get props => null;
 }
+
+class UserNameVerificationAuthState extends AuthState {
+  UserNameVerificationAuthState(int version) : super(version);
+
+  @override
+  String toString() => 'UserNameVerificationAuthState';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}

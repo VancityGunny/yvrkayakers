@@ -44,6 +44,19 @@ class AuthRepository {
     //     await _firebaseAuth.signInWithCredential(credential);
   }
 
+  Future<void> selectNewUserName(String newUserName) async {
+// now we merge with existing firebase user
+    User currentUser = _firebaseAuth.currentUser;
+    // add username to usernames collection
+    var newUserNameRef =
+        await _firestore.collection('/usernames').doc(newUserName);
+    newUserNameRef.set({'uid': currentUser.uid});
+    // update user with new username
+    var foundUserRef =
+        await _firestore.collection('/users').doc(currentUser.uid);
+    foundUserRef.update({'userName': newUserName});
+  }
+
   Future createOrAssumeUser(
       UserCredential userCred, User currentUser, phoneNumber) async {
     if (userCred.user == null) {
@@ -57,32 +70,33 @@ class AuthRepository {
       experience.add(UserExperienceModel(element, 0, 0));
     });
     // update user add phone number and marked as verified
-    var foundUsers =
+    var foundUserObj =
         await _firestore.collection('/users').doc(currentUser.uid).get();
 
     // assume account found by id
-    if (foundUsers.exists) {
+    if (foundUserObj.exists) {
+      UserModel foundUser = UserModel.fromFire(foundUserObj);
       await userProvider.assumeUser(new UserModel(
           currentUser.email,
           currentUser.displayName,
           phoneNumber,
           currentUser.photoURL,
           experience,
-          0.0,
-          0.0,
-          null,
-          currentUser.uid));
+          foundUser.userSkill,
+          foundUser.userSkillVerified,
+          foundUser.userStat,
+          foundUser.uid,
+          foundUser.userName));
       return; // if existing then just update this and return
     } else {
       // can't find match by uid
       // try to find match by phone number
-      var foundUsersByPhone = await _firestore
+      var foundUsersByPhoneObj = await _firestore
           .collection('/users')
           .where('phone', isEqualTo: phoneNumber)
           .get();
       // create new user if not already exists
-
-      if (foundUsersByPhone.docs.length == 0) {
+      if (foundUsersByPhoneObj.docs.length == 0) {
         // check if user record does not exist then create the record
         await userProvider.addUser(new UserModel(
             currentUser.email,
@@ -93,8 +107,11 @@ class AuthRepository {
             0.0,
             0.0,
             null,
-            FirebaseAuth.instance.currentUser.uid));
+            FirebaseAuth.instance.currentUser.uid,
+            null));
       } else {
+        UserModel foundUser =
+            UserModel.fromFire(foundUsersByPhoneObj.docs.first);
         // assume user
         await userProvider.assumeUser(new UserModel(
             currentUser.email,
@@ -102,10 +119,11 @@ class AuthRepository {
             phoneNumber,
             currentUser.photoURL,
             experience,
-            0.0,
-            0.0,
-            null,
-            FirebaseAuth.instance.currentUser.uid));
+            foundUser.userSkill,
+            foundUser.userSkillVerified,
+            foundUser.userStat,
+            FirebaseAuth.instance.currentUser.uid,
+            foundUser.userName));
       }
       return;
     }
@@ -137,5 +155,11 @@ class AuthRepository {
     } else {
       return null;
     }
+  }
+
+  Future<bool> isUserNameExists(String userName) async {
+    var foundUserName =
+        await _firestore.collection('/usernames').doc(userName).get();
+    return foundUserName.exists;
   }
 }

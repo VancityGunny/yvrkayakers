@@ -55,3 +55,15 @@ class LogInWithPhonePressedEvent extends AuthEvent {
   // TODO: implement props
   List<Object> get props => null;
 }
+
+class ChooseUserNameEvent extends AuthEvent {
+  final String newUserName;
+  ChooseUserNameEvent(this.newUserName);
+
+  @override
+  String toString() => 'ChooseUserNameEvent';
+
+  @override
+  // TODO: implement props
+  List<Object> get props => null;
+}

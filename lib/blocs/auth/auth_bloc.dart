@@ -49,6 +49,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _mapLoginWithGooglePressedToState();
     } else if (event is LogInWithPhonePressedEvent) {
       yield* _mapLoginWithPhonePressedToState(event);
+    } else if (event is ChooseUserNameEvent) {
+      yield* _mapChooseUserNameToState(event);
     }
   }
 
@@ -58,34 +60,61 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (isSignedIn) {
         final user = await _authRepository.getUser();
-        if (user != null && user.phone != null) {
-          // as long as we have phone number, whether it be from gmail account or verified by phone we don't care
-          yield AuthenticatedAuthState(0, user.displayName);
+        // if found user record
+        if (user != null) {
+          if (user.phone != null && user.userName != null) {
+            // must logged in with phone number verified and username verified
+            yield AuthenticatedAuthState(0, user.displayName);
+          } else {
+            if (user.phone == null) {
+              // if missing phone then do phone first
+              yield PhoneVerificationAuthState(0);
+            } else if (user.userName == null) {
+              yield UserNameVerificationAuthState(0);
+            } else {
+              yield LogInFailureAuthState(0, "Invalid State");
+            }
+          }
         } else {
-          yield PhoneVerificationAuthState(0);
+          // if can't find user recrod then it's unauthenticated
+          yield LogInFailureAuthState(
+              0, 'Is Signed In, Yet Can Not Find User Record.');
         }
       } else {
+        // if status is not signed in then it's unauthenticated
         yield UnauthenticatedAuthState(0);
       }
     } catch (_) {
-      yield UnauthenticatedAuthState(0);
+      yield LogInFailureAuthState(0, _.toString());
     }
   }
 
   Stream<AuthState> _mapLoggedInToState() async* {
     final user = await _authRepository.getUser();
-    if (user != null && user.phone != null) {
-      // as long as we have phone number, whether it be from gmail account or verified by phone we don't care
-      yield AuthenticatedAuthState(0, user.displayName);
+    if (user != null) {
+      if (user.phone != null && user.userName != null) {
+        // must logged in with phone number verified and username verified
+        yield AuthenticatedAuthState(0, user.displayName);
+      } else {
+        if (user.phone == null) {
+          // if missing phone then do phone first
+          yield PhoneVerificationAuthState(0);
+        } else if (user.userName == null) {
+          yield UserNameVerificationAuthState(0);
+        } else {
+          yield LogInFailureAuthState(0, "Invalid State");
+        }
+      }
     } else {
-      yield PhoneVerificationAuthState(0);
+      // if can't find user recrod then it's unauthenticated
+      yield LogInFailureAuthState(
+          0, 'Is Signed In, Yet Can Not Find User Record.');
     }
   }
 
   Stream<AuthState> _mapLoggedOutToState() async* {
-    yield UnAuthState(0);
-
     _authRepository.signOut();
+    yield UnAuthState(0);
   }
 
   Stream<AuthState> _mapLoginWithGooglePressedToState() async* {
@@ -104,6 +133,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authRepository.signInWithPhoneNumber(
           event.credential, event.phoneNumber);
 
+      yield UserNameVerificationAuthState(0);
+    } catch (error) {
+      yield LogInFailureAuthState(0, error.toString());
+    }
+  }
+
+  Stream<AuthState> _mapChooseUserNameToState(
+      ChooseUserNameEvent event) async* {
+    try {
+      await _authRepository.selectNewUserName(event.newUserName);
       final user = await _authRepository.getUser();
       yield AuthenticatedAuthState(0, user.displayName);
     } catch (error) {
