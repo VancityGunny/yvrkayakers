@@ -241,9 +241,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
         _riverGaugeUnit,
         (txtLevelIncrement.text == "")
             ? null
-            : double.parse(txtLevelIncrement.text),
-        null,
-        null);
+            : double.parse(txtLevelIncrement.text));
     // add new river
     BlocProvider.of<RiverbetaBloc>(context).add(AddingRiverbetaEvent(newRiver));
     Navigator.of(context).pop(); // go up one level

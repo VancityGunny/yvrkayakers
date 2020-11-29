@@ -10,8 +10,7 @@ class CommonFunctions {
       {RiverbetaShortModel river, RiverlogModel riverlog}) {
     //get hashtage for each type of object
     if (river != null) {
-      return "#" +
-          MyConstants.hashtagRiverPrefix +
+      return MyConstants.hashtagRiverPrefix +
           MyConstants.hashtagDelimiter +
           river.riverName.replaceAll(" ", "");
     }
@@ -21,8 +20,7 @@ class CommonFunctions {
         minHashLength: 5,
         alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
       );
-      return "#" +
-          MyConstants.hashtagRiverPrefix +
+      return MyConstants.hashtagRiverPrefix +
           MyConstants.hashtagDelimiter +
           riverlog.uid +
           MyConstants.hashtagDelimiter +

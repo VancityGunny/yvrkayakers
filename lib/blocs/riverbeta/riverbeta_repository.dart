@@ -24,11 +24,6 @@ class RiverbetaRepository {
     return _riverbetaProvider.updateRiverStat(riverId, newRiverStat);
   }
 
-  Future<String> updateRiverVideos(
-      String riverId, List<ExtObjectLink> videoList) async {
-    return _riverbetaProvider.updateRiverVideos(riverId, videoList);
-  }
-
   Future<RiverAnnualStatModel> getRiverStat(String riverId) async {
     return _riverbetaProvider.getRiverStat(riverId);
   }

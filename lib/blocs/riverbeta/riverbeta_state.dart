@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
+import 'package:yvrkayakers/blocs/hashtag/index.dart';
 
 abstract class RiverbetaState extends Equatable {
   /// notify change state without deep clone state
@@ -60,8 +61,9 @@ class FoundNearbyRiverbetaState extends RiverbetaState {
 class FoundRiverbetaState extends RiverbetaState {
   final RiverbetaModel foundRiver;
   final RiverAnnualStatModel foundRiverStat;
+  final HashtagModel foundRiverHashtag;
   FoundRiverbetaState(int version,
-      {@required this.foundRiver, this.foundRiverStat})
+      {@required this.foundRiver, this.foundRiverStat, this.foundRiverHashtag})
       : super(version);
 }
 

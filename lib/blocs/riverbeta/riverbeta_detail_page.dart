@@ -6,6 +6,7 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_add_page.dart';
 import 'package:yvrkayakers/blocs/trip/trip_add_page.dart';
+import 'package:yvrkayakers/blocs/hashtag/index.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
@@ -85,6 +86,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
       if (currentState is FoundRiverbetaState) {
         var foundRiver = currentState.foundRiver;
         var foundRiverStat = currentState.foundRiverStat;
+        var foundRiverHashtag = currentState.foundRiverHashtag;
 
         return Scaffold(
             appBar: AppBar(
@@ -137,7 +139,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                     ]),
                 Text("#" + foundRiver.riverHashtag()),
                 FutureBuilder(
-                  future: hashtagYoutubeVDO(foundRiver),
+                  future: hashtagYoutubeVDO(foundRiver, foundRiverHashtag),
                   builder:
                       (BuildContext context, AsyncSnapshot<Widget> snapshot) {
                     if (snapshot.data == null) {
@@ -190,18 +192,21 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
         .add(FetchingRiverbetaEvent(this.widget._currentRiverId));
   }
 
-  Future<Widget> hashtagYoutubeVDO(RiverbetaModel foundRiver) async {
+  Future<Widget> hashtagYoutubeVDO(
+      RiverbetaModel foundRiver, HashtagModel foundRiverHashtag) async {
     try {
       List<ExtObjectLink> newSampleVideos;
+      //get to see what hashtag we have
+
       //only fetch if it's older than 1 week
-      if (foundRiver.lastFetchVideos != null &&
-          DateTime.now()
-              .isBefore(foundRiver.lastFetchVideos.add(Duration(days: 7)))) {
-        newSampleVideos = foundRiver.relatedVideos;
+      if (foundRiverHashtag.lastFetchVideos != null &&
+          DateTime.now().isBefore(
+              foundRiverHashtag.lastFetchVideos.add(Duration(days: 7)))) {
+        newSampleVideos = foundRiverHashtag.relatedVideos;
       } else {
         String key = await MyConstants.googleApiKey();
         YoutubeAPI ytApi = new YoutubeAPI(key);
-        String query = "#" + foundRiver.riverHashtag();
+        String query = "#" + foundRiverHashtag.hashtag;
         var value = await ytApi.search(query);
         if (value.length == 0) {
           //then try hashtag for normal river
@@ -217,7 +222,8 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
 
       // update the fetch videos
       BlocProvider.of<RiverbetaBloc>(context).add(
-          new UpdatingVideosRiverbetaEvent(foundRiver.id, newSampleVideos));
+          new UpdatingVideosRiverbetaEvent(
+              foundRiverHashtag.hashtag, newSampleVideos));
 
       return GridView.builder(
         shrinkWrap: true,

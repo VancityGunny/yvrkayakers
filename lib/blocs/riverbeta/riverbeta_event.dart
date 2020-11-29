@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:yvrkayakers/blocs/hashtag/index.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:meta/meta.dart';
@@ -10,6 +11,7 @@ abstract class RiverbetaEvent {
   Stream<RiverbetaState> applyAsync(
       {RiverbetaState currentState, RiverbetaBloc bloc});
   final RiverbetaRepository _riverbetaRepository = RiverbetaRepository();
+  final HashtagRepository _hashtagRepository = HashtagRepository();
 }
 
 class UnRiverbetaEvent extends RiverbetaEvent {
@@ -72,28 +74,33 @@ class SearchingNearbyRiverbetaEvent extends RiverbetaEvent {
 class FetchingRiverbetaEvent extends RiverbetaEvent {
   final String riverId;
   FetchingRiverbetaEvent(this.riverId);
+
   @override
   Stream<RiverbetaState> applyAsync(
       {RiverbetaState currentState, RiverbetaBloc bloc}) async* {
     yield UnRiverbetaState(0);
     var foundRiver = await _riverbetaRepository.getRiverById(riverId);
     var foundRiverStat = await _riverbetaRepository.getRiverStat(riverId);
+    var foundRiverHashtag =
+        await _hashtagRepository.getHashtag(foundRiver.riverHashtag());
     yield FoundRiverbetaState(0,
-        foundRiver: foundRiver, foundRiverStat: foundRiverStat);
+        foundRiver: foundRiver,
+        foundRiverStat: foundRiverStat,
+        foundRiverHashtag: foundRiverHashtag);
   }
 }
 
 class UpdatingVideosRiverbetaEvent extends RiverbetaEvent {
-  final String riverId;
+  final String riverHashtag;
   final List<ExtObjectLink> videoList;
-  UpdatingVideosRiverbetaEvent(this.riverId, this.videoList);
+  UpdatingVideosRiverbetaEvent(this.riverHashtag, this.videoList);
   @override
   Stream<RiverbetaState> applyAsync(
       {RiverbetaState currentState, RiverbetaBloc bloc}) async* {
     var success =
-        await _riverbetaRepository.updateRiverVideos(riverId, videoList);
+        await _hashtagRepository.updateHashtagVideos(riverHashtag, videoList);
     if (success != null) {
-      yield UpdatedRiverbetaState(0, riverId: riverId);
+      yield UpdatedRiverbetaState(0, riverId: riverHashtag);
     }
   }
 }
