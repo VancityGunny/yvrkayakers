@@ -62,14 +62,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await _authRepository.getUser();
         // if found user record
         if (user != null) {
-          if (user.phone != null && user.userName != null) {
+          if (user.phone.isNotEmpty && user.userName.isNotEmpty) {
             // must logged in with phone number verified and username verified
             yield AuthenticatedAuthState(0, user.displayName);
           } else {
-            if (user.phone == null) {
+            if (user.phone.isEmpty) {
               // if missing phone then do phone first
               yield PhoneVerificationAuthState(0);
-            } else if (user.userName == null) {
+            } else if (user.userName.isEmpty) {
               yield UserNameVerificationAuthState(0);
             } else {
               yield LogInFailureAuthState(0, "Invalid State");
@@ -92,14 +92,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> _mapLoggedInToState() async* {
     final user = await _authRepository.getUser();
     if (user != null) {
-      if (user.phone != null && user.userName != null) {
+      if (user.phone.isNotEmpty && user.userName.isNotEmpty) {
         // must logged in with phone number verified and username verified
         yield AuthenticatedAuthState(0, user.displayName);
       } else {
-        if (user.phone == null) {
+        if (user.phone.isEmpty) {
           // if missing phone then do phone first
           yield PhoneVerificationAuthState(0);
-        } else if (user.userName == null) {
+        } else if (user.userName.isEmpty) {
           yield UserNameVerificationAuthState(0);
         } else {
           yield LogInFailureAuthState(0, "Invalid State");

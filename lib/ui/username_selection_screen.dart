@@ -61,7 +61,9 @@ class UserNameSelectionScreenState extends State<UserNameSelectionScreen> {
                                     primaryColor: Colors.grey,
                                   ),
                                   child: TextFormField(
-                                    onSaved: (value) => _userName = value,
+                                    onSaved: (value) =>
+                                        _userName = value.toLowerCase(),
+                                    textCapitalization: TextCapitalization.none,
                                     validator: _validateUserName,
                                     decoration: InputDecoration(
                                       labelText: "Choose UserName ",
@@ -108,6 +110,7 @@ class UserNameSelectionScreenState extends State<UserNameSelectionScreen> {
     // check duplication
 
     if (_isInvalidAsyncUser) {
+      _isInvalidAsyncUser = false;
       return 'This username already exists.';
     }
     return null;
