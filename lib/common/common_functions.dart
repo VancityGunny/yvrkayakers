@@ -3,11 +3,14 @@ import 'package:hashids2/hashids2.dart';
 import 'package:location/location.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
+import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 
 class CommonFunctions {
   static String getHashtag(
-      {RiverbetaShortModel river, RiverlogModel riverlog}) {
+      {RiverbetaShortModel river,
+      RiverlogModel riverlog,
+      UserShortModel user}) {
     //get hashtage for each type of object
     if (river != null) {
       return MyConstants.hashtagRiverPrefix +
@@ -25,6 +28,11 @@ class CommonFunctions {
           riverlog.uid +
           MyConstants.hashtagDelimiter +
           hashids.encode(riverlog.totalRound);
+    }
+    if (user != null) {
+      return MyConstants.hashtagUserPrefix +
+          MyConstants.hashtagDelimiter +
+          user.userName;
     }
   }
 
@@ -124,6 +132,11 @@ class CommonFunctions {
     } else {
       return timeElapsed.inDays.toString() + ' day(s) ago';
     }
+  }
+
+  static bool isAlphaNumeric(String testString) {
+    final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+    return validCharacters.hasMatch(testString);
   }
 
   static String formatDateForDisplay(DateTime postedDate) {

@@ -107,6 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
                 headline2:
                     TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+                headline4:
+                    TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
                 headline6:
                     TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
                 button: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),

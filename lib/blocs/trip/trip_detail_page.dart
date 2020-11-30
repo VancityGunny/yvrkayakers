@@ -219,12 +219,17 @@ class TripDetailPageState extends State<TripDetailPage> {
         Row(
           children: [
             Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(5.0),
               child: TextField(
                 controller: this.txtAddComment,
+                keyboardType: TextInputType.multiline,
+                minLines: 2, //Normal textInputField will be displayed
+                maxLines: 2, // when user presses enter it will adapt to it
                 decoration: InputDecoration(
                     border: InputBorder.none, hintText: "Add Comment..."),
               ),
-            ),
+            )),
             RaisedButton(
                 child: Text('Add Comment'),
                 onPressed: () {
@@ -236,19 +241,21 @@ class TripDetailPageState extends State<TripDetailPage> {
           future: allComments,
           builder: (context, snapshot) {
             if (snapshot.hasData == false) return Text('');
+            List<TripCommentModel> sortedList = snapshot.data;
+            sortedList.sort((a, b) => a.createdDate.compareTo(b.createdDate));
             return ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: snapshot.data.length,
+              itemCount: sortedList.length,
               itemBuilder: (context, index) {
                 return SpeechBubble(
-                  avatarUrl: snapshot.data[index].userPicUrl,
-                  message: snapshot.data[index].message,
+                  avatarUrl: sortedList[index].userPicUrl,
+                  message: sortedList[index].message,
                   time: CommonFunctions.formatPostDateForDisplay(
-                      snapshot.data[index].createdDate),
+                      sortedList[index].createdDate),
                   delivered: true,
                   isMe: true,
-                  userDisplayName: snapshot.data[index].userDisplayName,
+                  userDisplayName: sortedList[index].userDisplayName,
                 );
               },
             );

@@ -102,6 +102,17 @@ class UserExperienceCard extends StatelessWidget {
                   children: [
                     Text(currentUser.displayName,
                         style: Theme.of(context).textTheme.headline1),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("@" + currentUser.userName,
+                            style: Theme.of(context).textTheme.headline4),
+                        Text('   '),
+                        Text(
+                            "#" + CommonFunctions.getHashtag(user: currentUser),
+                            style: Theme.of(context).textTheme.headline4),
+                      ],
+                    ),
                     Text(
                       "Favorite: " +
                           ((currentUser.userStat != null)
@@ -116,31 +127,33 @@ class UserExperienceCard extends StatelessWidget {
                                     .format(currentUser.userStat.lastWetness)
                                 : ""),
                         style: Theme.of(context).textTheme.subtitle1),
+                    LimitedBox(
+                        maxHeight: 20.0,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: groupExperience.length,
+                          itemBuilder: (context, index) {
+                            var gradeLabel =
+                                CommonFunctions.translateRiverDifficulty(
+                                    groupExperience.keys.elementAt(index));
+                            return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  RiverGradeIcon(
+                                      groupExperience.keys.elementAt(index)),
+                                  Text(" " +
+                                      groupExperience.values
+                                          .elementAt(index)
+                                          .toString())
+                                ]);
+                          },
+                        ))
                   ],
                 )
               ],
             ),
-            LimitedBox(
-                maxHeight: 20.0,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: groupExperience.length,
-                  itemBuilder: (context, index) {
-                    var gradeLabel = CommonFunctions.translateRiverDifficulty(
-                        groupExperience.keys.elementAt(index));
-                    return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          RiverGradeIcon(groupExperience.keys.elementAt(index)),
-                          Text(" " +
-                              groupExperience.values
-                                  .elementAt(index)
-                                  .toString() +
-                              " runs ")
-                        ]);
-                  },
-                ))
           ]);
         });
   }

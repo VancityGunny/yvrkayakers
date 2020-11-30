@@ -6,6 +6,8 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:yvrkayakers/generated/l10n.dart';
 
+import 'package:yvrkayakers/common/common_functions.dart';
+
 class UserNameSelectionScreen extends StatefulWidget {
   @override
   UserNameSelectionScreenState createState() => UserNameSelectionScreenState();
@@ -50,7 +52,7 @@ class UserNameSelectionScreenState extends State<UserNameSelectionScreen> {
                                 margin: EdgeInsets.only(bottom: 40.0),
                                 child: Image(
                                   image: AssetImage(
-                                    'graphics/authentication.png',
+                                    'graphics/usernameselection.png',
                                   ),
                                 ),
                               ),
@@ -106,6 +108,9 @@ class UserNameSelectionScreenState extends State<UserNameSelectionScreen> {
     }
     if (selectedUserName.length < 5 || selectedUserName.length > 16) {
       return 'Please limit username between 5-16 characters';
+    }
+    if (CommonFunctions.isAlphaNumeric(selectedUserName) == false) {
+      return 'Please use only alphanumerical character';
     }
     // check duplication
 
