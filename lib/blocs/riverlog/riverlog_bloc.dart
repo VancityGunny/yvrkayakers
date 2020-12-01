@@ -12,25 +12,36 @@ class RiverlogBloc extends Bloc<RiverlogEvent, RiverlogState> {
   RiverlogState get initialState => UnRiverlogState(0);
 
   StreamController riverLogController;
-  final BehaviorSubject<List<RiverlogModel>> allRiverLogs =
-      BehaviorSubject<List<RiverlogModel>>();
+  final BehaviorSubject<List<RiverlogShortModel>> allRiverLogs =
+      BehaviorSubject<List<RiverlogShortModel>>();
 
   initStream() {
     riverLogController = StreamController.broadcast();
 
     var currentUserId = FirebaseAuth.instance.currentUser.uid;
+    // riverLogController.addStream(FirebaseFirestore.instance
+    //     .collection('/riverlogs')
+    //     .doc(currentUserId)
+    //     .collection('/logs')
+    //     .snapshots());
+    // riverLogController.stream.listen((event) {
+    //   QuerySnapshot querySnapshot = event;
+    //   var newRiverlogs = new List<RiverlogModel>();
+    //   if (querySnapshot.docs.length > 0) {
+    //     event.docs.forEach((f) {
+    //       newRiverlogs.add(RiverlogModel.fromFire(f));
+    //     });
+    //   }
     riverLogController.addStream(FirebaseFirestore.instance
         .collection('/riverlogs')
         .doc(currentUserId)
-        .collection('/logs')
         .snapshots());
     riverLogController.stream.listen((event) {
-      QuerySnapshot querySnapshot = event;
-      var newRiverlogs = new List<RiverlogModel>();
-      if (querySnapshot.docs.length > 0) {
-        event.docs.forEach((f) {
-          newRiverlogs.add(RiverlogModel.fromFire(f));
-        });
+      DocumentSnapshot docSnapshot = event;
+      var newRiverlogs = new List<RiverlogShortModel>();
+      if (docSnapshot.exists) {
+        var foundUserLogs = UserRiverlogModel.fromFire(docSnapshot);
+        newRiverlogs = foundUserLogs.logSummary;
       }
       allRiverLogs.add(newRiverlogs);
     });

@@ -34,13 +34,31 @@ class RiverlogProvider {
   }
 
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {
-    var userRiverLogsRef = _firestore
+    var userRiverlogsRef =
+        _firestore.collection('/riverlogs').doc(newRiverLog.uid);
+    var userRiverlogsObj = await userRiverlogsRef.get();
+    if (userRiverlogsObj.exists) {
+      // if already exists then we append to that
+      var foundObject = UserRiverlogModel.fromFire(userRiverlogsObj);
+      foundObject.logSummary.add(newRiverLog.toRiverlogShortModel());
+      userRiverlogsRef.update({
+        'logSummary': foundObject.logSummary.map((e) => e.toJson()).toList()
+      });
+    } else {
+      // if not already exists this is the new collection
+      List<RiverlogShortModel> newLogs = List<RiverlogShortModel>();
+      newLogs.add(newRiverLog.toRiverlogShortModel());
+      userRiverlogsRef
+          .set({'logSummary': newLogs.map((e) => e.toJson()).toList()});
+    }
+
+    var riverlogsRef = _firestore
         .collection('/riverlogs')
         .doc(newRiverLog.uid)
         .collection('/logs');
-    var userRiverLogsDocRef = userRiverLogsRef.doc(newRiverLog.id);
-    var countTotalRuns = await userRiverLogsRef.get();
-    var countRiverRuns = await userRiverLogsRef
+    var userRiverLogsDocRef = riverlogsRef.doc(newRiverLog.id);
+    var countTotalRuns = await riverlogsRef.get();
+    var countRiverRuns = await riverlogsRef
         .where('river.id', isEqualTo: newRiverLog.river.id)
         .get();
     newRiverLog.totalRound = countTotalRuns.docs.length + 1;
@@ -52,7 +70,7 @@ class RiverlogProvider {
     var userRef = _firestore.collection('/users').doc(newRiverLog.uid);
     var userObj = await userRef.get();
     updateUserExperience(userObj, newRiverLog, userRef);
-    await updateUserStat(userObj, newRiverLog, userRiverLogsRef, userRef);
+    await updateUserStat(userObj, newRiverLog, riverlogsRef, userRef);
     return newRiverLog.id;
   }
 

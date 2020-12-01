@@ -53,10 +53,12 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                         size: 150, color: Color.fromARGB(15, 0, 0, 0)));
               }
 
-              List<RiverlogModel> tempData = snapshot.data;
+              List<RiverlogShortModel> tempData = snapshot.data;
               tempData.sort((a, b) => b.logDate.compareTo(a.logDate));
-              var newGroupedData = groupBy(tempData,
-                  (RiverlogModel obj) => DateFormat.yMMM().format(obj.logDate));
+              var newGroupedData = groupBy(
+                  tempData,
+                  (RiverlogShortModel obj) =>
+                      DateFormat.yMMM().format(obj.logDate));
               return Column(children: [
                 UserExperienceCard(tempData),
                 RiverlogList(newGroupedData: newGroupedData)
@@ -72,7 +74,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
 }
 
 class UserExperienceCard extends StatelessWidget {
-  List<RiverlogModel> _riverlogs;
+  List<RiverlogShortModel> _riverlogs;
   UserExperienceCard(this._riverlogs);
   @override
   Widget build(BuildContext context) {
@@ -165,7 +167,7 @@ class RiverlogList extends StatelessWidget {
     @required this.newGroupedData,
   }) : super(key: key);
 
-  final Map<String, List<RiverlogModel>> newGroupedData;
+  final Map<String, List<RiverlogShortModel>> newGroupedData;
 
   @override
   Widget build(BuildContext context) {
@@ -216,13 +218,13 @@ class RiverlogList extends StatelessWidget {
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle2),
-                                  Spacer(),
-                                  Container(
-                                    child: Text(
-                                        CommonFunctions.formatOrdinalNumber(
-                                                curRiver.riverRound) +
-                                            ' runs'),
-                                  ),
+                                  // Spacer(),
+                                  // Container(
+                                  //   child: Text(
+                                  //       CommonFunctions.formatOrdinalNumber(
+                                  //               curRiver.riverRound) +
+                                  //           ' runs'),
+                                  // ),
                                 ],
                               ),
                               Row(
@@ -245,7 +247,7 @@ class RiverlogList extends StatelessWidget {
         });
   }
 
-  Widget riverNameSymbol(RiverlogModel curRiverlog, BuildContext context) {
+  Widget riverNameSymbol(RiverlogShortModel curRiverlog, BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
       child: RichText(
@@ -262,7 +264,7 @@ class RiverlogList extends StatelessWidget {
     );
   }
 
-  Widget waterLevelGauge(RiverlogModel curRiverlog, BuildContext context) {
+  Widget waterLevelGauge(RiverlogShortModel curRiverlog, BuildContext context) {
     try {
       var maxUnits = curRiverlog.river.maxFlow - curRiverlog.river.minFlow;
       var currentUnit =

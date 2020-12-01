@@ -37,8 +37,69 @@ class SwimmerLog extends Equatable {
   List<Object> get props => [swimmerId, rescuerId];
 }
 
-class RiverlogModel extends Equatable {
+class UserRiverlogModel extends Equatable {
+  final String uid;
+  final List<RiverlogShortModel> logSummary;
+  UserRiverlogModel(this.uid, this.logSummary);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [uid, logSummary];
+
+  factory UserRiverlogModel.fromFire(DocumentSnapshot doc) {
+    var json = doc.data();
+    return UserRiverlogModel(
+        doc.id,
+        (json['logSummary'] == null)
+            ? List<RiverlogShortModel>()
+            : json['logSummary']
+                .map<RiverlogShortModel>((e) => RiverlogShortModel.fromJson(e))
+                .toList());
+  }
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['logSummary'] = logSummary.map((e) => e.toJson()).toList();
+    return data;
+  }
+}
+
+class RiverlogShortModel extends Equatable {
   final String id;
+  final double waterLevel;
+  final DateTime logDate;
+  final RiverbetaShortModel river;
+  RiverlogShortModel(this.id, this.waterLevel, this.logDate, this.river);
+
+  factory RiverlogShortModel.fromJson(Map<String, dynamic> json) {
+    return RiverlogShortModel(
+        json['id'] as String,
+        json['waterLevel'] as double,
+        json['logDate'].toDate(),
+        RiverbetaShortModel.fromJson(json['river']));
+  }
+  factory RiverlogShortModel.fromFire(DocumentSnapshot doc) {
+    var json = doc.data();
+    return RiverlogShortModel(
+        json['id'] as String,
+        json['waterLevel'] as double,
+        json['logDate'].toDate(),
+        RiverbetaShortModel.fromJson(json['river']));
+  }
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['waterLevel'] = waterLevel;
+    data['logDate'] = logDate;
+    data['river'] = river.toJson();
+    return data;
+  }
+
+  // TODO: implement props
+  @override
+  List<Object> get props => [id, waterLevel, logDate, river];
+}
+
+class RiverlogModel extends RiverlogShortModel {
   final String tripId;
   final String uid;
   final bool didSwim;
@@ -48,17 +109,13 @@ class RiverlogModel extends Equatable {
   final String note;
   final int enjoyment; // rating of enjoyment 1-5
 
-  final double waterLevel;
-  final DateTime logDate;
   final List<String> friends; // store userId
 
   int totalRound; // count how many time user run any river
   int riverRound; // count how many time user run this river
 
-  final RiverbetaShortModel river;
-
   RiverlogModel(
-      this.id,
+      id,
       this.tripId,
       this.uid,
       this.didSwim,
@@ -67,12 +124,13 @@ class RiverlogModel extends Equatable {
       this.rescuedBy,
       this.note,
       this.enjoyment,
-      this.waterLevel,
-      this.logDate,
+      waterLevel,
+      logDate,
       this.friends,
       this.totalRound,
       this.riverRound,
-      this.river);
+      river)
+      : super(id, waterLevel, logDate, river);
 
   @override
   List<Object> get props => [
@@ -130,6 +188,9 @@ class RiverlogModel extends Equatable {
         json['totalRound'] as int,
         json['riverRound'] as int,
         RiverbetaModel.fromJson(json['river']));
+  }
+  RiverlogShortModel toRiverlogShortModel() {
+    return RiverlogShortModel(id, waterLevel, logDate, river);
   }
 
   Map<String, dynamic> toJson() {
