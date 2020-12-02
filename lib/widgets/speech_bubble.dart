@@ -2,13 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SpeechBubble extends StatelessWidget {
+  final Function onTouched;
   SpeechBubble(
       {this.avatarUrl,
       this.message,
       this.time,
       this.delivered,
       this.isMe,
-      this.userDisplayName});
+      this.userDisplayName,
+      this.onTouched});
 
   final String message, time, avatarUrl, userDisplayName;
   final delivered, isMe;
@@ -30,10 +32,19 @@ class SpeechBubble extends StatelessWidget {
             bottomRight: Radius.circular(10.0),
           );
     return Row(children: [
-      CircleAvatar(
-        radius: 20.0,
-        backgroundColor: Colors.grey[200],
-        backgroundImage: CachedNetworkImageProvider(avatarUrl),
+      GestureDetector(
+        onTap: () {
+          // go to user riverlog page
+          if (null != this.onTouched) {
+            // Raise the event
+            this.onTouched();
+          }
+        },
+        child: CircleAvatar(
+          radius: 20.0,
+          backgroundColor: Colors.grey[200],
+          backgroundImage: CachedNetworkImageProvider(avatarUrl),
+        ),
       ),
       Flexible(
           child: Column(

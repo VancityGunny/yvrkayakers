@@ -11,7 +11,7 @@ import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
-
+import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
 
 class TripDetailPage extends StatefulWidget {
@@ -258,6 +258,9 @@ class TripDetailPageState extends State<TripDetailPage> {
                   delivered: true,
                   isMe: true,
                   userDisplayName: sortedList[index].userDisplayName,
+                  onTouched: () {
+                    goToUserRiverlogPage(sortedList[index].userId);
+                  },
                 );
               },
             );
@@ -286,11 +289,16 @@ class TripDetailPageState extends State<TripDetailPage> {
           return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                CircleAvatar(
-                  radius: 20.0,
-                  backgroundColor: Colors.grey[200],
-                  backgroundImage: CachedNetworkImageProvider(
-                      currentParticipant.userPhotoUrl),
+                GestureDetector(
+                  onTap: () {
+                    goToUserRiverlogPage(currentParticipant.userId);
+                  },
+                  child: CircleAvatar(
+                    radius: 20.0,
+                    backgroundColor: Colors.grey[200],
+                    backgroundImage: CachedNetworkImageProvider(
+                        currentParticipant.userPhotoUrl),
+                  ),
                 ),
                 RichText(
                     text: TextSpan(
@@ -350,5 +358,14 @@ class TripDetailPageState extends State<TripDetailPage> {
     txtAddComment.text = "";
     BlocProvider.of<TripBloc>(context)
         .add(new AddingCommentTripEvent(widget._foundTrip.id, newComment));
+  }
+
+  void goToUserRiverlogPage(String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return RiverlogPage(userId);
+      }),
+    );
   }
 }

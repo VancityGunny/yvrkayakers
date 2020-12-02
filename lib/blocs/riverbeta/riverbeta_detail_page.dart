@@ -161,11 +161,16 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                       return Text('');
                     }
                     return Row(children: [
-                      CircleAvatar(
-                        radius: 20.0,
-                        backgroundColor: Colors.grey[200],
-                        backgroundImage:
-                            CachedNetworkImageProvider(paddler.photoUrl),
+                      GestureDetector(
+                        onTap: () {
+                          goToUserRiverlogPage(paddler.uid);
+                        },
+                        child: CircleAvatar(
+                          radius: 20.0,
+                          backgroundColor: Colors.grey[200],
+                          backgroundImage:
+                              CachedNetworkImageProvider(paddler.photoUrl),
+                        ),
                       ),
                       Text('Paddled by ' +
                           paddler.displayName +
@@ -270,6 +275,15 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
             value: BlocProvider.of<RiverbetaBloc>(context),
           ),
         ], child: RiverlogAddPage(foundRiver));
+      }),
+    );
+  }
+
+  void goToUserRiverlogPage(String userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return RiverlogPage(userId);
       }),
     );
   }
