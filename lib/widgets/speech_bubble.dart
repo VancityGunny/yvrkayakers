@@ -63,28 +63,10 @@ class SpeechBubble extends StatelessWidget {
               color: bg,
               borderRadius: radius,
             ),
-            child: Stack(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(right: 48.0),
-                  child: Text(message,
-                      style: Theme.of(context).textTheme.bodyText2),
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  right: 0.0,
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(width: 3.0),
-                      Icon(
-                        icon,
-                        size: 12.0,
-                        color: Colors.black38,
-                      )
-                    ],
-                  ),
-                )
-              ],
+            child: Padding(
+              padding: EdgeInsets.only(right: 48.0),
+              child:
+                  Text(message, style: Theme.of(context).textTheme.bodyText2),
             ),
           ),
           Row(

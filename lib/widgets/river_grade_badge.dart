@@ -9,15 +9,19 @@ class RiverGradeMedal extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        alignment: Alignment.center,
-        height: 22.0,
-        width: 22.0,
-        decoration: new BoxDecoration(
-            color: Colors.blue, borderRadius: new BorderRadius.circular(10.0)),
-        child: Text(
-          CommonFunctions.translateRiverDifficulty(_curRiver.difficulty),
-          style: TextStyle(fontSize: 15, color: Colors.white),
-        ));
+        padding: EdgeInsets.all(2.0),
+        child: Container(
+            alignment: Alignment.center,
+            height: 22.0,
+            width: 22.0,
+            decoration: new BoxDecoration(
+                color: CommonFunctions.translateRiverDifficultyColor(
+                    _curRiver.difficulty),
+                borderRadius: new BorderRadius.circular(10.0)),
+            child: Text(
+              CommonFunctions.translateRiverDifficulty(_curRiver.difficulty),
+              style: TextStyle(fontSize: 15, color: Colors.white),
+            )));
   }
 }
 

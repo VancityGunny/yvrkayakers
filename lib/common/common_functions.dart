@@ -6,6 +6,8 @@ import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 
+import 'package:flutter/material.dart';
+
 class CommonFunctions {
   static String getHashtag(
       {RiverbetaShortModel river,
@@ -34,6 +36,17 @@ class CommonFunctions {
           MyConstants.hashtagDelimiter +
           user.userName;
     }
+  }
+
+  static MaterialColor translateRiverDifficultyColor(double riverDifficulty) {
+    if (riverDifficulty > 4.5) {
+      return Colors.red;
+    } else if (riverDifficulty > 3.5) {
+      return Colors.orange;
+    } else if (riverDifficulty > 2.5) {
+      return Colors.green;
+    }
+    return Colors.blue; //default return nothing
   }
 
   static String translateRiverDifficulty(double riverDifficulty) {

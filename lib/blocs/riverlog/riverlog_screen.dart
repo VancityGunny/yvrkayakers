@@ -63,7 +63,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
               var newGroupedData = groupBy(
                   tempData,
                   (RiverlogShortModel obj) =>
-                      DateFormat.yMMM().format(obj.logDate));
+                      DateFormat.yMMMM().format(obj.logDate));
               return Column(children: [
                 UserExperienceCard(tempData),
                 RiverlogList(newGroupedData: newGroupedData)
@@ -199,7 +199,7 @@ class RiverlogList extends StatelessWidget {
           return Card(
             elevation: 5,
             child: Padding(
-              padding: EdgeInsets.all(7),
+              padding: EdgeInsets.all(2),
               child: Stack(children: <Widget>[
                 Align(
                   alignment: Alignment.centerRight,
@@ -210,29 +210,51 @@ class RiverlogList extends StatelessWidget {
                           child: Column(
                             children: <Widget>[
                               Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.date_range,
-                                    size: 18.0,
-                                    color: Theme.of(context).accentColor,
-                                  ),
-                                  Text(
-                                      " ${DateFormat.yMMMd().format(curRiver.logDate)}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle2),
-                                  // Spacer(),
-                                  // Container(
-                                  //   child: Text(
-                                  //       CommonFunctions.formatOrdinalNumber(
-                                  //               curRiver.riverRound) +
-                                  //           ' runs'),
-                                  // ),
-                                ],
-                              ),
-                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(5.0),
+                                                    topRight:
+                                                        Radius.circular(5.0))),
+                                            width: 40.0,
+                                            alignment: Alignment(0.0, 0.0),
+                                            child: Text(
+                                              '${DateFormat('E').format(curRiver.logDate)}',
+                                              style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            )),
+                                        Container(
+                                            width: 40.0,
+                                            // color: Colors.lightBlue,
+                                            alignment: Alignment(0.0, 0.0),
+                                            child: Text(
+                                              '${DateFormat.d().format(curRiver.logDate)}',
+                                              style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            ))
+                                      ],
+                                    ),
+                                  ),
                                   RiverGradeMedal(curRiver.river),
                                   riverNameSymbol(curRiver, context),
                                   Spacer(),
@@ -274,7 +296,7 @@ class RiverlogList extends StatelessWidget {
           (curRiverlog.waterLevel - curRiverlog.river.minFlow) / maxUnits;
       return SizedBox(
         height: 30,
-        width: 150,
+        width: 120,
         child: LiquidLinearProgressIndicator(
           value: currentUnit,
           valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),
