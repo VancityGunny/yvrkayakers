@@ -10,40 +10,28 @@ import 'package:yvrkayakers/blocs/riverlog/index.dart';
 class RiverlogBloc extends Bloc<RiverlogEvent, RiverlogState> {
   @override
   RiverlogState get initialState => UnRiverlogState(0);
+  final String _selectedUserId;
 
-  StreamController riverLogController;
-  final BehaviorSubject<List<RiverlogShortModel>> allRiverLogs =
+  RiverlogBloc(this._selectedUserId);
+  StreamController allRiverlogController;
+  final BehaviorSubject<List<RiverlogShortModel>> allRiverlogs =
       BehaviorSubject<List<RiverlogShortModel>>();
 
   initStream() {
-    riverLogController = StreamController.broadcast();
+    allRiverlogController = StreamController.broadcast();
 
-    var currentUserId = FirebaseAuth.instance.currentUser.uid;
-    // riverLogController.addStream(FirebaseFirestore.instance
-    //     .collection('/riverlogs')
-    //     .doc(currentUserId)
-    //     .collection('/logs')
-    //     .snapshots());
-    // riverLogController.stream.listen((event) {
-    //   QuerySnapshot querySnapshot = event;
-    //   var newRiverlogs = new List<RiverlogModel>();
-    //   if (querySnapshot.docs.length > 0) {
-    //     event.docs.forEach((f) {
-    //       newRiverlogs.add(RiverlogModel.fromFire(f));
-    //     });
-    //   }
-    riverLogController.addStream(FirebaseFirestore.instance
+    allRiverlogController.addStream(FirebaseFirestore.instance
         .collection('/riverlogs')
-        .doc(currentUserId)
+        .doc(_selectedUserId)
         .snapshots());
-    riverLogController.stream.listen((event) {
+    allRiverlogController.stream.listen((event) {
       DocumentSnapshot docSnapshot = event;
       var newRiverlogs = new List<RiverlogShortModel>();
       if (docSnapshot.exists) {
         var foundUserLogs = UserRiverlogModel.fromFire(docSnapshot);
         newRiverlogs = foundUserLogs.logSummary;
       }
-      allRiverLogs.add(newRiverlogs);
+      allRiverlogs.add(newRiverlogs);
     });
   }
 

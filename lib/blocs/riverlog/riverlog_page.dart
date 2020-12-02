@@ -3,7 +3,8 @@ import 'package:yvrkayakers/blocs/riverlog/index.dart';
 
 class RiverlogPage extends StatefulWidget {
   static const String routeName = '/riverlog';
-
+  final String _selectedUserId;
+  RiverlogPage(this._selectedUserId);
   @override
   _RiverlogPageState createState() => _RiverlogPageState();
 }
@@ -15,7 +16,7 @@ class _RiverlogPageState extends State<RiverlogPage> {
       appBar: AppBar(
         title: Text('My Logbook'),
       ),
-      body: RiverlogScreen(),
+      body: RiverlogScreen(widget._selectedUserId),
       // floatingActionButton: new Visibility(
       //     child: FloatingActionButton(
       //         child: Icon(Icons.add), onPressed: goToAddRiverLogPage)),

@@ -13,7 +13,11 @@ import 'package:yvrkayakers/common/common_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 
+import 'package:yvrkayakers/blocs/auth/index.dart';
+
 class RiverlogScreen extends StatefulWidget {
+  final String _selectedUserId;
+  RiverlogScreen(this._selectedUserId);
   @override
   RiverlogScreenState createState() {
     return RiverlogScreenState();
@@ -22,10 +26,11 @@ class RiverlogScreen extends StatefulWidget {
 
 class RiverlogScreenState extends State<RiverlogScreen> {
   RiverlogScreenState();
-
+  RiverlogBloc _riverlogBloc;
   @override
   void initState() {
     super.initState();
+    _riverlogBloc = RiverlogBloc(widget._selectedUserId);
     _load();
   }
 
@@ -38,7 +43,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: StreamBuilder(
-            stream: BlocProvider.of<RiverlogBloc>(context).allRiverLogs.stream,
+            stream: _riverlogBloc.allRiverlogs.stream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
@@ -67,9 +72,7 @@ class RiverlogScreenState extends State<RiverlogScreen> {
   }
 
   void _load([bool isError = false]) {
-    var currentUserId = FirebaseAuth.instance.currentUser.uid;
-    BlocProvider.of<RiverlogBloc>(context)
-        .add(LoadUserRiverlogEvent(currentUserId));
+    _riverlogBloc.initStream();
   }
 }
 
@@ -81,11 +84,11 @@ class UserExperienceCard extends StatelessWidget {
     var session = FlutterSession();
 
     // TODO: implement build
-    return FutureBuilder(
-        future: session.get("loggedInUser"),
+    return StreamBuilder(
+        stream: BlocProvider.of<AuthBloc>(context).currentAuth.stream,
         builder: (context, snapshot) {
           if (snapshot.data == null) return Text('');
-          var currentUser = UserModel.fromJson(snapshot.data);
+          var currentUser = snapshot.data;
           var groupExperience = groupBy(currentUser.experience,
                   (UserExperienceModel obj) => obj.riverGrade.roundToDouble())
               .map((key, value) => MapEntry<double, int>(

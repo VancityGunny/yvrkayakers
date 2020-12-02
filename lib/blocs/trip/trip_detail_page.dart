@@ -12,6 +12,8 @@ import 'package:yvrkayakers/blocs/user/user_model.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 
+import 'package:yvrkayakers/blocs/auth/index.dart';
+
 class TripDetailPage extends StatefulWidget {
   TripModel _foundTrip;
   TripDetailPage(this._foundTrip);
@@ -119,7 +121,7 @@ class TripDetailPageState extends State<TripDetailPage> {
 
   Future<void> joinThisTrip() async {
     var session = FlutterSession();
-    var currentUser = UserModel.fromJson(await session.get("loggedInUser"));
+    var currentUser = BlocProvider.of<AuthBloc>(context).currentAuth.value;
     var userSkill = currentUser.userSkill;
     var userSkillVerified = currentUser.userSkillVerified;
     TripParticipantModel newParticipant = new TripParticipantModel(

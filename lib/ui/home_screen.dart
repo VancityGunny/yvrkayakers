@@ -11,6 +11,7 @@ import 'package:yvrkayakers/blocs/trip/trip_bloc.dart';
 import 'package:yvrkayakers/blocs/trip/trip_page.dart';
 import 'package:yvrkayakers/common/common_bloc.dart';
 import 'package:yvrkayakers/generated/l10n.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   final String name;
@@ -24,7 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   RiverbetaBloc _riverbetaBloc = new RiverbetaBloc();
-  RiverlogBloc _riverlogBloc = new RiverlogBloc();
+  RiverlogBloc _riverlogBloc =
+      new RiverlogBloc(FirebaseAuth.instance.currentUser.uid);
   TripBloc _tripBloc = new TripBloc();
   @override
   void initState() {
@@ -144,7 +146,11 @@ class HomeScreenState extends State<HomeScreen> {
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
   List<Widget> _navScreens() {
-    return [RiverbetaPage(), RiverlogPage(), TripPage()];
+    return [
+      RiverbetaPage(),
+      RiverlogPage(FirebaseAuth.instance.currentUser.uid),
+      TripPage()
+    ];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
