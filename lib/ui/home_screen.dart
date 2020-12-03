@@ -55,14 +55,6 @@ class HomeScreenState extends State<HomeScreen> {
           title: Text('YVRKayakers'),
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.list,
-              ),
-              onPressed: () {
-                //_goToRiverbetaScreen(context);
-              },
-            ),
-            IconButton(
               icon: FaIcon(FontAwesomeIcons.infoCircle),
               onPressed: () {
                 // go to about page
@@ -93,13 +85,13 @@ class HomeScreenState extends State<HomeScreen> {
                               BlocProvider.of<AuthBloc>(context).add(
                                 LoggedOutEvent(),
                               );
-                              Navigator.of(context).pop();
+                              Navigator.of(context, rootNavigator: true).pop();
                             },
                             child: Text(delegate.yesButton),
                           ),
                           FlatButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context, rootNavigator: true).pop();
                             },
                             child: Text(delegate.noButton),
                           ),

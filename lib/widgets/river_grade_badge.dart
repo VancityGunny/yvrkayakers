@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
+import 'package:yvrkayakers/blocs/user/user_model.dart';
+
 class RiverGradeMedal extends StatelessWidget {
   RiverbetaShortModel _curRiver;
   RiverGradeMedal(this._curRiver);
@@ -20,6 +22,29 @@ class RiverGradeMedal extends StatelessWidget {
                 borderRadius: new BorderRadius.circular(10.0)),
             child: Text(
               CommonFunctions.translateRiverDifficulty(_curRiver.difficulty),
+              style: TextStyle(fontSize: 15, color: Colors.white),
+            )));
+  }
+}
+
+class UserSkillMedal extends StatelessWidget {
+  double _curSkillLevel;
+  UserSkillMedal(this._curSkillLevel);
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+        padding: EdgeInsets.all(2.0),
+        child: Container(
+            alignment: Alignment.center,
+            height: 22.0,
+            width: 22.0,
+            decoration: new BoxDecoration(
+                color: CommonFunctions.translateRiverDifficultyColor(
+                    _curSkillLevel),
+                borderRadius: new BorderRadius.circular(10.0)),
+            child: Text(
+              CommonFunctions.translateRiverDifficulty(_curSkillLevel),
               style: TextStyle(fontSize: 15, color: Colors.white),
             )));
   }

@@ -286,62 +286,76 @@ class TripDetailPageState extends State<TripDetailPage> {
                       widget._foundTrip.river.difficulty)
                   ? "+1"
                   : "";
-          return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    goToUserRiverlogPage(currentParticipant.userId);
-                  },
-                  child: CircleAvatar(
-                    radius: 20.0,
-                    backgroundColor: Colors.grey[200],
-                    backgroundImage: CachedNetworkImageProvider(
-                        currentParticipant.userPhotoUrl),
-                  ),
+          return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Flexible(
+              fit: FlexFit.tight,
+              flex: 1,
+              child: GestureDetector(
+                onTap: () {
+                  goToUserRiverlogPage(currentParticipant.userId);
+                },
+                child: CircleAvatar(
+                  radius: 20.0,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: CachedNetworkImageProvider(
+                      currentParticipant.userPhotoUrl),
                 ),
-                RichText(
-                    text: TextSpan(
-                  text: paddlerWeight,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color:
-                          (paddlerWeight == "-1") ? Colors.red : Colors.green,
-                      fontSize: 20),
-                )),
-                Text(currentParticipant.userDisplayName),
-                Container(
-                    alignment: Alignment.center,
-                    height: 20.0,
-                    width: 20.0,
-                    decoration: new BoxDecoration(
-                        color: Colors.deepOrange,
-                        borderRadius: new BorderRadius.circular(10.0)),
-                    child: Text(
-                      CommonFunctions.translateRiverDifficulty(
-                          currentParticipant.skillLevel),
-                      style: TextStyle(fontSize: 15, color: Colors.white),
-                    )),
-                (currentParticipant.needRide == true)
-                    ? FaIcon(FontAwesomeIcons.child,
-                        size: 20, color: Colors.red)
-                    : FaIcon(FontAwesomeIcons.car,
-                        size: 20,
-                        color: (currentParticipant.availableSpace > 0)
-                            ? Colors.green
-                            : Colors.blue),
-                (currentParticipant.availableSpace > 0)
-                    ? RichText(
-                        text: TextSpan(
-                        text:
-                            '+' + currentParticipant.availableSpace.toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                            fontSize: 20),
-                      ))
-                    : Text(''),
-              ]);
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: RichText(
+                  text: TextSpan(
+                text: paddlerWeight,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: (paddlerWeight == "-1") ? Colors.red : Colors.green,
+                    fontSize: 20),
+              )),
+            ),
+            Flexible(
+              flex: 4,
+              fit: FlexFit.tight,
+              child: Text(currentParticipant.userDisplayName),
+            ),
+            Flexible(
+                flex: 1,
+                fit: FlexFit.tight,
+                child: UserSkillMedal(currentParticipant.skillLevel)),
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: (currentParticipant.needRide == true)
+                  ? FaIcon(FontAwesomeIcons.child, size: 20, color: Colors.red)
+                  : FaIcon(FontAwesomeIcons.car,
+                      size: 20,
+                      color: (currentParticipant.availableSpace > 0)
+                          ? Colors.green
+                          : Colors.blue),
+            ),
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: (currentParticipant.availableSpace > 0)
+                  ? Row(
+                      children: [
+                        RichText(
+                            text: TextSpan(
+                          text: '+' +
+                              currentParticipant.availableSpace.toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                              fontSize: 20),
+                        )),
+                        FaIcon(FontAwesomeIcons.chair,
+                            size: 20, color: Colors.green),
+                      ],
+                    )
+                  : Text(''),
+            )
+          ]);
         });
   }
 
