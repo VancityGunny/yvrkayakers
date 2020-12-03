@@ -114,7 +114,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Stream<AuthState> _mapLoggedOutToState() async* {
     _authRepository.signOut();
-    yield UnAuthState(0);
+    yield UnauthenticatedAuthState(0);
   }
 
   Stream<AuthState> _mapLoginWithGooglePressedToState() async* {
