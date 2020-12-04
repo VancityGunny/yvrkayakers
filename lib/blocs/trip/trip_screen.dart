@@ -64,131 +64,130 @@ class TripScreenState extends State<TripScreen> {
             var newGroupedData = groupBy(tempData,
                 (TripModel obj) => DateFormat.yMMMd().format(obj.tripDate));
 
-            return LimitedBox(
-                maxHeight: 480,
-                child: GroupListView(
-                  sectionsCount: newGroupedData.length,
-                  countOfItemInSection: (int section) {
-                    return newGroupedData[newGroupedData.keys.toList()[section]]
-                        .length;
-                  },
-                  itemBuilder: (BuildContext context, IndexPath index) {
-                    var curTrip = newGroupedData[newGroupedData.keys
-                        .toList()[index.section]][index.index];
-                    return GestureDetector(
-                        onTap: () {
-                          goToTripDetail(curTrip);
-                        },
-                        child: Card(
-                            elevation: 5,
-                            child: Padding(
-                              padding: EdgeInsets.all(2),
-                              child: Stack(children: <Widget>[
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 5, top: 2),
-                                          child: Column(
+            return GroupListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              sectionsCount: newGroupedData.length,
+              countOfItemInSection: (int section) {
+                return newGroupedData[newGroupedData.keys.toList()[section]]
+                    .length;
+              },
+              itemBuilder: (BuildContext context, IndexPath index) {
+                var curTrip =
+                    newGroupedData[newGroupedData.keys.toList()[index.section]]
+                        [index.index];
+                return GestureDetector(
+                    onTap: () {
+                      goToTripDetail(curTrip);
+                    },
+                    child: Card(
+                        elevation: 5,
+                        child: Padding(
+                          padding: EdgeInsets.all(2),
+                          child: Stack(children: <Widget>[
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Stack(
+                                children: <Widget>[
+                                  Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 5, top: 2),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
                                             children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        Icon(
-                                                          Icons.timer,
-                                                          size: 18.0,
-                                                          color: Colors.teal,
-                                                        ),
-                                                        Text(
-                                                          "${DateFormat.Hm().format(curTrip.tripDate)}",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.teal,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 18.0),
-                                                        ),
-                                                      ],
+                                              Container(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.timer,
+                                                      size: 18.0,
+                                                      color: Colors.teal,
                                                     ),
+                                                    Text(
+                                                      "${DateFormat.Hm().format(curTrip.tripDate)}",
+                                                      style: TextStyle(
+                                                          color: Colors.teal,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18.0),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              RiverGradeBadge(curTrip.river),
+                                              riverNameSymbol(curTrip.river),
+                                              Spacer(),
+                                              Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      participantsList(curTrip),
+                                                      riverChangeIcon(curTrip),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      FaIcon(
+                                                          FontAwesomeIcons
+                                                              .comments,
+                                                          size: 20,
+                                                          color: Colors.blue),
+                                                      Text(curTrip.commentCount
+                                                          .toString()),
+                                                    ],
                                                   )
                                                 ],
-                                              ),
-                                              Row(
-                                                children: <Widget>[
-                                                  RiverGradeBadge(
-                                                      curTrip.river),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  riverNameSymbol(
-                                                      curTrip.river),
-                                                  Spacer(),
-                                                  participantsList(curTrip),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  riverChangeIcon(curTrip),
-                                                  SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  FaIcon(
-                                                      FontAwesomeIcons.comments,
-                                                      size: 20,
-                                                      color: Colors.blue),
-                                                  Text(curTrip.commentCount
-                                                      .toString()),
-                                                ],
-                                              ),
-                                              Container(
-                                                  height: 50.0,
-                                                  child: ListView.builder(
-                                                    itemCount: curTrip
-                                                        .participants.length,
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return CircleAvatar(
-                                                        radius: 20.0,
-                                                        backgroundColor:
-                                                            Colors.grey[200],
-                                                        backgroundImage:
-                                                            CachedNetworkImageProvider(
-                                                                curTrip
-                                                                    .participants[
-                                                                        index]
-                                                                    .userPhotoUrl),
-                                                      );
-                                                    },
-                                                  ))
+                                              )
                                             ],
-                                          ))
-                                    ],
-                                  ),
-                                )
-                              ]),
-                            )));
-                  },
-                  groupHeaderBuilder: (BuildContext context, int section) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 2),
-                      child: Text(
-                        newGroupedData.keys.toList()[section].toString(),
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => SizedBox(height: 10),
-                  sectionSeparatorBuilder: (context, section) =>
-                      SizedBox(height: 10),
-                ));
+                                          ),
+                                          Container(
+                                              height: 50.0,
+                                              child: ListView.builder(
+                                                itemCount:
+                                                    curTrip.participants.length,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemBuilder: (context, index) {
+                                                  return CircleAvatar(
+                                                    radius: 20.0,
+                                                    backgroundColor:
+                                                        Colors.grey[200],
+                                                    backgroundImage:
+                                                        CachedNetworkImageProvider(
+                                                            curTrip
+                                                                .participants[
+                                                                    index]
+                                                                .userPhotoUrl),
+                                                  );
+                                                },
+                                              ))
+                                        ],
+                                      ))
+                                ],
+                              ),
+                            )
+                          ]),
+                        )));
+              },
+              groupHeaderBuilder: (BuildContext context, int section) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+                  child: Text(
+                    newGroupedData.keys.toList()[section].toString(),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) => SizedBox(height: 10),
+              sectionSeparatorBuilder: (context, section) =>
+                  SizedBox(height: 10),
+            );
           })
     ]));
   }
@@ -266,17 +265,17 @@ class TripScreenState extends State<TripScreen> {
       return Align(
           alignment: Alignment.topRight,
           child: Icon(
-            FontAwesomeIcons.arrowCircleUp,
+            FontAwesomeIcons.thumbsUp,
             color: Colors.green,
-            size: 30,
+            size: 20,
           ));
     } else if (tripBalance < 0) {
       return Align(
           alignment: Alignment.topRight,
           child: Icon(
-            FontAwesomeIcons.arrowCircleDown,
+            FontAwesomeIcons.exclamationCircle,
             color: Colors.red,
-            size: 30,
+            size: 20,
           ));
     }
   }

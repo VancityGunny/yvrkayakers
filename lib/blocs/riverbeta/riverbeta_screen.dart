@@ -130,49 +130,49 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
               // filteredRivers.where((element) {
               //   element.difficulty
               // });
-              return LimitedBox(
-                  maxHeight: 400,
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: filteredRivers.length,
-                      itemBuilder: (context, index) {
-                        var curRiver = filteredRivers[index];
-                        return GestureDetector(
-                            onTap: () {
-                              goToRiverDetail(curRiver);
-                            },
-                            child: Card(
-                              elevation: 5,
-                              child: Padding(
-                                padding: EdgeInsets.all(7),
-                                child: Stack(children: <Widget>[
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10, top: 5),
-                                            child: Column(
+              return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  itemCount: filteredRivers.length,
+                  itemBuilder: (context, index) {
+                    var curRiver = filteredRivers[index];
+                    return GestureDetector(
+                        onTap: () {
+                          goToRiverDetail(curRiver);
+                        },
+                        child: Card(
+                          elevation: 5,
+                          child: Padding(
+                            padding: EdgeInsets.all(7),
+                            child: Stack(children: <Widget>[
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 10, top: 5),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Row(
                                               children: <Widget>[
-                                                Row(
-                                                  children: <Widget>[
-                                                    RiverGradeBadge(curRiver),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    riverNameSymbol(curRiver)
-                                                  ],
-                                                )
+                                                RiverGradeBadge(curRiver),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                riverNameSymbol(curRiver)
                                               ],
-                                            ))
-                                      ],
-                                    ),
-                                  )
-                                ]),
-                              ),
-                            ));
-                      }));
+                                            )
+                                          ],
+                                        ))
+                                  ],
+                                ),
+                              )
+                            ]),
+                          ),
+                        ));
+                  });
             }),
       ],
     ));

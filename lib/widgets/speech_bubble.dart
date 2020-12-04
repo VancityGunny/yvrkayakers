@@ -17,7 +17,7 @@ class SpeechBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isMe ? Colors.grey.shade300 : Colors.greenAccent.shade100;
+    final bg = isMe ? Colors.white : Colors.greenAccent.shade100;
     final align = isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end;
     final icon = delivered ? Icons.done_all : Icons.done;
     final radius = isMe
@@ -57,7 +57,7 @@ class SpeechBubble extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                     blurRadius: .5, // .5,
-                    spreadRadius: 3.0, //1.0,
+                    spreadRadius: 1.0, //1.0,
                     color: Colors.black.withOpacity(.12))
               ],
               color: bg,
@@ -76,6 +76,7 @@ class SpeechBubble extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10.0,
                   )),
+              Spacer(),
               Text(time,
                   style: TextStyle(
                     fontSize: 10.0,

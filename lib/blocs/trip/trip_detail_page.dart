@@ -13,6 +13,7 @@ import 'package:yvrkayakers/common/common_functions.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
+import 'package:flutter/services.dart';
 
 class TripDetailPage extends StatefulWidget {
   TripModel _foundTrip;
@@ -140,48 +141,105 @@ class TripDetailPageState extends State<TripDetailPage> {
     if (isParticipated) {
       return Column(
         children: [
-          RaisedButton(
+          IconButton(
             onPressed: isLocked
                 ? null
                 : () {
-                    leaveThisTrip();
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: Text('Leave this trip?'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  leaveThisTrip();
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                child: Text('Yes'),
+                              ),
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                child: Text('No'),
+                              ),
+                            ],
+                          );
+                        },
+                        barrierDismissible: false);
                   },
-            child: Text("Leave"),
+            icon: FaIcon(FontAwesomeIcons.signOutAlt),
+            color: Colors.red,
+            tooltip: "Leave Trip",
           )
         ],
       );
     } else {
       return Column(
         children: [
-          Text('Ride?'),
-          Container(
-              child: Checkbox(
-            onChanged: (value) {
-              setState(() {
-                this.blnNeedRide = value;
-              });
-            },
-            value: blnNeedRide,
-          )),
-          Row(
-            children: [
-              Container(
-                width: 60.0,
-                child: TextField(
-                  controller: this.txtAvailableSpace,
-                  decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "Space?"),
-                ),
-              )
-            ],
-          ),
-          RaisedButton(
+          IconButton(
             onPressed: isLocked
                 ? null
                 : () {
-                    joinThisTrip();
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: Text('Join this trip?'),
+                            content: Row(
+                              children: [
+                                Text('Need a Ride?'),
+                                Container(
+                                    child: Checkbox(
+                                  onChanged: (value) {
+                                    setState(() {
+                                      this.blnNeedRide = value;
+                                    });
+                                  },
+                                  value: blnNeedRide,
+                                )),
+                                Container(
+                                  width: 60.0,
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                    controller: this.txtAvailableSpace,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "Space?"),
+                                  ),
+                                )
+                              ],
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  joinThisTrip();
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                child: Text('Yes'),
+                              ),
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                child: Text('No'),
+                              ),
+                            ],
+                          );
+                        },
+                        barrierDismissible: false);
                   },
-            child: Text("Join"),
+            icon: FaIcon(FontAwesomeIcons.signInAlt),
+            color: Colors.green,
+            tooltip: "Join Trip",
           ),
         ],
       );
