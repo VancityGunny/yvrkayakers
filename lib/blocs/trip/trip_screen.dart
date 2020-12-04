@@ -184,11 +184,12 @@ class TripScreenState extends State<TripScreen> {
                   ),
                 );
               },
-              separatorBuilder: (context, index) => SizedBox(height: 10),
+              separatorBuilder: (context, index) => SizedBox(height: 2),
               sectionSeparatorBuilder: (context, section) =>
-                  SizedBox(height: 10),
+                  SizedBox(height: 2),
             );
-          })
+          }),
+      Text('')
     ]));
   }
 

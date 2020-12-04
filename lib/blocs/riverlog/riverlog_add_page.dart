@@ -7,6 +7,8 @@ import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 class RiverlogAddPage extends StatefulWidget {
   final RiverbetaModel _selectedRiver;
 
@@ -102,7 +104,8 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                 },
                 value: blnDidSwim,
               )),
-              Text('Swam?')
+              Text('Swam?'),
+              FaIcon(FontAwesomeIcons.swimmer)
             ],
           ),
           Row(
@@ -116,7 +119,8 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                 },
                 value: blnDidRescue,
               )),
-              Text('Rescue?')
+              Text('Rescue?'),
+              FaIcon(FontAwesomeIcons.lifeRing)
             ],
           ),
           Row(

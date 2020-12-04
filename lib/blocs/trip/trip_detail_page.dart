@@ -101,7 +101,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         tripDetailWidget(),
-                        Container(child: carpoolWidget(blnParticipated)),
+                        Flexible(child: carpoolWidget(blnParticipated)),
                       ],
                     ),
                     Container(
@@ -373,7 +373,7 @@ class TripDetailPageState extends State<TripDetailPage> {
               )),
             ),
             Flexible(
-              flex: 4,
+              flex: 3,
               fit: FlexFit.tight,
               child: Text(currentParticipant.userDisplayName),
             ),
@@ -383,7 +383,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                 child: UserSkillMedal(currentParticipant.skillLevel)),
             Flexible(
               flex: 1,
-              fit: FlexFit.tight,
+              fit: FlexFit.loose,
               child: (currentParticipant.needRide == true)
                   ? FaIcon(FontAwesomeIcons.child, size: 20, color: Colors.red)
                   : FaIcon(FontAwesomeIcons.car,

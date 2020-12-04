@@ -129,8 +129,11 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                       flex: 1,
                       child: Column(
                         children: [
-                          Text(foundRiverStat.entries.length.toString()),
                           FaIcon(FontAwesomeIcons.swimmingPool),
+                          Text(
+                            foundRiverStat.entries.length.toString(),
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
                         ],
                       ),
                     ),
@@ -138,8 +141,11 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                       flex: 1,
                       child: Column(
                         children: [
-                          Text(foundRiverStat.visitors.length.toString()),
                           FaIcon(FontAwesomeIcons.users),
+                          Text(
+                            foundRiverStat.visitors.length.toString(),
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
                         ],
                       ),
                     ),
@@ -205,7 +211,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                   ],
                 ),
                 ListView.builder(
-                  padding: EdgeInsets.only(top: 2.0, left: 5.0),
+                  padding: EdgeInsets.all(5.0),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: foundRiverStat.entries.length,
