@@ -10,6 +10,8 @@ import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/trip/trip_detail_page.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
+import 'package:yvrkayakers/widgets/widgets.dart';
+
 class TripScreen extends StatefulWidget {
   const TripScreen({
     Key key,
@@ -80,7 +82,7 @@ class TripScreenState extends State<TripScreen> {
                         child: Card(
                             elevation: 5,
                             child: Padding(
-                              padding: EdgeInsets.all(7),
+                              padding: EdgeInsets.all(2),
                               child: Stack(children: <Widget>[
                                 Align(
                                   alignment: Alignment.centerRight,
@@ -88,7 +90,7 @@ class TripScreenState extends State<TripScreen> {
                                     children: <Widget>[
                                       Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 5, top: 5),
+                                              left: 5, top: 2),
                                           child: Column(
                                             children: <Widget>[
                                               Row(
@@ -118,7 +120,8 @@ class TripScreenState extends State<TripScreen> {
                                               ),
                                               Row(
                                                 children: <Widget>[
-                                                  riverIcon(curTrip.river),
+                                                  RiverGradeBadge(
+                                                      curTrip.river),
                                                   SizedBox(
                                                     height: 10,
                                                   ),
@@ -174,7 +177,7 @@ class TripScreenState extends State<TripScreen> {
                   groupHeaderBuilder: (BuildContext context, int section) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 8),
+                          horizontal: 15, vertical: 2),
                       child: Text(
                         newGroupedData.keys.toList()[section].toString(),
                         style: TextStyle(
@@ -192,24 +195,6 @@ class TripScreenState extends State<TripScreen> {
 
   void _load([bool isError = false]) {
     widget._tripBloc.add(LoadTripEvent(isError));
-  }
-
-  Widget riverIcon(RiverbetaShortModel curRiver) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 0, right: 5.0),
-        child: Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-                alignment: Alignment.center,
-                height: 60.0,
-                width: 60.0,
-                decoration: new BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: new BorderRadius.circular(10.0)),
-                child: Text(
-                  CommonFunctions.translateRiverDifficulty(curRiver.difficulty),
-                  style: TextStyle(fontSize: 40, color: Colors.amber),
-                ))));
   }
 
   Widget riverNameSymbol(RiverbetaShortModel curRiver) {

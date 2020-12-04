@@ -8,6 +8,8 @@ import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
+import 'package:yvrkayakers/widgets/widgets.dart';
+
 /// Screen that show all river list
 class RiverbetaScreen extends StatefulWidget {
   @override
@@ -155,7 +157,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                                               children: <Widget>[
                                                 Row(
                                                   children: <Widget>[
-                                                    riverIcon(curRiver),
+                                                    RiverGradeBadge(curRiver),
                                                     SizedBox(
                                                       height: 10,
                                                     ),
@@ -212,24 +214,6 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
         ], child: RiverbetaAddPage());
       }),
     );
-  }
-
-  Widget riverIcon(RiverbetaModel curRiver) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-        child: Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-                alignment: Alignment.center,
-                height: 60.0,
-                width: 60.0,
-                decoration: new BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: new BorderRadius.circular(10.0)),
-                child: Text(
-                  CommonFunctions.translateRiverDifficulty(curRiver.difficulty),
-                  style: TextStyle(fontSize: 40, color: Colors.amber),
-                ))));
   }
 
   Widget riverNameSymbol(RiverbetaModel curRiver) {

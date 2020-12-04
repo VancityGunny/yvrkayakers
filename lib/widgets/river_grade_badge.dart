@@ -76,15 +76,17 @@ class RiverGradeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        alignment: Alignment.center,
-        height: 60.0,
-        width: 60.0,
-        decoration: new BoxDecoration(
-            color: Colors.black87,
-            borderRadius: new BorderRadius.circular(10.0)),
-        child: Text(
-          CommonFunctions.translateRiverDifficulty(_curRiver.difficulty),
-          style: TextStyle(fontSize: 40, color: Colors.amber),
-        ));
+        padding: EdgeInsets.all(5.0),
+        child: Container(
+            alignment: Alignment.center,
+            height: 40.0,
+            width: 40.0,
+            decoration: new BoxDecoration(
+                color: Colors.black87,
+                borderRadius: new BorderRadius.circular(10.0)),
+            child: Text(
+              CommonFunctions.translateRiverDifficulty(_curRiver.difficulty),
+              style: TextStyle(fontSize: 25, color: Colors.amber),
+            )));
   }
 }

@@ -11,6 +11,7 @@ import 'package:yvrkayakers/common/myconstants.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class RiverbetaDetailPage extends StatefulWidget {
@@ -90,35 +91,58 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
 
         return Scaffold(
             appBar: AppBar(
-              title: Text(foundRiver.riverName),
+              title: Text('${foundRiver.riverName} - Detail'),
             ),
             body: SingleChildScrollView(
                 child: Column(
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     RiverGradeBadge(foundRiver),
-                    Text(foundRiver.riverName,
-                        style: Theme.of(context).textTheme.headline1),
-                  ],
-                ),
-                Text(foundRiver.sectionName,
-                    style: Theme.of(context).textTheme.headline2),
-                (foundRiver.minFlow == null)
-                    ? Text('')
-                    : Text('Level: ' +
-                        foundRiver.minFlow.toString() +
-                        ' to ' +
-                        foundRiver.maxFlow.toString() +
-                        ' ' +
-                        foundRiver.gaugeUnit),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text('Total Runs:' +
-                        foundRiverStat.entries.length.toString()),
-                    Text('Total Paddlers:' +
-                        foundRiverStat.visitors.length.toString()),
+                    Flexible(
+                        flex: 4,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(foundRiver.riverName,
+                                style: Theme.of(context).textTheme.headline3),
+                            Text(foundRiver.sectionName,
+                                style: Theme.of(context).textTheme.subtitle1),
+                          ],
+                        )),
+                    (foundRiver.maxFlow == null)
+                        ? Text('')
+                        : Flexible(
+                            flex: 1,
+                            child: Column(
+                              children: [
+                                Text(foundRiver.maxFlow.toString()),
+                                FaIcon(FontAwesomeIcons.thermometerHalf),
+                                Text(foundRiver.minFlow.toString()),
+                                Text(foundRiver.gaugeUnit)
+                              ],
+                            ),
+                          ),
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(foundRiverStat.entries.length.toString()),
+                          FaIcon(FontAwesomeIcons.swimmingPool),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Text(foundRiverStat.visitors.length.toString()),
+                          FaIcon(FontAwesomeIcons.users),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 Row(
@@ -137,18 +161,51 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                         child: Text("Make New Trip"),
                       )
                     ]),
-                Text("#" + foundRiver.riverHashtag()),
-                FutureBuilder(
-                  future: hashtagYoutubeVDO(foundRiver, foundRiverHashtag),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-                    if (snapshot.data == null) {
-                      return Text("...Loading...");
-                    }
-                    return snapshot.data;
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "#" + foundRiver.riverHashtag(),
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                    IconButton(
+                        onPressed: () async {
+                          var url = "https://www.instagram.com/explore/tags/" +
+                              foundRiver.riverHashtag();
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        icon: FaIcon(FontAwesomeIcons.instagram)),
+                    IconButton(
+                        onPressed: () async {
+                          var url = "https://www.facebook.com/hashtag/" +
+                              foundRiver.riverHashtag();
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        icon: FaIcon(FontAwesomeIcons.facebook)),
+                    IconButton(
+                        onPressed: () async {
+                          var url =
+                              "https://www.youtube.com/results?search_query=%23" +
+                                  foundRiver.riverHashtag();
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                        icon: FaIcon(FontAwesomeIcons.youtube)),
+                  ],
                 ),
                 ListView.builder(
+                  padding: EdgeInsets.only(top: 2.0, left: 5.0),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: foundRiverStat.entries.length,
@@ -178,6 +235,16 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                           CommonFunctions.formatDateForDisplay(
                               foundRiverStat.entries[index].logDate))
                     ]);
+                  },
+                ),
+                FutureBuilder(
+                  future: hashtagYoutubeVDO(foundRiver, foundRiverHashtag),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                    if (snapshot.data == null) {
+                      return Text("...Loading...");
+                    }
+                    return snapshot.data;
                   },
                 ),
                 Text('')
