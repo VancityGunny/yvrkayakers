@@ -10,14 +10,26 @@ class TripPage extends StatefulWidget {
 
 class _TripPageState extends State<TripPage> {
   final _tripBloc = TripBloc();
+  bool _showPast = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Trip'),
-      ),
-      body: TripScreen(tripBloc: _tripBloc),
+      appBar: AppBar(title: Text('Trip'), actions: <Widget>[
+        Text('Show Past Trip'),
+        Switch(
+          value: _showPast,
+          activeColor: Colors.greenAccent,
+          onChanged: (value) {
+            setState(() {
+              _showPast = !_showPast;
+            });
+          },
+        )
+      ]),
+      body: (_showPast == true)
+          ? PastTripScreen(tripBloc: _tripBloc)
+          : TripScreen(tripBloc: _tripBloc),
     );
   }
 }

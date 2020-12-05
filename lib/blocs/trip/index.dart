@@ -6,3 +6,4 @@ export 'trip_provider.dart';
 export 'trip_repository.dart';
 export 'trip_screen.dart';
 export 'trip_state.dart';
+export 'past_trip_screen.dart';

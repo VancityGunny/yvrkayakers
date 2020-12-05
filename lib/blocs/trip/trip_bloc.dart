@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
@@ -12,17 +13,23 @@ class TripBloc extends Bloc<TripEvent, TripState> {
   @override
   TripState get initialState => UnTripState(0);
 
-  StreamController tripController;
-  final BehaviorSubject<List<TripModel>> allTrips =
+  StreamController newTripController;
+  StreamController pastTripController;
+
+  final BehaviorSubject<List<TripModel>> allNewTrips =
+      BehaviorSubject<List<TripModel>>();
+
+  final BehaviorSubject<List<TripModel>> pastParticipatedTrips =
       BehaviorSubject<List<TripModel>>();
 
   initStream() {
-    tripController = StreamController.broadcast();
-    tripController.addStream(FirebaseFirestore.instance
+    newTripController = StreamController.broadcast();
+    newTripController.addStream(FirebaseFirestore.instance
         .collection('/trips')
+        .where('tripDate', isGreaterThan: DateTime.now())
         .orderBy('tripDate')
         .snapshots());
-    tripController.stream.listen((event) {
+    newTripController.stream.listen((event) {
       QuerySnapshot querySnapshot = event;
       var newTrips = new List<TripModel>();
       if (querySnapshot.docs.length > 0) {
@@ -30,7 +37,26 @@ class TripBloc extends Bloc<TripEvent, TripState> {
           newTrips.add(TripModel.fromFire(f));
         });
       }
-      allTrips.add(newTrips);
+      allNewTrips.add(newTrips);
+    });
+
+    pastTripController = StreamController.broadcast();
+    pastTripController.addStream(FirebaseFirestore.instance
+        .collection('/trips')
+        .where('tripDate', isLessThan: DateTime.now())
+        .where('participantIds',
+            arrayContainsAny: [FirebaseAuth.instance.currentUser.uid])
+        .orderBy('tripDate', descending: true)
+        .snapshots());
+    pastTripController.stream.listen((event) {
+      QuerySnapshot querySnapshot = event;
+      var tempTrips = new List<TripModel>();
+      if (querySnapshot.docs.length > 0) {
+        event.docs.forEach((f) {
+          tempTrips.add(TripModel.fromFire(f));
+        });
+      }
+      pastParticipatedTrips.add(tempTrips);
     });
   }
 

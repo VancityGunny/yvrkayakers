@@ -10,11 +10,10 @@ import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/trip/trip_detail_page.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
-import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 
-class TripScreen extends StatefulWidget {
-  const TripScreen({
+class PastTripScreen extends StatefulWidget {
+  const PastTripScreen({
     Key key,
     @required TripBloc tripBloc,
   })  : _tripBloc = tripBloc,
@@ -23,13 +22,13 @@ class TripScreen extends StatefulWidget {
   final TripBloc _tripBloc;
 
   @override
-  TripScreenState createState() {
-    return TripScreenState();
+  PastTripScreenState createState() {
+    return PastTripScreenState();
   }
 }
 
-class TripScreenState extends State<TripScreen> {
-  TripScreenState();
+class PastTripScreenState extends State<PastTripScreen> {
+  PastTripScreenState();
 
   @override
   void initState() {
@@ -47,7 +46,8 @@ class TripScreenState extends State<TripScreen> {
     return SingleChildScrollView(
         child: Column(children: [
       StreamBuilder(
-          stream: BlocProvider.of<TripBloc>(context).allNewTrips.stream,
+          stream:
+              BlocProvider.of<TripBloc>(context).pastParticipatedTrips.stream,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -83,14 +83,6 @@ class TripScreenState extends State<TripScreen> {
                     },
                     child: Card(
                         elevation: 5,
-                        color: (curTrip.participants.any((element) =>
-                                element.userId ==
-                                BlocProvider.of<AuthBloc>(context)
-                                    .currentAuth
-                                    .value
-                                    .uid)
-                            ? Colors.blue.shade100
-                            : Colors.white),
                         child: Padding(
                           padding: EdgeInsets.all(2),
                           child: Stack(children: <Widget>[

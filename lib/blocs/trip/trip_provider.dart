@@ -42,6 +42,7 @@ class TripProvider {
       String tripId, TripParticipantModel newTripParticipant) async {
     var foundTripRef = _firestore.collection('/trips').doc(tripId);
     var foundTripObj = await foundTripRef.get();
+
     List<TripParticipantModel> updatedParticipants = foundTripObj
         .data()['participants']
         .map<TripParticipantModel>((e) => TripParticipantModel.fromJson(e))
@@ -49,6 +50,14 @@ class TripProvider {
     updatedParticipants.add(newTripParticipant);
     foundTripRef.update(
         {'participants': updatedParticipants.map((e) => e.toJson()).toList()});
+
+    //also update hidden participantids list too
+    List<String> updatedParticipantIds = foundTripObj
+        .data()['participantIds']
+        .map<String>((e) => e.toString())
+        .toList();
+    updatedParticipantIds.add(newTripParticipant.userId);
+    foundTripRef.update({'participantIds': updatedParticipantIds});
   }
 
   Future<String> removeTripParticipant(
@@ -63,5 +72,13 @@ class TripProvider {
         .removeWhere((element) => element.userId == removeUserId);
     foundTripRef.update(
         {'participants': updatedParticipants.map((e) => e.toJson()).toList()});
+
+    //also remove hidden participantids list too
+    List<String> updatedParticipantIds = foundTripObj
+        .data()['participantIds']
+        .map<String>((e) => e.toString())
+        .toList();
+    updatedParticipantIds.removeWhere((element) => element == removeUserId);
+    foundTripRef.update({'participantIds': updatedParticipantIds});
   }
 }

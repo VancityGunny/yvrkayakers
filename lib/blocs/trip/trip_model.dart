@@ -80,6 +80,7 @@ class TripModel extends Equatable {
     data['tripDate'] = tripDate;
     data['meetingPlace'] = note;
     data['participants'] = participants.map((e) => e.toJson()).toList();
+    data['participantIds'] = participants.map((e) => e.userId).toList();
     data['startByUserId'] = startByUserId;
     data['commentCount'] = commentCount;
     return data;

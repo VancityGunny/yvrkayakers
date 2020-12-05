@@ -34,12 +34,14 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   DateTime _logDate;
   TimeOfDay _startTime;
   TimeOfDay _endTime;
+  double _selectedWaterLevel;
   RiverlogAddPageState();
   @override
   void initState() {
     super.initState();
-    _startTime = TimeOfDay.now();
-    _endTime = TimeOfDay.now();
+    _startTime =
+        TimeOfDay(hour: 10, minute: 00); // default for user that dont log time
+    _endTime = null;
     _logDate = DateTime.now();
     _load();
   }
@@ -70,29 +72,66 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text(widget._selectedRiver.riverName),
+          Text(
+            widget._selectedRiver.riverName,
+            style: Theme.of(context).textTheme.headline1,
+          ),
           Row(
             children: [
-              Expanded(
-                  child: TextField(
-                controller: this.txtRiverLevel,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "<<Water Level>>",
-                    labelText: "Water Level"),
-              ))
+              Flexible(
+                flex: 4,
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                          "Log Date:${_logDate.year}/${_logDate.month}/${_logDate.day}",
+                          style: Theme.of(context).textTheme.headline3),
+                      onTap: pickLogDate,
+                    ),
+                    ListTile(
+                        title: Text(
+                            "Start: ${MaterialLocalizations.of(context).formatTimeOfDay(_startTime)}"),
+                        onTap: pickStartTime),
+                    ListTile(
+                        title: Text((_endTime == null)
+                            ? "<<No EndTime Selected>>"
+                            : "End: ${MaterialLocalizations.of(context).formatTimeOfDay(_endTime)}"),
+                        onTap: pickEndTime),
+                  ],
+                ),
+              ),
+              Flexible(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      (widget._selectedRiver.maxFlow == null)
+                          ? Text('')
+                          : RotatedBox(
+                              quarterTurns: -1,
+                              child: Slider(
+                                min: widget._selectedRiver.minFlow,
+                                max: widget._selectedRiver.maxFlow,
+                                divisions: ((widget._selectedRiver.maxFlow -
+                                        widget._selectedRiver.minFlow) ~/
+                                    widget._selectedRiver.flowIncrement),
+                                onChanged: (double value) {
+                                  setState(() {
+                                    _selectedWaterLevel = value;
+                                  });
+                                },
+                                value: (_selectedWaterLevel == null)
+                                    ? widget._selectedRiver.minFlow
+                                    : _selectedWaterLevel,
+                              )),
+                      FaIcon(FontAwesomeIcons.water),
+                      Text(
+                        _selectedWaterLevel.toString(),
+                        style: Theme.of(context).textTheme.headline3,
+                      )
+                    ],
+                  ))
             ],
           ),
-          ListTile(
-              title: Text(
-                  "Log Date:${_logDate.year}/${_logDate.month}/${_logDate.day}"),
-              onTap: pickLogDate),
-          ListTile(
-              title: Text("Start: ${_startTime.hour}:${_startTime.minute}"),
-              onTap: pickStartTime),
-          ListTile(
-              title: Text("End: ${_endTime.hour}:${_endTime.minute}"),
-              onTap: pickEndTime),
           Row(
             children: [
               Expanded(
@@ -181,7 +220,8 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   }
 
   void pickEndTime() async {
-    TimeOfDay t = await showTimePicker(context: context, initialTime: _endTime);
+    TimeOfDay t =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (t != null) {
       setState(() {
         _endTime = t;

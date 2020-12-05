@@ -66,9 +66,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                 BlocProvider.of<RiverbetaBloc>(context).allRiverbetas.stream,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Center(child: Text(''));
               }
 
               if (snapshot.data.length == 0) {
@@ -174,6 +172,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                         ));
                   });
             }),
+        Text('')
       ],
     ));
   }

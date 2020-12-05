@@ -66,7 +66,8 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                       DateFormat.yMMMM().format(obj.logDate));
               return Column(children: [
                 UserExperienceCard(tempData),
-                RiverlogList(newGroupedData: newGroupedData)
+                RiverlogList(newGroupedData: newGroupedData),
+                Text('')
               ]);
             }));
   }
@@ -183,15 +184,15 @@ class RiverlogList extends StatelessWidget {
         },
         groupHeaderBuilder: (BuildContext context, int section) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
             child: Text(
               newGroupedData.keys.toList()[section].toString(),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
           );
         },
-        separatorBuilder: (context, index) => SizedBox(height: 10),
-        sectionSeparatorBuilder: (context, section) => SizedBox(height: 10),
+        separatorBuilder: (context, index) => SizedBox(height: 2),
+        sectionSeparatorBuilder: (context, section) => SizedBox(height: 2),
         itemBuilder: (BuildContext context, IndexPath index) {
           var curRiver =
               newGroupedData[newGroupedData.keys.toList()[index.section]]
@@ -206,7 +207,7 @@ class RiverlogList extends StatelessWidget {
                   child: Stack(
                     children: <Widget>[
                       Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 5),
+                          padding: const EdgeInsets.only(left: 5, top: 2),
                           child: Column(
                             children: <Widget>[
                               Row(
