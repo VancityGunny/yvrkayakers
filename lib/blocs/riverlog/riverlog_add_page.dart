@@ -6,7 +6,7 @@ import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
-
+import 'package:yvrkayakers/widgets/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RiverlogAddPage extends StatefulWidget {
@@ -24,7 +24,6 @@ class RiverlogAddPage extends StatefulWidget {
 class RiverlogAddPageState extends State<RiverlogAddPage> {
   Location location = new Location();
   TextEditingController txtRiverName = TextEditingController();
-  TextEditingController txtRiverLevel = TextEditingController();
   TextEditingController txtLogDate = TextEditingController();
   TextEditingController txtLogTimeIn = TextEditingController();
   TextEditingController txtLogTimeOut = TextEditingController();
@@ -181,16 +180,30 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                                     ? widget._selectedRiver.minFlow
                                     : _selectedWaterLevel,
                           )),
-                      FaIcon(FontAwesomeIcons.water),
-                      Text(
-                        (_selectedWaterLevel == null)
-                            ? "N/A"
-                            : _selectedWaterLevel.toString(),
-                        style: Theme.of(context).textTheme.headline3,
+                      FaIcon(
+                        FontAwesomeIcons.water,
+                        color: (widget._selectedRiver.maxFlow == null)
+                            ? Colors.grey
+                            : Colors.blue,
                       ),
                       Text(
+                          (_selectedWaterLevel == null)
+                              ? "N/A"
+                              : _selectedWaterLevel.toString(),
+                          style: TextStyle(
+                              color: (widget._selectedRiver.maxFlow == null)
+                                  ? Colors.grey
+                                  : Colors.blue,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold)),
+                      Text(
                         widget._selectedRiver.gaugeUnit,
-                        style: Theme.of(context).textTheme.headline5,
+                        style: TextStyle(
+                            color: (widget._selectedRiver.maxFlow == null)
+                                ? Colors.grey
+                                : Colors.blue,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold),
                       )
                     ],
                   ))
@@ -208,11 +221,17 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
               ))
             ],
           ),
-          RaisedButton(
-              child: Text('Add New Log'),
-              onPressed: () {
-                addNewRiverlog(context); // go up one level
-              })
+          ButtonTheme(
+              minWidth: 200.0,
+              height: 70.0,
+              child: RaisedButton(
+                  child: Text(
+                    'Add New Log',
+                    style: TextStyle(fontSize: 30.0),
+                  ),
+                  onPressed: () {
+                    addNewRiverlog(context); // go up one level
+                  }))
         ],
       ),
     );
@@ -232,7 +251,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null,
         null,
         null,
-        double.parse(txtRiverLevel.text), //waterlevel
+        _selectedWaterLevel, //waterlevel
         _logDate, //logdate
         null, //friends
         0, //totalround
