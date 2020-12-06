@@ -15,6 +15,8 @@ import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
 import 'package:flutter/services.dart';
 
+import 'package:intl/intl.dart';
+
 class TripDetailPage extends StatefulWidget {
   TripModel _foundTrip;
   TripDetailPage(this._foundTrip);
@@ -253,12 +255,14 @@ class TripDetailPageState extends State<TripDetailPage> {
 
   Widget tripDetailWidget() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             RiverGradeBadge(widget._foundTrip.river),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(widget._foundTrip.river.riverName,
                     style: Theme.of(context).textTheme.headline2),
@@ -268,7 +272,17 @@ class TripDetailPageState extends State<TripDetailPage> {
             )
           ],
         ),
-        Text(widget._foundTrip.tripDate.toString()),
+        Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                FaIcon(FontAwesomeIcons.calendar, size: 15.0),
+                Text(DateFormat.yMMMd()
+                    .add_jm()
+                    .format(widget._foundTrip.tripDate)),
+              ],
+            ))
       ],
     );
   }
@@ -290,11 +304,15 @@ class TripDetailPageState extends State<TripDetailPage> {
                     border: InputBorder.none, hintText: "Add Comment..."),
               ),
             )),
-            RaisedButton(
-                child: Text('Add Comment'),
-                onPressed: () {
-                  addComment(context);
-                })
+            Padding(
+                padding: EdgeInsets.all(5.0),
+                child: RaisedButton(
+                    child: FaIcon(
+                      FontAwesomeIcons.commentMedical,
+                    ),
+                    onPressed: () {
+                      addComment(context);
+                    }))
           ],
         ),
         FutureBuilder(
@@ -344,76 +362,80 @@ class TripDetailPageState extends State<TripDetailPage> {
                       widget._foundTrip.river.difficulty)
                   ? "+1"
                   : "0";
-          return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 1,
-              child: GestureDetector(
-                onTap: () {
-                  goToUserRiverlogPage(currentParticipant.userId);
-                },
-                child: CircleAvatar(
-                  radius: 20.0,
-                  backgroundColor: Colors.grey[200],
-                  backgroundImage: CachedNetworkImageProvider(
-                      currentParticipant.userPhotoUrl),
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: GestureDetector(
+                    onTap: () {
+                      goToUserRiverlogPage(currentParticipant.userId);
+                    },
+                    child: CircleAvatar(
+                      radius: 20.0,
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage: CachedNetworkImageProvider(
+                          currentParticipant.userPhotoUrl),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: RichText(
-                  text: TextSpan(
-                text: paddlerWeight,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: (paddlerWeight == "-1") ? Colors.red : Colors.green,
-                    fontSize: 20),
-              )),
-            ),
-            Flexible(
-              flex: 3,
-              fit: FlexFit.tight,
-              child: Text(currentParticipant.userDisplayName),
-            ),
-            Flexible(
-                flex: 1,
-                fit: FlexFit.tight,
-                child: UserSkillMedal(currentParticipant.skillLevel)),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.loose,
-              child: (currentParticipant.needRide == true)
-                  ? FaIcon(FontAwesomeIcons.child, size: 20, color: Colors.red)
-                  : FaIcon(FontAwesomeIcons.car,
-                      size: 20,
-                      color: (currentParticipant.availableSpace > 0)
-                          ? Colors.green
-                          : Colors.blue),
-            ),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: (currentParticipant.availableSpace > 0)
-                  ? Row(
-                      children: [
-                        RichText(
-                            text: TextSpan(
-                          text: '+' +
-                              currentParticipant.availableSpace.toString(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                              fontSize: 20),
-                        )),
-                        FaIcon(FontAwesomeIcons.chair,
-                            size: 20, color: Colors.green),
-                      ],
-                    )
-                  : Text(''),
-            )
-          ]);
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: RichText(
+                      text: TextSpan(
+                    text: paddlerWeight,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color:
+                            (paddlerWeight == "-1") ? Colors.red : Colors.green,
+                        fontSize: 20),
+                  )),
+                ),
+                Flexible(
+                  flex: 3,
+                  fit: FlexFit.tight,
+                  child: Text(currentParticipant.userDisplayName),
+                ),
+                Flexible(
+                    flex: 1,
+                    fit: FlexFit.tight,
+                    child: UserSkillMedal(currentParticipant.skillLevel)),
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.loose,
+                  child: (currentParticipant.needRide == true)
+                      ? FaIcon(FontAwesomeIcons.child,
+                          size: 20, color: Colors.red)
+                      : FaIcon(FontAwesomeIcons.car,
+                          size: 20,
+                          color: (currentParticipant.availableSpace > 0)
+                              ? Colors.green
+                              : Colors.blue),
+                ),
+                Flexible(
+                  flex: 1,
+                  fit: FlexFit.tight,
+                  child: (currentParticipant.availableSpace > 0)
+                      ? Row(
+                          children: [
+                            RichText(
+                                text: TextSpan(
+                              text: '+' +
+                                  currentParticipant.availableSpace.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                  fontSize: 20),
+                            )),
+                            FaIcon(FontAwesomeIcons.chair,
+                                size: 20, color: Colors.green),
+                          ],
+                        )
+                      : Text(''),
+                )
+              ]);
         });
   }
 

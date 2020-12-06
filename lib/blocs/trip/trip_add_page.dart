@@ -111,31 +111,42 @@ class TripAddPageState extends State<TripAddPage> {
                       blnNeedRide = !blnNeedRide;
                     });
                   }),
-              Slider(
-                min: 0,
-                max: 3,
-                divisions: 3,
-                value: availableSpace,
-                onChanged: (blnNeedRide == true)
-                    ? null
-                    : (double value) {
-                        setState(() {
-                          availableSpace = value;
-                        });
-                      },
-              ),
-              FaIcon(
-                FontAwesomeIcons.chair,
-                color: (availableSpace > 0) ? Colors.green : Colors.grey,
-              ),
-              FaIcon(
-                FontAwesomeIcons.chair,
-                color: (availableSpace > 1) ? Colors.green : Colors.grey,
-              ),
-              FaIcon(
-                FontAwesomeIcons.chair,
-                color: (availableSpace > 2) ? Colors.green : Colors.grey,
-              ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      FaIcon(
+                        FontAwesomeIcons.chair,
+                        color:
+                            (availableSpace > 0) ? Colors.green : Colors.grey,
+                      ),
+                      FaIcon(
+                        FontAwesomeIcons.chair,
+                        color:
+                            (availableSpace > 1) ? Colors.green : Colors.grey,
+                      ),
+                      FaIcon(
+                        FontAwesomeIcons.chair,
+                        color:
+                            (availableSpace > 2) ? Colors.green : Colors.grey,
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    min: 0,
+                    max: 3,
+                    divisions: 3,
+                    value: availableSpace,
+                    onChanged: (blnNeedRide == true)
+                        ? null
+                        : (double value) {
+                            setState(() {
+                              availableSpace = value;
+                            });
+                          },
+                  ),
+                ],
+              )
             ],
           ),
           Row(
