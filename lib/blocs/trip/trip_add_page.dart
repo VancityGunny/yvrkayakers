@@ -115,18 +115,33 @@ class TripAddPageState extends State<TripAddPage> {
                 children: [
                   Row(
                     children: [
+                      Text(
+                        (availableSpace > 0)
+                            ? '+${availableSpace.toInt().toString()}'
+                            : '${availableSpace.toInt().toString()}',
+                        style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            color: (availableSpace > 0)
+                                ? Colors.green
+                                : Colors.grey),
+                      ),
+                      SizedBox(width: 10.0),
                       FaIcon(
                         FontAwesomeIcons.chair,
+                        size: 30.0,
                         color:
                             (availableSpace > 0) ? Colors.green : Colors.grey,
                       ),
                       FaIcon(
                         FontAwesomeIcons.chair,
+                        size: 30.0,
                         color:
                             (availableSpace > 1) ? Colors.green : Colors.grey,
                       ),
                       FaIcon(
                         FontAwesomeIcons.chair,
+                        size: 30.0,
                         color:
                             (availableSpace > 2) ? Colors.green : Colors.grey,
                       ),

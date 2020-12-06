@@ -39,7 +39,7 @@ class TripDetailPageState extends State<TripDetailPage> {
   StreamController currentTripController =
       StreamController.broadcast(); //Add .broadcast here
   bool blnNeedRide = false;
-  TextEditingController txtAvailableSpace = TextEditingController();
+  double availableSpace = 0.0;
   bool blnParticipated = false;
   TextEditingController txtAddComment = TextEditingController();
   @override
@@ -99,13 +99,15 @@ class TripDetailPageState extends State<TripDetailPage> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        tripDetailWidget(),
-                        Flexible(child: carpoolWidget(blnParticipated)),
-                      ],
-                    ),
+                    Card(
+                        elevation: 5.0,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            tripDetailWidget(),
+                            Flexible(child: carpoolWidget(blnParticipated)),
+                          ],
+                        )),
                     Container(
                       child: participantListWidget(allParticipants),
                     ),
@@ -131,7 +133,7 @@ class TripDetailPageState extends State<TripDetailPage> {
         FirebaseAuth.instance.currentUser.uid,
         currentUser.displayName,
         blnNeedRide,
-        (txtAvailableSpace.text == "") ? 0 : int.parse(txtAvailableSpace.text),
+        availableSpace.toInt(),
         userSkill,
         userSkillVerified,
         currentUser.photoUrl);
@@ -188,54 +190,134 @@ class TripDetailPageState extends State<TripDetailPage> {
                 : () {
                     showDialog(
                         context: context,
-                        builder: (_) {
-                          return AlertDialog(
-                            title: Text('Join this trip?'),
-                            content: Row(
-                              children: [
-                                Text('Need a Ride?'),
-                                Container(
-                                    child: Checkbox(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      this.blnNeedRide = value;
-                                    });
+                        builder: (context) {
+                          return StatefulBuilder(builder: (context, setState) {
+                            return AlertDialog(
+                              title: Text('Join this trip?'),
+                              content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                            iconSize: 60.0,
+                                            color: (blnNeedRide == true)
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            icon: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 4, right: 4, top: 0),
+                                                child: FaIcon(
+                                                    FontAwesomeIcons.child)),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (blnNeedRide == false) {
+                                                  availableSpace = 0;
+                                                }
+                                                blnNeedRide = !blnNeedRide;
+                                              });
+                                            }),
+                                        IconButton(
+                                            iconSize: 60.0,
+                                            color: (blnNeedRide == false)
+                                                ? Colors.green
+                                                : Colors.grey,
+                                            icon: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 4, right: 4, top: 0),
+                                                child: FaIcon(
+                                                    FontAwesomeIcons.car)),
+                                            onPressed: () {
+                                              setState(() {
+                                                if (blnNeedRide == false) {
+                                                  availableSpace = 0;
+                                                }
+                                                blnNeedRide = !blnNeedRide;
+                                              });
+                                            }),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          (availableSpace > 0)
+                                              ? '+${availableSpace.toInt().toString()}'
+                                              : '${availableSpace.toInt().toString()}',
+                                          style: TextStyle(
+                                              fontSize: 30.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: (availableSpace > 0)
+                                                  ? Colors.green
+                                                  : Colors.grey),
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        FaIcon(
+                                          FontAwesomeIcons.chair,
+                                          size: 30.0,
+                                          color: (availableSpace > 0)
+                                              ? Colors.green
+                                              : Colors.grey,
+                                        ),
+                                        FaIcon(
+                                          FontAwesomeIcons.chair,
+                                          size: 30.0,
+                                          color: (availableSpace > 1)
+                                              ? Colors.green
+                                              : Colors.grey,
+                                        ),
+                                        FaIcon(
+                                          FontAwesomeIcons.chair,
+                                          size: 30.0,
+                                          color: (availableSpace > 2)
+                                              ? Colors.green
+                                              : Colors.grey,
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Slider(
+                                          min: 0,
+                                          max: 3,
+                                          divisions: 3,
+                                          value: availableSpace,
+                                          onChanged: (blnNeedRide == true)
+                                              ? null
+                                              : (double value) {
+                                                  setState(() {
+                                                    availableSpace = value;
+                                                  });
+                                                },
+                                        ),
+                                      ],
+                                    )
+                                  ]),
+                              actions: <Widget>[
+                                FlatButton(
+                                  onPressed: () {
+                                    joinThisTrip();
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
                                   },
-                                  value: blnNeedRide,
-                                )),
-                                Container(
-                                  width: 60.0,
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
-                                    controller: this.txtAvailableSpace,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Space?"),
-                                  ),
-                                )
+                                  child: Text('Yes'),
+                                ),
+                                FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  },
+                                  child: Text('No'),
+                                ),
                               ],
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  joinThisTrip();
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                },
-                                child: Text('Yes'),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                },
-                                child: Text('No'),
-                              ),
-                            ],
-                          );
+                            );
+                          });
                         },
                         barrierDismissible: false);
                   },
@@ -282,7 +364,8 @@ class TripDetailPageState extends State<TripDetailPage> {
                     .add_jm()
                     .format(widget._foundTrip.tripDate)),
               ],
-            ))
+            )),
+        Text(widget._foundTrip.note),
       ],
     );
   }
