@@ -343,7 +343,7 @@ class TripDetailPageState extends State<TripDetailPage> {
               : (currentParticipant.skillLevel >
                       widget._foundTrip.river.difficulty)
                   ? "+1"
-                  : "";
+                  : "0";
           return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
               fit: FlexFit.tight,
