@@ -29,7 +29,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   TextEditingController txtLogTimeOut = TextEditingController();
   bool blnDidSwim = false;
   bool blnDidRescue = false;
-  TextEditingController txtFriends = TextEditingController();
   DateTime _logDate;
   TimeOfDay _startTime;
   TimeOfDay _endTime;
@@ -70,6 +69,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   Widget newRiverLogForm() {
     return SingleChildScrollView(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             widget._selectedRiver.riverName,
@@ -207,18 +207,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                       )
                     ],
                   ))
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: this.txtFriends,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "<<Friends>>",
-                    labelText: "Friends"),
-              ))
             ],
           ),
           ButtonTheme(

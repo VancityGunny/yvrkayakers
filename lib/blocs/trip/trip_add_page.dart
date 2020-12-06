@@ -7,6 +7,8 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 class TripAddPage extends StatefulWidget {
   final RiverbetaModel _selectedRiver;
 
@@ -20,9 +22,8 @@ class TripAddPage extends StatefulWidget {
 }
 
 class TripAddPageState extends State<TripAddPage> {
-  TextEditingController txtAvailableSpace = TextEditingController();
   TextEditingController txtNote = TextEditingController();
-
+  double availableSpace = 0;
   bool blnNeedRide = false;
   DateTime _tripDate;
   TimeOfDay _tripTime;
@@ -58,38 +59,83 @@ class TripAddPageState extends State<TripAddPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Text(widget._selectedRiver.riverName),
+          Text(
+            widget._selectedRiver.riverName,
+            style: Theme.of(context).textTheme.headline1,
+          ),
           ListTile(
+              contentPadding: EdgeInsets.all(2.0),
+              tileColor: Colors.grey.shade300,
+              enabled: true,
+              dense: true,
               title: Text(
-                  "Trip Date:${_tripDate.year}/${_tripDate.month}/${_tripDate.day}"),
+                  "Trip Date:${_tripDate.year}/${_tripDate.month}/${_tripDate.day}",
+                  style: Theme.of(context).textTheme.headline3),
               onTap: pickTripDate),
+          SizedBox(height: 2),
           ListTile(
-              title: Text("Start: ${_tripTime.hour}:${_tripTime.minute}"),
+              contentPadding: EdgeInsets.all(2.0),
+              tileColor: Colors.grey.shade300,
+              enabled: true,
+              dense: true,
+              title: Text("Start: ${_tripTime.hour}:${_tripTime.minute}",
+                  style: Theme.of(context).textTheme.headline3),
               onTap: pickTripTime),
           Row(
             children: [
-              Expanded(
-                  child: Checkbox(
-                onChanged: (value) {
-                  setState(() {
-                    this.blnNeedRide = value;
-                  });
-                },
-                value: blnNeedRide,
-              )),
-              Text('Need a Ride?')
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: this.txtAvailableSpace,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Available Space in Car?"),
-                ),
-              )
+              IconButton(
+                  iconSize: 60.0,
+                  color: (blnNeedRide == true) ? Colors.red : Colors.grey,
+                  icon: Padding(
+                      padding: EdgeInsets.only(left: 4, right: 4, top: 0),
+                      child: FaIcon(FontAwesomeIcons.child)),
+                  onPressed: () {
+                    setState(() {
+                      if (blnNeedRide == false) {
+                        availableSpace = 0;
+                      }
+                      blnNeedRide = !blnNeedRide;
+                    });
+                  }),
+              IconButton(
+                  iconSize: 60.0,
+                  color: (blnNeedRide == false) ? Colors.green : Colors.grey,
+                  icon: Padding(
+                      padding: EdgeInsets.only(left: 4, right: 4, top: 0),
+                      child: FaIcon(FontAwesomeIcons.car)),
+                  onPressed: () {
+                    setState(() {
+                      if (blnNeedRide == false) {
+                        availableSpace = 0;
+                      }
+                      blnNeedRide = !blnNeedRide;
+                    });
+                  }),
+              Slider(
+                min: 0,
+                max: 3,
+                divisions: 3,
+                value: availableSpace,
+                onChanged: (blnNeedRide == true)
+                    ? null
+                    : (double value) {
+                        setState(() {
+                          availableSpace = value;
+                        });
+                      },
+              ),
+              FaIcon(
+                FontAwesomeIcons.chair,
+                color: (availableSpace > 0) ? Colors.green : Colors.grey,
+              ),
+              FaIcon(
+                FontAwesomeIcons.chair,
+                color: (availableSpace > 1) ? Colors.green : Colors.grey,
+              ),
+              FaIcon(
+                FontAwesomeIcons.chair,
+                color: (availableSpace > 2) ? Colors.green : Colors.grey,
+              ),
             ],
           ),
           Row(
@@ -103,11 +149,17 @@ class TripAddPageState extends State<TripAddPage> {
               )
             ],
           ),
-          RaisedButton(
-              child: Text('Add New Trip'),
-              onPressed: () {
-                addNewTrip(context); // go up one level
-              })
+          ButtonTheme(
+              minWidth: 200.0,
+              height: 70.0,
+              child: RaisedButton(
+                  child: Text(
+                    'Add New Trip',
+                    style: TextStyle(fontSize: 30.0),
+                  ),
+                  onPressed: () {
+                    addNewTrip(context); // go up one level
+                  }))
         ],
       ),
     );
@@ -128,9 +180,7 @@ class TripAddPageState extends State<TripAddPage> {
           currentUserId,
           currentUser.displayName,
           blnNeedRide,
-          (txtAvailableSpace.text == "")
-              ? 0
-              : int.parse(txtAvailableSpace.text),
+          (availableSpace == null) ? 0 : availableSpace.toInt(),
           userSkill,
           userSkillVerified,
           currentUser.photoUrl),
