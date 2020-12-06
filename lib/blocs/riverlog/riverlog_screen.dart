@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -114,9 +115,26 @@ class UserExperienceCard extends StatelessWidget {
                         Text("@" + currentUser.userName,
                             style: Theme.of(context).textTheme.headline4),
                         Text('   '),
-                        Text(
-                            "#" + CommonFunctions.getHashtag(user: currentUser),
-                            style: Theme.of(context).textTheme.headline4),
+                        FlatButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.yellow.shade900)),
+                          color: Colors.yellow.shade700,
+                          onPressed: () {
+                            // copy hashtag to clipboard
+                            var hashtag =
+                                '#${CommonFunctions.getHashtag(user: currentUser)}';
+                            FlutterClipboard.copy(hashtag).then((value) {
+                              var snackBar = SnackBar(
+                                  content: Text(
+                                      hashtag + ' is copied to clipboard!'));
+                              Scaffold.of(context).showSnackBar(snackBar);
+                            });
+                          },
+                          child: Text(
+                              '#${CommonFunctions.getHashtag(user: currentUser)}',
+                              style: Theme.of(context).textTheme.headline4),
+                        )
                       ],
                     ),
                     Text(

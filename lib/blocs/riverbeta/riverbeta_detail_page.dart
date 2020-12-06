@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -170,10 +171,30 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      "#" + foundRiver.riverHashtag(),
-                      style: Theme.of(context).textTheme.button,
-                    ),
+                    FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.yellow.shade900)),
+                        color: Colors.yellow.shade700,
+                        onPressed: () {
+                          // copy hashtag to clipboard
+                          var hashtag = '#${foundRiver.riverHashtag()}';
+                          FlutterClipboard.copy(hashtag).then((value) {
+                            var snackBar = SnackBar(
+                                content:
+                                    Text(hashtag + ' is copied to clipboard!'));
+                            Scaffold.of(context).showSnackBar(snackBar);
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            FaIcon(FontAwesomeIcons.tag),
+                            Text(
+                              '#${foundRiver.riverHashtag()}',
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                          ],
+                        )),
                     IconButton(
                         onPressed: () async {
                           var url = "https://www.instagram.com/explore/tags/" +
