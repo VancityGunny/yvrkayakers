@@ -89,6 +89,8 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
         var foundRiver = currentState.foundRiver;
         var foundRiverStat = currentState.foundRiverStat;
         var foundRiverHashtag = currentState.foundRiverHashtag;
+        foundRiverStat.entries.sort((a, b) => b.logDate.compareTo(a.logDate));
+        var lastPaddlers = foundRiverStat.entries.take(10).toList();
 
         return Scaffold(
             appBar: AppBar(
@@ -118,10 +120,11 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                         : Flexible(
                             flex: 1,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(foundRiver.maxFlow.toString()),
+                                Text('Max ${foundRiver.maxFlow.toString()}'),
                                 FaIcon(FontAwesomeIcons.thermometerHalf),
-                                Text(foundRiver.minFlow.toString()),
+                                Text('Min ${foundRiver.minFlow.toString()}'),
                                 Text(foundRiver.gaugeUnit)
                               ],
                             ),
@@ -235,11 +238,10 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                   padding: EdgeInsets.all(5.0),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: foundRiverStat.entries.length,
+                  itemCount: lastPaddlers.length,
                   itemBuilder: (context, index) {
                     var paddler = foundRiverStat.visitors.firstWhere(
-                        (element) =>
-                            element.uid == foundRiverStat.entries[index].uid,
+                        (element) => element.uid == lastPaddlers[index].uid,
                         orElse: () => null);
                     if (paddler == null) {
                       return Text('');
@@ -260,7 +262,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                           paddler.displayName +
                           ' ' +
                           CommonFunctions.formatDateForDisplay(
-                              foundRiverStat.entries[index].logDate))
+                              lastPaddlers[index].logDate))
                     ]);
                   },
                 ),
