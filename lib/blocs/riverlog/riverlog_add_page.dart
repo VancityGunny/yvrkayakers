@@ -274,8 +274,8 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     DateTime date = await showDatePicker(
         context: context,
         initialDate: _logDate,
-        firstDate: DateTime(DateTime.now().year - 5),
-        lastDate: DateTime(DateTime.now().year + 5));
+        firstDate: DateTime(DateTime.now().year - 12),
+        lastDate: DateTime.now());
 
     if (date != null) {
       setState(() {

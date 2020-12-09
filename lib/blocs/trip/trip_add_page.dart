@@ -31,8 +31,8 @@ class TripAddPageState extends State<TripAddPage> {
   @override
   void initState() {
     super.initState();
-    _tripTime = TimeOfDay.now();
-    _tripDate = DateTime.now();
+    _tripTime = TimeOfDay(hour: 10, minute: 0);
+    _tripDate = DateTime.now().add(Duration(days: 1));
     _load();
   }
 
@@ -78,7 +78,8 @@ class TripAddPageState extends State<TripAddPage> {
               tileColor: Colors.grey.shade300,
               enabled: true,
               dense: true,
-              title: Text("Start: ${_tripTime.hour}:${_tripTime.minute}",
+              title: Text(
+                  "Start: ${MaterialLocalizations.of(context).formatTimeOfDay(_tripTime)}",
                   style: Theme.of(context).textTheme.headline3),
               onTap: pickTripTime),
           Row(
@@ -239,7 +240,7 @@ class TripAddPageState extends State<TripAddPage> {
     DateTime date = await showDatePicker(
         context: context,
         initialDate: _tripDate,
-        firstDate: DateTime(DateTime.now().year - 5),
+        firstDate: DateTime.now().add(Duration(days: 1)),
         lastDate: DateTime(DateTime.now().year + 5));
 
     if (date != null) {
