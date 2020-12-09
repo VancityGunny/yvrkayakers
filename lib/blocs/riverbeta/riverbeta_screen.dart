@@ -96,7 +96,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                     onPressed: () {
                       goToAddRiverPage();
                     },
-                    child: Text('Add River Beta'),
+                    child: Text('Suggest New River'),
                   ),
                 ],
               );

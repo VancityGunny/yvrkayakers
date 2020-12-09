@@ -1,3 +1,4 @@
+import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -41,7 +42,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Add New River"),
+          title: Text("Suggest New River"),
         ),
         body: newRiverForm(context));
   }
@@ -51,10 +52,10 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   }
 
   Widget newRiverForm(BuildContext context) {
+    var _selectedCountry, _selectedState, _selectedCity = null;
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Text('Add New River'),
           Row(children: <Widget>[
             Expanded(
               child: TextField(
@@ -166,6 +167,58 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
               },
             )
           ]),
+          RaisedButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(builder: (context, setState) {
+                      return AlertDialog(
+                        title: Text('Enter City'),
+                        content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SelectState(
+                                onCountryChanged: (value) {
+                                  setState(() {
+                                    _selectedCountry = value;
+                                  });
+                                },
+                                onStateChanged: (value) {
+                                  setState(() {
+                                    _selectedState = value;
+                                  });
+                                },
+                                onCityChanged: (value) {
+                                  setState(() {
+                                    _selectedCity = value;
+                                  });
+                                },
+                              ),
+                            ]),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              //selectThisCity();
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                            child: Text('Yes'),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                            child: Text('No'),
+                          ),
+                        ],
+                      );
+                    });
+                  },
+                  barrierDismissible: false);
+            },
+            child: Text('Add City'),
+          ),
           Row(children: <Widget>[
             Text('PutIn:'),
             Text((_putInLocation == null)
@@ -188,6 +241,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
                     //desiredAccuracy: LocationAccuracy.best,
                     );
                 print("result = $result");
+
                 setState(() => _putInLocation = result);
               },
               child: Text('Pick location'),
@@ -217,7 +271,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
             ),
           ]),
           RaisedButton(
-              child: Text('Add New River'),
+              child: Text('Suggest New River'),
               onPressed: () {
                 addNewRiver(context); // go up one level
               })

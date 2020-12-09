@@ -51,10 +51,10 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
 
   void _load([bool isError = false]) {
     //widget._riverbetaBloc.add(LoadRiverbetaEvent(isError));
-    //Load RiverBeta list to dropdownbutton
-    location.getLocation().then((value) {
-      var myLocation = GeoFirePoint(value.latitude, value.longitude);
-    });
+    // //Load RiverBeta list to dropdownbutton
+    // location.getLocation().then((value) {
+    //   var myLocation = GeoFirePoint(value.latitude, value.longitude);
+    // });
   }
 
   @override

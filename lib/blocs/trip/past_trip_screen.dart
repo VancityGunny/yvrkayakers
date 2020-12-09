@@ -82,6 +82,7 @@ class PastTripScreenState extends State<PastTripScreen> {
                       goToTripDetail(curTrip);
                     },
                     child: Card(
+                        color: Colors.green.shade100,
                         elevation: 5,
                         child: Padding(
                           padding: EdgeInsets.all(2),

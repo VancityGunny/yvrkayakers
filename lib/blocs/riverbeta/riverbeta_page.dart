@@ -13,7 +13,7 @@ class _RiverbetaPageState extends State<RiverbetaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Riverbeta'),
+        title: Text('Rivers'),
       ),
       body: RiverbetaScreen(),
     );
