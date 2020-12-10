@@ -180,30 +180,42 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                                     ? widget._selectedRiver.minFlow
                                     : _selectedWaterLevel,
                           )),
-                      FaIcon(
-                        FontAwesomeIcons.water,
-                        color: (widget._selectedRiver.maxFlow == null)
-                            ? Colors.grey
-                            : Colors.blue,
-                      ),
-                      Text(
-                          (_selectedWaterLevel == null)
-                              ? "N/A"
-                              : _selectedWaterLevel.toString(),
-                          style: TextStyle(
-                              color: (widget._selectedRiver.maxFlow == null)
-                                  ? Colors.grey
-                                  : Colors.blue,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold)),
-                      Text(
-                        widget._selectedRiver.gaugeUnit,
-                        style: TextStyle(
+                      Stack(
+                        alignment: AlignmentDirectional.topCenter,
+                        children: [
+                          FaIcon(
+                            FontAwesomeIcons.water,
+                            size: 50.0,
                             color: (widget._selectedRiver.maxFlow == null)
-                                ? Colors.grey
-                                : Colors.blue,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
+                                ? Colors.grey.shade300
+                                : Colors.blue.shade200,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                  (_selectedWaterLevel == null)
+                                      ? "N/A"
+                                      : _selectedWaterLevel.toString(),
+                                  style: TextStyle(
+                                      color: (widget._selectedRiver.maxFlow ==
+                                              null)
+                                          ? Colors.grey
+                                          : Colors.blue.shade700,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold)),
+                              Text(
+                                widget._selectedRiver.gaugeUnit,
+                                style: TextStyle(
+                                    color:
+                                        (widget._selectedRiver.maxFlow == null)
+                                            ? Colors.grey
+                                            : Colors.blue.shade700,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          )
+                        ],
                       )
                     ],
                   ))
