@@ -7,19 +7,22 @@ class UserShortModel extends Equatable {
   final String displayName;
   final String photoUrl;
   final String uid;
+  final String country;
 
-  UserShortModel(this.displayName, this.photoUrl, this.uid, this.userName);
+  UserShortModel(
+      this.displayName, this.photoUrl, this.uid, this.userName, this.country);
 
   @override
   // TODO: implement props
-  List<Object> get props => [displayName, photoUrl, uid, userName];
+  List<Object> get props => [displayName, photoUrl, uid, userName, country];
 
   factory UserShortModel.fromJson(Map<dynamic, dynamic> json) {
     return UserShortModel(
         json['displayName'] as String,
         json['photoUrl'] as String,
         json['uid'] as String,
-        json['userName'] as String);
+        json['userName'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
 
   Map<String, dynamic> toJson() {
@@ -29,6 +32,7 @@ class UserShortModel extends Equatable {
     data['photoUrl'] = this.photoUrl;
     data['uid'] = this.uid;
     data['userName'] = this.userName;
+    data['country'] = this.country;
     return data;
   }
 }
@@ -100,9 +104,19 @@ class UserModel extends UserShortModel {
   final double userSkillVerified;
   final UserStatModel userStat;
 
-  UserModel(this.email, displayName, this.phone, photoUrl, this.experience,
-      this.userSkill, this.userSkillVerified, this.userStat, uid, userName)
-      : super(displayName, photoUrl, uid, userName);
+  UserModel(
+      this.email,
+      displayName,
+      this.phone,
+      photoUrl,
+      this.experience,
+      this.userSkill,
+      this.userSkillVerified,
+      this.userStat,
+      uid,
+      userName,
+      country)
+      : super(displayName, photoUrl, uid, userName, country);
 
   @override
   List<Object> get props => [
@@ -115,7 +129,8 @@ class UserModel extends UserShortModel {
         userSkillVerified,
         userStat,
         uid,
-        userName
+        userName,
+        country
       ];
 
   factory UserModel.fromFire(DocumentSnapshot doc) {
@@ -132,7 +147,8 @@ class UserModel extends UserShortModel {
         json['userSkillVerified'] as double,
         UserStatModel.fromJson(json['userStat']),
         doc.id,
-        json['userName'] as String);
+        json['userName'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
 
   factory UserModel.fromJson(Map<dynamic, dynamic> json) {
@@ -148,7 +164,8 @@ class UserModel extends UserShortModel {
         json['userSkillVerified'] as double,
         UserStatModel.fromJson(json['userStat']),
         json['uid'] as String,
-        json['userName'] as String);
+        json['userName'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
 
   Map<String, dynamic> toJson() {
@@ -163,6 +180,7 @@ class UserModel extends UserShortModel {
     data['userSkillVerified'] = this.userSkillVerified;
     data['userStat'] = (this.userStat == null) ? null : this.userStat.toJson();
     data['userName'] = this.userName;
+    data['country'] = this.country;
     return data;
   }
 
@@ -177,6 +195,7 @@ class UserModel extends UserShortModel {
     data['userSkillVerified'] = this.userSkillVerified;
     data['userStat'] = (this.userStat == null) ? null : this.userStat.toJson();
     data['userName'] = this.userName;
+    data['country'] = this.country;
     return data;
   }
 }

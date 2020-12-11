@@ -46,7 +46,8 @@ class LogInWithGooglePressedEvent extends AuthEvent {
 class LogInWithPhonePressedEvent extends AuthEvent {
   final AuthCredential credential;
   final String phoneNumber;
-  LogInWithPhonePressedEvent(this.credential, this.phoneNumber);
+  final String country;
+  LogInWithPhonePressedEvent(this.credential, this.phoneNumber, this.country);
 
   @override
   String toString() => 'LogInWithPhonePressedEvent';

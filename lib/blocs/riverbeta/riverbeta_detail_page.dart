@@ -192,10 +192,8 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                         child: Row(
                           children: [
                             FaIcon(FontAwesomeIcons.tag),
-                            Text(
-                              '#${foundRiver.riverHashtag()}',
-                              style: Theme.of(context).textTheme.button,
-                            ),
+                            Text('#${foundRiver.riverHashtag()}',
+                                style: TextStyle(fontSize: 12.0)),
                           ],
                         )),
                     IconButton(

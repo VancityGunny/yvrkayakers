@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
@@ -65,8 +66,9 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
                 controller: this.txtNewRiverName,
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: "<<River Name>>",
+                    hintText: "Enter River or Creek Name",
                     labelText: "River Name:"),
+                style: TextStyle(fontSize: 20.0),
               ),
             )
           ]),
@@ -76,15 +78,19 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
                 controller: this.txtNewSectionName,
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: "<<Section Name>>, Leave Blank for Main Section",
+                    hintText: "Leave Blank for Main Section",
                     labelText: "Section Name:"),
+                style: TextStyle(fontSize: 20.0),
               ),
             ),
           ]),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Grade'),
+              Text(
+                'River Grade:',
+                style: TextStyle(fontSize: 20.0),
+              ),
               RaisedButton(
                 child: Text(_riverGradeLabel, style: TextStyle(fontSize: 20.0)),
                 onPressed: () {
@@ -103,8 +109,11 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
               ),
             ],
           ),
+          Text(
+            'River Range: (Safe Range for Paddling)',
+            style: TextStyle(fontSize: 20.0),
+          ),
           Row(children: <Widget>[
-            Text('River Range:'),
             Expanded(
               child: TextField(
                 controller: this.txtRiverMin,
@@ -151,16 +160,20 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
           ]),
           Row(
             children: [
-              Text('Location'),
+              Text(
+                'Location:',
+                style: TextStyle(fontSize: 20.0),
+              ),
               RaisedButton(
-                child: Text('${_selectedState} - ${_selectedCountry}'),
+                child: Text(
+                    '${(_selectedState == null) ? '<<Region>>' : _selectedState} - ${(_selectedCountry == null) ? '<<Country>>' : _selectedCountry}'),
                 onPressed: () {
                   showDialog(
                       context: context,
                       builder: (context) {
                         return StatefulBuilder(builder: (context, setState) {
                           return AlertDialog(
-                            title: Text('Enter City'),
+                            title: Text('Select Location'),
                             content: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
@@ -209,12 +222,10 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
             ],
           ),
           Row(children: <Widget>[
-            Text('PutIn:'),
-            Text((_putInLocation == null)
-                ? '<<EMPTY>>'
-                : _putInLocation.latLng.latitude.toString().substring(0, 8) +
-                    ',' +
-                    _putInLocation.latLng.longitude.toString().substring(0, 8)),
+            Text(
+              'PutIn:',
+              style: TextStyle(fontSize: 20.0),
+            ),
             RaisedButton(
               onPressed: () async {
                 LocationResult result = await showLocationPicker(
@@ -233,18 +244,20 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
 
                 setState(() => _putInLocation = result);
               },
-              child: Text('Pick location'),
+              child: Text((_putInLocation == null)
+                  ? '<<EMPTY>>'
+                  : _putInLocation.latLng.latitude.toString().substring(0, 8) +
+                      ',' +
+                      _putInLocation.latLng.longitude
+                          .toString()
+                          .substring(0, 8)),
             ),
           ]),
           Row(children: <Widget>[
-            Text('TakeOut:'),
-            Text((_takeOutLocation == null)
-                ? '<<EMPTY>>'
-                : _takeOutLocation.latLng.latitude.toString().substring(0, 8) +
-                    ',' +
-                    _takeOutLocation.latLng.longitude
-                        .toString()
-                        .substring(0, 8)),
+            Text(
+              'TakeOut:',
+              style: TextStyle(fontSize: 20.0),
+            ),
             RaisedButton(
               onPressed: () async {
                 LocationResult result = await showLocationPicker(
@@ -256,14 +269,25 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
                 print("result = $result");
                 setState(() => _takeOutLocation = result);
               },
-              child: Text('Pick location'),
+              child: Text((_takeOutLocation == null)
+                  ? '<<EMPTY>>'
+                  : _takeOutLocation.latLng.latitude
+                          .toString()
+                          .substring(0, 8) +
+                      ',' +
+                      _takeOutLocation.latLng.longitude
+                          .toString()
+                          .substring(0, 8)),
             ),
           ]),
-          RaisedButton(
-              child: Text('Suggest New River'),
-              onPressed: () {
-                addNewRiver(context); // go up one level
-              })
+          ButtonTheme(
+              minWidth: 200.0,
+              height: 70.0,
+              child: RaisedButton(
+                  child: Text('Suggest New River'),
+                  onPressed: () {
+                    addNewRiver(context); // go up one level
+                  }))
         ],
       ),
     );
@@ -277,16 +301,25 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
         txtNewRiverName.text,
         txtNewSectionName.text,
         _riverGrade,
-        null, //GeoFirePoint(_putInLocation.latLng.latitude, _putInLocation.latLng.longitude),
-        null, //GeoFirePoint(_takeOutLocation.latLng.latitude, _takeOutLocation.latLng.longitude),
+        (_putInLocation == null)
+            ? null
+            : GeoFirePoint(_putInLocation.latLng.latitude,
+                _putInLocation.latLng.longitude),
+        (_takeOutLocation == null)
+            ? null
+            : GeoFirePoint(_takeOutLocation.latLng.latitude,
+                _takeOutLocation.latLng.longitude),
         (txtRiverMin.text == "") ? null : double.parse(txtRiverMin.text),
         (txtRiverMax.text == "") ? null : double.parse(txtRiverMax.text),
         _riverGaugeUnit,
         (txtLevelIncrement.text == "")
             ? null
-            : double.parse(txtLevelIncrement.text));
+            : double.parse(txtLevelIncrement.text),
+        _selectedState,
+        _selectedCountry);
     // add new river
-    BlocProvider.of<RiverbetaBloc>(context).add(AddingRiverbetaEvent(newRiver));
+    BlocProvider.of<RiverbetaBloc>(context)
+        .add(SuggestingRiverbetaEvent(newRiver));
     Navigator.of(context).pop(); // go up one level
   }
 }

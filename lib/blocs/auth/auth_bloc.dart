@@ -77,8 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           }
         } else {
           // if can't find user recrod then it's unauthenticated
-          yield LogInFailureAuthState(
-              0, 'Is Signed In, Yet Can Not Find User Record.');
+          yield PhoneVerificationAuthState(0);
         }
       } else {
         // if status is not signed in then it's unauthenticated
@@ -107,8 +106,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } else {
       // if can't find user recrod then it's unauthenticated
-      yield LogInFailureAuthState(
-          0, 'Is Signed In, Yet Can Not Find User Record.');
+      yield PhoneVerificationAuthState(0);
     }
   }
 
@@ -131,7 +129,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LogInWithPhonePressedEvent event) async* {
     try {
       await _authRepository.signInWithPhoneNumber(
-          event.credential, event.phoneNumber);
+          event.credential, event.phoneNumber, event.country);
 
       yield UserNameVerificationAuthState(0);
     } catch (error) {

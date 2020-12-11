@@ -19,6 +19,10 @@ class RiverbetaRepository {
     return _riverbetaProvider.addRiver(newRiver);
   }
 
+  Future<String> suggestRiver(RiverbetaModel newRiver) async {
+    return _riverbetaProvider.suggestRiver(newRiver);
+  }
+
   Future<String> updateRiverStat(
       String riverId, RiverAnnualStatModel newRiverStat) async {
     return _riverbetaProvider.updateRiverStat(riverId, newRiverStat);

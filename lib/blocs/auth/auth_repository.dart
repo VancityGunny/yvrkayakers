@@ -33,11 +33,11 @@ class AuthRepository {
   }
 
   Future<void> signInWithPhoneNumber(
-      AuthCredential credential, String phoneNumber) async {
+      AuthCredential credential, String phoneNumber, String country) async {
     // now we merge with existing firebase user
     User currentUser = _firebaseAuth.currentUser;
     await currentUser.linkWithCredential(credential).then((value) async {
-      await createOrAssumeUser(value, currentUser, phoneNumber);
+      await createOrAssumeUser(value, currentUser, phoneNumber, country);
     });
 
     // AuthResult authResult =
@@ -57,8 +57,8 @@ class AuthRepository {
     foundUserRef.update({'userName': newUserName});
   }
 
-  Future createOrAssumeUser(
-      UserCredential userCred, User currentUser, phoneNumber) async {
+  Future createOrAssumeUser(UserCredential userCred, User currentUser,
+      String phoneNumber, String country) async {
     if (userCred.user == null) {
       return;
     }
@@ -86,7 +86,8 @@ class AuthRepository {
           foundUser.userSkillVerified,
           foundUser.userStat,
           foundUser.uid,
-          foundUser.userName));
+          foundUser.userName,
+          country));
       return; // if existing then just update this and return
     } else {
       // can't find match by uid
@@ -108,7 +109,8 @@ class AuthRepository {
             0.0,
             null,
             FirebaseAuth.instance.currentUser.uid,
-            null));
+            null,
+            country));
       } else {
         UserModel foundUser =
             UserModel.fromFire(foundUsersByPhoneObj.docs.first);
@@ -123,7 +125,8 @@ class AuthRepository {
             foundUser.userSkillVerified,
             foundUser.userStat,
             FirebaseAuth.instance.currentUser.uid,
-            foundUser.userName));
+            foundUser.userName,
+            country));
       }
       return;
     }

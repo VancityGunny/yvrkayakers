@@ -107,8 +107,12 @@ class UserExperienceCard extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(currentUser.displayName,
-                        style: Theme.of(context).textTheme.headline1),
+                    Container(
+                      padding: new EdgeInsets.only(right: 13.0),
+                      child: new Text(currentUser.displayName,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.subtitle1),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -133,7 +137,7 @@ class UserExperienceCard extends StatelessWidget {
                           },
                           child: Text(
                               '#${CommonFunctions.getHashtag(user: currentUser)}',
-                              style: Theme.of(context).textTheme.headline4),
+                              style: TextStyle(fontSize: 12.0)),
                         )
                       ],
                     ),

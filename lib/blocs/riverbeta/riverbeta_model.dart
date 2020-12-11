@@ -38,16 +38,32 @@ class RiverbetaShortModel extends Equatable {
   final double minFlow; // minimum runnable flow in cms
   final double maxFlow; // maximum runnable flow in cms
   final String gaugeUnit;
+  final String country;
 
   String riverHashtag() {
     return CommonFunctions.getHashtag(river: this);
   }
 
-  RiverbetaShortModel(this.id, this.riverName, this.sectionName,
-      this.difficulty, this.minFlow, this.maxFlow, this.gaugeUnit);
+  RiverbetaShortModel(
+      this.id,
+      this.riverName,
+      this.sectionName,
+      this.difficulty,
+      this.minFlow,
+      this.maxFlow,
+      this.gaugeUnit,
+      this.country);
   @override
-  List<Object> get props =>
-      [id, riverName, sectionName, difficulty, minFlow, maxFlow, gaugeUnit];
+  List<Object> get props => [
+        id,
+        riverName,
+        sectionName,
+        difficulty,
+        minFlow,
+        maxFlow,
+        gaugeUnit,
+        country
+      ];
 
   factory RiverbetaShortModel.fromFire(DocumentSnapshot doc) {
     var json = doc.data();
@@ -58,7 +74,8 @@ class RiverbetaShortModel extends Equatable {
         json['difficulty'] as double,
         json['minFlow'] as double,
         json['maxFlow'] as double,
-        json['gaugeUnit'] as String);
+        json['gaugeUnit'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
   factory RiverbetaShortModel.fromJson(Map<String, dynamic> json) {
     return RiverbetaShortModel(
@@ -68,7 +85,8 @@ class RiverbetaShortModel extends Equatable {
         json['difficulty'] as double,
         json['minFlow'] as double,
         json['maxFlow'] as double,
-        json['gaugeUnit'] as String);
+        json['gaugeUnit'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -79,6 +97,7 @@ class RiverbetaShortModel extends Equatable {
     data['minFlow'] = minFlow;
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
+    data['country'] = country;
     return data;
   }
 }
@@ -86,29 +105,25 @@ class RiverbetaShortModel extends Equatable {
 class RiverbetaModel extends RiverbetaShortModel {
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
+  final String province;
 
   final double flowIncrement; // incremental for the gauge
 
   RiverbetaModel(
-    id,
-    riverName,
-    sectionName,
-    difficulty,
-    this.putInLocation,
-    this.takeOutLocation,
-    minFlow,
-    maxFlow,
-    gaugeUnit,
-    this.flowIncrement,
-  ) : super(
-          id,
-          riverName,
-          sectionName,
-          difficulty,
-          minFlow,
-          maxFlow,
-          gaugeUnit,
-        );
+      id,
+      riverName,
+      sectionName,
+      difficulty,
+      this.putInLocation,
+      this.takeOutLocation,
+      minFlow,
+      maxFlow,
+      gaugeUnit,
+      this.flowIncrement,
+      this.province,
+      country)
+      : super(id, riverName, sectionName, difficulty, minFlow, maxFlow,
+            gaugeUnit, country);
 
   @override
   List<Object> get props => [
@@ -121,7 +136,9 @@ class RiverbetaModel extends RiverbetaShortModel {
         minFlow,
         maxFlow,
         gaugeUnit,
-        flowIncrement
+        flowIncrement,
+        province,
+        country
       ];
 
   factory RiverbetaModel.fromFire(DocumentSnapshot doc) {
@@ -142,7 +159,9 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        json['flowIncrement'] as double);
+        json['flowIncrement'] as double,
+        (json['province'] == null) ? null : json['province'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
 
   factory RiverbetaModel.fromJson(Map<String, dynamic> json) {
@@ -162,19 +181,14 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        json['flowIncrement'] as double);
+        json['flowIncrement'] as double,
+        (json['province'] == null) ? null : json['province'] as String,
+        (json['country'] == null) ? null : json['country'] as String);
   }
 
   RiverbetaShortModel getRiverbetaShort() {
-    return RiverbetaShortModel(
-      id,
-      riverName,
-      sectionName,
-      difficulty,
-      minFlow,
-      maxFlow,
-      gaugeUnit,
-    );
+    return RiverbetaShortModel(id, riverName, sectionName, difficulty, minFlow,
+        maxFlow, gaugeUnit, country);
   }
 
   @override
@@ -191,6 +205,8 @@ class RiverbetaModel extends RiverbetaShortModel {
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
     data['levelIncrement'] = flowIncrement;
+    data['province'] = province;
+    data['country'] = country;
     return data;
   }
 
@@ -207,6 +223,8 @@ class RiverbetaModel extends RiverbetaShortModel {
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
     data['levelIncrement'] = flowIncrement;
+    data['province'] = province;
+    data['country'] = country;
     return data;
   }
 }

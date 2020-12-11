@@ -58,6 +58,19 @@ class AddingRiverbetaEvent extends RiverbetaEvent {
   }
 }
 
+class SuggestingRiverbetaEvent extends RiverbetaEvent {
+  final RiverbetaModel newRiver;
+  SuggestingRiverbetaEvent(this.newRiver);
+  @override
+  Stream<RiverbetaState> applyAsync(
+      {RiverbetaState currentState, RiverbetaBloc bloc}) async* {
+    var success = await _riverbetaRepository.suggestRiver(newRiver);
+    if (success != null) {
+      yield AddedRiverbetaState(0, newRiver: newRiver);
+    }
+  }
+}
+
 class SearchingNearbyRiverbetaEvent extends RiverbetaEvent {
   final GeoFirePoint center;
   final double distance;

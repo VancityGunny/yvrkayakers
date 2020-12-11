@@ -1,3 +1,5 @@
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,7 +107,7 @@ class _LoginOTPState extends State<LoginOTP> {
                                           smsCode: _smsCode);
                                   BlocProvider.of<AuthBloc>(context).add(
                                     LogInWithPhonePressedEvent(
-                                        credential, _phoneNumber),
+                                        credential, _phoneNumber, null),
                                   );
                                 },
                           child: Text(
@@ -129,7 +131,7 @@ class _LoginOTPState extends State<LoginOTP> {
       print(
           'Inside _sendCodeToPhoneNumber: signInWithPhoneNumber auto succeeded: $phoneAuthCredential');
       BlocProvider.of<AuthBloc>(context).add(
-        LogInWithPhonePressedEvent(phoneAuthCredential, _phoneNumber),
+        LogInWithPhonePressedEvent(phoneAuthCredential, _phoneNumber, null),
       );
       // showDialog(
       //     child: new AlertDialog(
