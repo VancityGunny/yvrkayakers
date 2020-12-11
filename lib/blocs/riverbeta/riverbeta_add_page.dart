@@ -2,10 +2,12 @@ import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
+import 'package:yvrkayakers/common/myconstants.dart';
 
 class RiverbetaAddPage extends StatefulWidget {
   @override
@@ -17,6 +19,8 @@ class RiverbetaAddPage extends StatefulWidget {
 class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   double _riverGrade = 2.0;
   String _riverGradeLabel = 'II';
+
+  String _selectedCountry, _selectedState, _selectedCity = null;
   LocationResult _putInLocation;
   LocationResult _takeOutLocation;
   String _riverGaugeUnit = 'Gauge';
@@ -52,7 +56,6 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   }
 
   Widget newRiverForm(BuildContext context) {
-    var _selectedCountry, _selectedState, _selectedCity = null;
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -82,43 +85,22 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Grade'),
-              SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  activeTrackColor: Colors.red[700],
-                  inactiveTrackColor: Colors.red[100],
-                  trackShape: RoundedRectSliderTrackShape(),
-                  trackHeight: 4.0,
-                  thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
-                  thumbColor: Colors.redAccent,
-                  overlayColor: Colors.red.withAlpha(32),
-                  overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
-                  tickMarkShape: RoundSliderTickMarkShape(),
-                  activeTickMarkColor: Colors.red[700],
-                  inactiveTickMarkColor: Colors.red[100],
-                  valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-                  valueIndicatorColor: Colors.redAccent,
-                  valueIndicatorTextStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                child: Slider(
-                  value: _riverGrade,
-                  min: 2.0,
-                  max: 5.0,
-                  divisions: 6,
-                  label: '$_riverGradeLabel',
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        _riverGradeLabel =
-                            CommonFunctions.translateRiverDifficulty(value);
-                        _riverGrade = value;
-                      },
-                    );
-                  },
-                ),
+              RaisedButton(
+                child: Text(_riverGradeLabel, style: TextStyle(fontSize: 20.0)),
+                onPressed: () {
+                  showMaterialScrollPicker(
+                    context: context,
+                    title: "Pick River Grade",
+                    items: MyConstants.RIVER_GRADES_LABELS,
+                    selectedItem: _riverGradeLabel,
+                    onChanged: (value) => setState(() {
+                      _riverGrade =
+                          CommonFunctions.getRiverDifficultyFromLabel(value);
+                      _riverGradeLabel = value;
+                    }),
+                  );
+                },
               ),
-              Text('$_riverGradeLabel')
             ],
           ),
           Row(children: <Widget>[
@@ -167,57 +149,64 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
               },
             )
           ]),
-          RaisedButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return StatefulBuilder(builder: (context, setState) {
-                      return AlertDialog(
-                        title: Text('Enter City'),
-                        content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SelectState(
-                                onCountryChanged: (value) {
-                                  setState(() {
-                                    _selectedCountry = value;
-                                  });
+          Row(
+            children: [
+              Text('Location'),
+              RaisedButton(
+                child: Text('${_selectedState} - ${_selectedCountry}'),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(builder: (context, setState) {
+                          return AlertDialog(
+                            title: Text('Enter City'),
+                            content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SelectState(
+                                    onCountryChanged: (value) {
+                                      setState(() {
+                                        _selectedCountry = value;
+                                      });
+                                    },
+                                    onStateChanged: (value) {
+                                      setState(() {
+                                        _selectedState = value;
+                                      });
+                                    },
+                                    onCityChanged: (value) {
+                                      setState(() {
+                                        _selectedCity = value;
+                                      });
+                                    },
+                                  ),
+                                ]),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  //selectThisCity();
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
                                 },
-                                onStateChanged: (value) {
-                                  setState(() {
-                                    _selectedState = value;
-                                  });
-                                },
-                                onCityChanged: (value) {
-                                  setState(() {
-                                    _selectedCity = value;
-                                  });
-                                },
+                                child: Text('Yes'),
                               ),
-                            ]),
-                        actions: <Widget>[
-                          FlatButton(
-                            onPressed: () {
-                              //selectThisCity();
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                            child: Text('Yes'),
-                          ),
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.of(context, rootNavigator: true).pop();
-                            },
-                            child: Text('No'),
-                          ),
-                        ],
-                      );
-                    });
-                  },
-                  barrierDismissible: false);
-            },
-            child: Text('Add City'),
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                },
+                                child: Text('No'),
+                              ),
+                            ],
+                          );
+                        });
+                      },
+                      barrierDismissible: false);
+                },
+              )
+            ],
           ),
           Row(children: <Widget>[
             Text('PutIn:'),

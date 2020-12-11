@@ -17,6 +17,17 @@ class MyConstants {
     4.25,
     5.0
   ];
+  static List<String> RIVER_GRADES_LABELS = [
+    "II",
+    "II+",
+    "III-",
+    "III",
+    "III+",
+    "IV-",
+    "IV",
+    "IV+",
+    "V"
+  ];
 
   static Future<String> googleApiKey() {
     return FlutterNativeConfig.getConfig<String>(

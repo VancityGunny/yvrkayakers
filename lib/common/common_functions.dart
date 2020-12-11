@@ -49,6 +49,38 @@ class CommonFunctions {
     return Colors.blue; //default return nothing
   }
 
+  static double getRiverDifficultyFromLabel(String difficultyLabel) {
+    switch (difficultyLabel) {
+      case "II":
+        return 2.0;
+        break;
+      case "II+":
+        return 2.25;
+        break;
+      case "III-":
+        return 2.75;
+        break;
+      case "III":
+        return 3.0;
+        break;
+      case "III+":
+        return 3.25;
+        break;
+      case "IV-":
+        return 3.75;
+        break;
+      case "IV":
+        return 4.0;
+        break;
+      case "IV+":
+        return 4.25;
+        break;
+      case "V":
+        return 5.0;
+        break;
+    }
+  }
+
   static String translateRiverDifficulty(double riverDifficulty) {
     if (riverDifficulty == null) return '';
     switch ((riverDifficulty * 100).round()) {
