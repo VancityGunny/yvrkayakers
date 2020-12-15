@@ -38,7 +38,8 @@ class RiverbetaShortModel extends Equatable {
   final double minFlow; // minimum runnable flow in cms
   final double maxFlow; // maximum runnable flow in cms
   final String gaugeUnit;
-  final String country;
+  String country;
+  String province;
 
   String riverHashtag() {
     return CommonFunctions.getHashtag(river: this);
@@ -52,7 +53,8 @@ class RiverbetaShortModel extends Equatable {
       this.minFlow,
       this.maxFlow,
       this.gaugeUnit,
-      this.country);
+      this.country,
+      this.province);
   @override
   List<Object> get props => [
         id,
@@ -62,7 +64,8 @@ class RiverbetaShortModel extends Equatable {
         minFlow,
         maxFlow,
         gaugeUnit,
-        country
+        country,
+        province
       ];
 
   factory RiverbetaShortModel.fromFire(DocumentSnapshot doc) {
@@ -75,7 +78,8 @@ class RiverbetaShortModel extends Equatable {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        (json['country'] == null) ? null : json['country'] as String);
+        (json['country'] == null) ? null : json['country'] as String,
+        (json['province'] == null) ? null : json['province'] as String);
   }
   factory RiverbetaShortModel.fromJson(Map<String, dynamic> json) {
     return RiverbetaShortModel(
@@ -86,7 +90,8 @@ class RiverbetaShortModel extends Equatable {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        (json['country'] == null) ? null : json['country'] as String);
+        (json['country'] == null) ? null : json['country'] as String,
+        (json['province'] == null) ? null : json['province'] as String);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -98,6 +103,7 @@ class RiverbetaShortModel extends Equatable {
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
     data['country'] = country;
+    data['province'] = province;
     return data;
   }
 }
@@ -105,7 +111,6 @@ class RiverbetaShortModel extends Equatable {
 class RiverbetaModel extends RiverbetaShortModel {
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
-  final String province;
 
   final double flowIncrement; // incremental for the gauge
 
@@ -120,10 +125,10 @@ class RiverbetaModel extends RiverbetaShortModel {
       maxFlow,
       gaugeUnit,
       this.flowIncrement,
-      this.province,
+      province,
       country)
       : super(id, riverName, sectionName, difficulty, minFlow, maxFlow,
-            gaugeUnit, country);
+            gaugeUnit, country, province);
 
   @override
   List<Object> get props => [
@@ -188,7 +193,7 @@ class RiverbetaModel extends RiverbetaShortModel {
 
   RiverbetaShortModel getRiverbetaShort() {
     return RiverbetaShortModel(id, riverName, sectionName, difficulty, minFlow,
-        maxFlow, gaugeUnit, country);
+        maxFlow, gaugeUnit, country, province);
   }
 
   @override

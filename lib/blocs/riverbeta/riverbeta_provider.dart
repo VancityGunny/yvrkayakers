@@ -37,9 +37,17 @@ class RiverbetaProvider {
     return newRiverObj.id;
   }
 
+  Future<bool> updateRiver(RiverbetaModel updatedRiver) async {
+    var existingRiverObj =
+        _firestore.collection('/riverbetas').doc(updatedRiver.id);
+    existingRiverObj.update(
+        {'country': updatedRiver.country, 'province': updatedRiver.province});
+    return true;
+  }
+
   Future<String> suggestRiver(RiverbetaModel newRiver) async {
     var newCountryObj =
-        _firestore.collection('/suggestedRivers').doc(newRiver.country);
+        _firestore.collection('/suggestedrivers').doc(newRiver.country);
     var newRiverObj = newCountryObj.collection('/rivers').doc(newRiver.id);
     newRiverObj.set(newRiver.toJson());
     return newRiverObj.id;

@@ -7,7 +7,7 @@ import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_add_page.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_detail_page.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
-
+import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
 
 /// Screen that show all river list
@@ -155,6 +155,7 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                                           children: <Widget>[
                                             Row(
                                               children: <Widget>[
+                                                locationSymbol(curRiver),
                                                 RiverGradeBadge(curRiver),
                                                 SizedBox(
                                                   height: 10,
@@ -227,6 +228,18 @@ class RiverbetaScreenState extends State<RiverbetaScreen> {
                 text: '\n${curRiver.sectionName}',
                 style: Theme.of(context).textTheme.subtitle1),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget locationSymbol(RiverbetaModel curRiver) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: RichText(
+        text: TextSpan(
+          text: curRiver.country.split(' ')[0],
+          style: Theme.of(context).textTheme.caption,
         ),
       ),
     );

@@ -281,7 +281,20 @@ class RiverlogList extends StatelessWidget {
                                   RiverGradeMedal(curRiver.river),
                                   riverNameSymbol(curRiver, context),
                                   Spacer(),
-                                  waterLevelGauge(curRiver, context)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '@${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(curRiver.logDate))}',
+                                        style: TextStyle(
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                      ),
+                                      waterLevelGauge(curRiver, context)
+                                    ],
+                                  )
                                 ],
                               )
                             ],
