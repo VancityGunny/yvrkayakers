@@ -131,7 +131,7 @@ class TripDetailPageState extends State<TripDetailPage> {
     var userSkillVerified = currentUser.userSkillVerified;
     TripParticipantModel newParticipant = new TripParticipantModel(
         FirebaseAuth.instance.currentUser.uid,
-        currentUser.displayName,
+        currentUser.userName,
         blnNeedRide,
         availableSpace.toInt(),
         userSkill,
@@ -479,7 +479,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                 Flexible(
                   flex: 3,
                   fit: FlexFit.tight,
-                  child: Text(currentParticipant.userDisplayName),
+                  child: Text(currentParticipant.userName),
                 ),
                 Flexible(
                     flex: 1,

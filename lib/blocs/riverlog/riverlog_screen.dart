@@ -107,15 +107,10 @@ class UserExperienceCard extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Container(
-                      padding: new EdgeInsets.only(right: 13.0),
-                      child: new Text(currentUser.displayName,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.subtitle1),
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        UserSkillMedal(currentUser.userSkill),
                         Text("@" + currentUser.userName,
                             style: Theme.of(context).textTheme.headline4),
                         Text('   '),
@@ -130,14 +125,28 @@ class UserExperienceCard extends StatelessWidget {
                                 '#${CommonFunctions.getHashtag(user: currentUser)}';
                             FlutterClipboard.copy(hashtag).then((value) {
                               var snackBar = SnackBar(
-                                  content: Text(
-                                      hashtag + ' is copied to clipboard!'));
+                                  content: Text(hashtag +
+                                      ' is copied to clipboard! Share vdo or photo of this paddler in social media using this hashtag.'));
                               Scaffold.of(context).showSnackBar(snackBar);
                             });
                           },
                           child: Text(
                               '#${CommonFunctions.getHashtag(user: currentUser)}',
                               style: TextStyle(fontSize: 12.0)),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Name: ",
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        Container(
+                          padding: new EdgeInsets.only(right: 13.0),
+                          child: new Text(currentUser.displayName,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.subtitle1),
                         )
                       ],
                     ),

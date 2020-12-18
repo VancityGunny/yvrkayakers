@@ -205,7 +205,7 @@ class TripAddPageState extends State<TripAddPage> {
     newTripParticipants.add(
       TripParticipantModel(
           currentUserId,
-          currentUser.displayName,
+          currentUser.userName,
           blnNeedRide,
           (availableSpace == null) ? 0 : availableSpace.toInt(),
           userSkill,

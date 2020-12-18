@@ -184,8 +184,8 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                           var hashtag = '#${foundRiver.riverHashtag()}';
                           FlutterClipboard.copy(hashtag).then((value) {
                             var snackBar = SnackBar(
-                                content:
-                                    Text(hashtag + ' is copied to clipboard!'));
+                                content: Text(hashtag +
+                                    ' is copied to clipboard! Share vdo or photo of this river in social media using this hashtag.'));
                             Scaffold.of(context).showSnackBar(snackBar);
                           });
                         },
@@ -256,8 +256,8 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                               CachedNetworkImageProvider(paddler.photoUrl),
                         ),
                       ),
-                      Text('Paddled by ' +
-                          paddler.displayName +
+                      Text('Paddled by @' +
+                          paddler.userName +
                           ' ' +
                           CommonFunctions.formatDateForDisplay(
                               lastPaddlers[index].logDate))

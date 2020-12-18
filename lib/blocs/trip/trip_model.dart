@@ -131,7 +131,7 @@ class TripCommentModel extends Equatable {
 
 class TripParticipantModel extends Equatable {
   final String userId;
-  final String userDisplayName;
+  final String userName;
   final bool needRide;
   final int availableSpace;
   final double skillLevel;
@@ -140,7 +140,7 @@ class TripParticipantModel extends Equatable {
 
   TripParticipantModel(
       this.userId,
-      this.userDisplayName,
+      this.userName,
       this.needRide,
       this.availableSpace,
       this.skillLevel,
@@ -150,7 +150,7 @@ class TripParticipantModel extends Equatable {
   @override
   List<Object> get props => [
         userId,
-        userDisplayName,
+        userName,
         needRide,
         availableSpace,
         skillLevel,
@@ -161,7 +161,7 @@ class TripParticipantModel extends Equatable {
   factory TripParticipantModel.fromJson(Map<String, dynamic> json) {
     return TripParticipantModel(
         json['userId'] as String,
-        json['userDisplayName'] as String,
+        json['userName'] as String,
         json['needRide'] as bool,
         json['availableSpace'] as int,
         double.tryParse(json['skillLevel'].toString()),
@@ -172,7 +172,7 @@ class TripParticipantModel extends Equatable {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['userId'] = userId;
-    data['userDisplayName'] = userDisplayName;
+    data['userName'] = userName;
     data['needRide'] = needRide;
     data['availableSpace'] = availableSpace;
     data['skillLevel'] = skillLevel;
