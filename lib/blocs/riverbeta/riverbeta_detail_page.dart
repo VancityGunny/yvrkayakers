@@ -89,7 +89,8 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
         var foundRiver = currentState.foundRiver;
         var foundRiverStat = currentState.foundRiverStat;
         var foundRiverHashtag = currentState.foundRiverHashtag;
-        foundRiverStat.entries.sort((a, b) => b.logDate.compareTo(a.logDate));
+        foundRiverStat.entries
+            .sort((a, b) => b.logDateStart.compareTo(a.logDateStart));
         var lastPaddlers = foundRiverStat.entries.take(10).toList();
 
         return Scaffold(
@@ -260,7 +261,7 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
                           paddler.userName +
                           ' ' +
                           CommonFunctions.formatDateForDisplay(
-                              lastPaddlers[index].logDate))
+                              lastPaddlers[index].logDateStart))
                     ]);
                   },
                 ),

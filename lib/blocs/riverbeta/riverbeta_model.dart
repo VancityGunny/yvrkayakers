@@ -74,7 +74,7 @@ class RiverbetaShortModel extends Equatable {
         doc.id,
         json['riverName'] as String,
         json['sectionName'] as String,
-        json['difficulty'] as double,
+        double.parse(json['difficulty'].toString()),
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
@@ -86,7 +86,7 @@ class RiverbetaShortModel extends Equatable {
         null,
         json['riverName'] as String,
         json['sectionName'] as String,
-        json['difficulty'] as double,
+        double.parse(json['difficulty'].toString()),
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
@@ -112,7 +112,7 @@ class RiverbetaModel extends RiverbetaShortModel {
   final GeoFirePoint putInLocation;
   final GeoFirePoint takeOutLocation;
 
-  final double flowIncrement; // incremental for the gauge
+  final double levelIncrement; // incremental for the gauge
 
   RiverbetaModel(
       id,
@@ -124,7 +124,7 @@ class RiverbetaModel extends RiverbetaShortModel {
       minFlow,
       maxFlow,
       gaugeUnit,
-      this.flowIncrement,
+      this.levelIncrement,
       province,
       country)
       : super(id, riverName, sectionName, difficulty, minFlow, maxFlow,
@@ -141,7 +141,7 @@ class RiverbetaModel extends RiverbetaShortModel {
         minFlow,
         maxFlow,
         gaugeUnit,
-        flowIncrement,
+        levelIncrement,
         province,
         country
       ];
@@ -164,7 +164,7 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        json['flowIncrement'] as double,
+        json['levelIncrement'] as double,
         (json['province'] == null) ? null : json['province'] as String,
         (json['country'] == null) ? null : json['country'] as String);
   }
@@ -174,7 +174,7 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['id'] as String,
         json['riverName'] as String,
         json['sectionName'] as String,
-        json['difficulty'] as double,
+        double.parse(json['difficulty'].toString()),
         (json['putInLocation'] == null)
             ? null
             : GeoFirePoint(json['putInLocation']['geopoint'].latitude,
@@ -186,7 +186,7 @@ class RiverbetaModel extends RiverbetaShortModel {
         json['minFlow'] as double,
         json['maxFlow'] as double,
         json['gaugeUnit'] as String,
-        json['flowIncrement'] as double,
+        json['levelIncrement'] as double,
         (json['province'] == null) ? null : json['province'] as String,
         (json['country'] == null) ? null : json['country'] as String);
   }
@@ -209,7 +209,7 @@ class RiverbetaModel extends RiverbetaShortModel {
     data['minFlow'] = minFlow;
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
-    data['levelIncrement'] = flowIncrement;
+    data['levelIncrement'] = levelIncrement;
     data['province'] = province;
     data['country'] = country;
     return data;
@@ -227,7 +227,7 @@ class RiverbetaModel extends RiverbetaShortModel {
     data['minFlow'] = minFlow;
     data['maxFlow'] = maxFlow;
     data['gaugeUnit'] = gaugeUnit;
-    data['levelIncrement'] = flowIncrement;
+    data['levelIncrement'] = levelIncrement;
     data['province'] = province;
     data['country'] = country;
     return data;
@@ -264,26 +264,26 @@ class RiverAnnualStatModel extends Equatable {
 
 class RiverStatUserEntry extends Equatable {
   final String uid;
-  final DateTime logDate;
+  final DateTime logDateStart;
   final String userRiverlogId;
   final int sequenceNumber; // arbitary sequence just so we can identify log run
 
   RiverStatUserEntry(
-      this.uid, this.logDate, this.userRiverlogId, this.sequenceNumber);
+      this.uid, this.logDateStart, this.userRiverlogId, this.sequenceNumber);
   @override
   // TODO: implement props
-  List<Object> get props => [uid, logDate, userRiverlogId];
+  List<Object> get props => [uid, logDateStart, userRiverlogId];
   factory RiverStatUserEntry.fromJson(Map<String, dynamic> json) {
     return RiverStatUserEntry(
         json['userId'] as String,
-        json['logDate'].toDate(),
+        json['logDateStart'].toDate(),
         json['userRiverlogId'] as String,
         (json['sequenceNumber'] == null) ? 0 : json['sequenceNumber'] as int);
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['userId'] = uid;
-    data['logDate'] = logDate;
+    data['logDateStart'] = logDateStart;
     data['userRiverlogId'] = userRiverlogId;
     data['sequenceNumber'] = sequenceNumber;
     return data;

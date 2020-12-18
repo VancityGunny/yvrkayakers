@@ -31,7 +31,7 @@ class RiverlogRepository {
     //also update RiverBeta stat
 
     newRiverStat.entries.add(new RiverStatUserEntry(newRiverLog.uid,
-        newRiverLog.logDate, newRiverLog.id, (currentSequence + 1)));
+        newRiverLog.logDateStart, newRiverLog.id, (currentSequence + 1)));
     // check if user already exist in visitors
     if (newRiverStat.visitors
             .any((element) => element.uid == newRiverLog.uid) ==

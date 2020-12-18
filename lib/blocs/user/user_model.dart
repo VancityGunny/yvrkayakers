@@ -49,7 +49,7 @@ class UserExperienceModel extends Equatable {
   List<Object> get props => [riverGrade, runCount, verifiedRunCount];
 
   factory UserExperienceModel.fromJson(Map<dynamic, dynamic> json) {
-    return UserExperienceModel(json['riverGrade'] as double,
+    return UserExperienceModel(double.parse(json['riverGrade'].toString()),
         json['runCount'] as int, json['verifiedRunCount'] as int);
   }
 

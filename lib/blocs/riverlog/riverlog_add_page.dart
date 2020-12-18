@@ -33,6 +33,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   TimeOfDay _startTime;
   TimeOfDay _endTime;
   double _selectedWaterLevel;
+  int _gaugeDivision = 0;
   RiverlogAddPageState();
   @override
   void initState() {
@@ -67,6 +68,16 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   }
 
   Widget newRiverLogForm() {
+    if (widget._selectedRiver.maxFlow == null) {
+      _gaugeDivision = 1;
+    } else {
+      // all this just to avoid Floating-point error
+      int tmpMax = (widget._selectedRiver.maxFlow * 100).toInt();
+      int tmpMin = (widget._selectedRiver.minFlow * 100).toInt();
+      int tmpIncrement = (widget._selectedRiver.levelIncrement * 100).toInt();
+      _gaugeDivision = (tmpMax - tmpMin) ~/ tmpIncrement;
+    }
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -162,16 +173,13 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                             max: (widget._selectedRiver.maxFlow == null)
                                 ? 1
                                 : widget._selectedRiver.maxFlow,
-                            divisions: (widget._selectedRiver.maxFlow == null)
-                                ? 1
-                                : ((widget._selectedRiver.maxFlow -
-                                        widget._selectedRiver.minFlow) ~/
-                                    widget._selectedRiver.flowIncrement),
+                            divisions: _gaugeDivision,
                             onChanged: (widget._selectedRiver.maxFlow == null)
                                 ? null
                                 : (double value) {
                                     setState(() {
-                                      _selectedWaterLevel = value;
+                                      _selectedWaterLevel = double.parse(
+                                          (value).toStringAsFixed(2));
                                     });
                                   },
                             value: (widget._selectedRiver.maxFlow == null)
@@ -241,6 +249,12 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
     var currentUserId = FirebaseAuth.instance.currentUser.uid;
     var uuid = new Uuid();
     var logId = uuid.v1();
+    DateTime tmpDateTime = DateTime(_logDate.year, _logDate.month, _logDate.day,
+        _startTime.hour, _startTime.minute);
+    DateTime tmpDateTimeEnd = (_endTime == null)
+        ? null
+        : DateTime(_logDate.year, _logDate.month, _logDate.day, _endTime.hour,
+            _endTime.minute);
     RiverlogModel newRiverlog = RiverlogModel(
         logId,
         null,
@@ -252,11 +266,12 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         null,
         null,
         _selectedWaterLevel, //waterlevel
-        _logDate, //logdate
+        tmpDateTime, //logdate
         null, //friends
         0, //totalround
         0, //riverround
-        widget._selectedRiver.getRiverbetaShort());
+        widget._selectedRiver.getRiverbetaShort(),
+        tmpDateTimeEnd);
     BlocProvider.of<RiverlogBloc>(context)
         .add(AddingRiverlogEvent(newRiverlog));
     Navigator.of(context).pop();

@@ -112,16 +112,19 @@ class RiverlogProvider {
 
     if (userObj.data()['userStat'] == null) {
       //this is the first log so log this
-      userStatObj = new UserStatModel(newRiverLog.river, newRiverLog.logDate,
-          (newRiverLog.didSwim) ? 1 : 0, (newRiverLog.didRescue) ? 1 : 0);
+      userStatObj = new UserStatModel(
+          newRiverLog.river,
+          newRiverLog.logDateStart,
+          (newRiverLog.didSwim) ? 1 : 0,
+          (newRiverLog.didRescue) ? 1 : 0);
 
       //wait for
     } else {
       userStatObj = UserStatModel.fromJson(userObj.data()['userStat']);
       //modify with new value
       userStatObj.lastWetness =
-          (userStatObj.lastWetness.isBefore(newRiverLog.logDate))
-              ? newRiverLog.logDate
+          (userStatObj.lastWetness.isBefore(newRiverLog.logDateStart))
+              ? newRiverLog.logDateStart
               : userStatObj.lastWetness;
       userStatObj.swimCount = (newRiverLog.didSwim)
           ? userStatObj.swimCount + 1

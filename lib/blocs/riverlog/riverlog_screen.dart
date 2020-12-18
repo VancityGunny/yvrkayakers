@@ -60,11 +60,11 @@ class RiverlogScreenState extends State<RiverlogScreen> {
               }
 
               List<RiverlogShortModel> tempData = snapshot.data;
-              tempData.sort((a, b) => b.logDate.compareTo(a.logDate));
+              tempData.sort((a, b) => b.logDateStart.compareTo(a.logDateStart));
               var newGroupedData = groupBy(
                   tempData,
                   (RiverlogShortModel obj) =>
-                      DateFormat.yMMMM().format(obj.logDate));
+                      DateFormat.yMMMM().format(obj.logDateStart));
               return Column(children: [
                 UserExperienceCard(tempData),
                 RiverlogList(newGroupedData: newGroupedData),
@@ -266,7 +266,7 @@ class RiverlogList extends StatelessWidget {
                                             width: 40.0,
                                             alignment: Alignment(0.0, 0.0),
                                             child: Text(
-                                              '${DateFormat('E').format(curRiver.logDate)}',
+                                              '${DateFormat('E').format(curRiver.logDateStart)}',
                                               style: TextStyle(
                                                   fontSize: 15.0,
                                                   fontWeight: FontWeight.bold,
@@ -277,7 +277,7 @@ class RiverlogList extends StatelessWidget {
                                             // color: Colors.lightBlue,
                                             alignment: Alignment(0.0, 0.0),
                                             child: Text(
-                                              '${DateFormat.d().format(curRiver.logDate)}',
+                                              '${DateFormat.d().format(curRiver.logDateStart)}',
                                               style: TextStyle(
                                                   fontSize: 20.0,
                                                   fontWeight: FontWeight.bold,
@@ -293,13 +293,28 @@ class RiverlogList extends StatelessWidget {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(
-                                        '@${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(curRiver.logDate))}',
-                                        style: TextStyle(
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                Theme.of(context).primaryColor),
+                                      Row(
+                                        children: [
+                                          (curRiver.didSwim == true)
+                                              ? FaIcon(FontAwesomeIcons.swimmer,
+                                                  color: Colors.red, size: 14.0)
+                                              : Text(''),
+                                          (curRiver.didRescue == true)
+                                              ? FaIcon(
+                                                  FontAwesomeIcons.lifeRing,
+                                                  size: 14.0,
+                                                  color: Colors.green,
+                                                )
+                                              : Text(''),
+                                          Text(
+                                            '@${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(curRiver.logDateStart))}',
+                                            style: TextStyle(
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                        ],
                                       ),
                                       waterLevelGauge(curRiver, context)
                                     ],
