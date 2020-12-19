@@ -60,8 +60,7 @@ class TripProvider {
     foundTripRef.update({'participantIds': updatedParticipantIds});
   }
 
-  Future<String> removeTripParticipant(
-      String tripId, String removeUserId) async {
+  Future<void> removeTripParticipant(String tripId, String removeUserId) async {
     var foundTripRef = _firestore.collection('/trips').doc(tripId);
     var foundTripObj = await foundTripRef.get();
     List<TripParticipantModel> updatedParticipants = foundTripObj
@@ -70,7 +69,14 @@ class TripProvider {
         .toList();
     updatedParticipants
         .removeWhere((element) => element.userId == removeUserId);
-    foundTripRef.update(
+
+    if (updatedParticipants.length == 0) {
+      // if no current participants then cancel this trip
+      await foundTripRef.delete();
+      return;
+    }
+
+    await foundTripRef.update(
         {'participants': updatedParticipants.map((e) => e.toJson()).toList()});
 
     //also remove hidden participantids list too
@@ -79,6 +85,6 @@ class TripProvider {
         .map<String>((e) => e.toString())
         .toList();
     updatedParticipantIds.removeWhere((element) => element == removeUserId);
-    foundTripRef.update({'participantIds': updatedParticipantIds});
+    await foundTripRef.update({'participantIds': updatedParticipantIds});
   }
 }

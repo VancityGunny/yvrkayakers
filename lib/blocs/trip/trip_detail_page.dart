@@ -71,48 +71,54 @@ class TripDetailPageState extends State<TripDetailPage> {
           StreamBuilder(
               stream: this.currentTripController.stream,
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot == null ||
+                    snapshot.hasError ||
+                    !snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-
-                var allParticipants = snapshot.data.docs.first
-                    .data()['participants']
-                    .toList()
-                    .map<TripParticipantModel>(
-                        (e) => TripParticipantModel.fromJson(e))
-                    .toList();
-                var allComments = snapshot.data.docs.first.reference
-                    .collection('/comments')
-                    .get()
-                    .then((event) {
-                  return event.docs
-                      .map<TripCommentModel>(
-                          (e) => TripCommentModel.fromFire(e))
+                if (snapshot.data.docs?.isEmpty == false) {
+                  var allParticipants = snapshot.data.docs.first
+                      .data()['participants']
+                      .toList()
+                      .map<TripParticipantModel>(
+                          (e) => TripParticipantModel.fromJson(e))
                       .toList();
-                });
+                  var allComments = snapshot.data.docs.first.reference
+                      .collection('/comments')
+                      .get()
+                      .then((event) {
+                    return event.docs
+                        .map<TripCommentModel>(
+                            (e) => TripCommentModel.fromFire(e))
+                        .toList();
+                  });
 
-                blnParticipated = allParticipants.any((element) =>
-                    element.userId == FirebaseAuth.instance.currentUser.uid);
+                  blnParticipated = allParticipants.any((element) =>
+                      element.userId == FirebaseAuth.instance.currentUser.uid);
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Card(
-                        elevation: 5.0,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            tripDetailWidget(),
-                            Flexible(child: carpoolWidget(blnParticipated)),
-                          ],
-                        )),
-                    Container(
-                      child: participantListWidget(allParticipants),
-                    ),
-                    Container(child: commentWidget(allComments))
-                  ],
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Card(
+                          elevation: 5.0,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              tripDetailWidget(),
+                              Flexible(child: carpoolWidget(blnParticipated)),
+                            ],
+                          )),
+                      Container(
+                        child: participantListWidget(allParticipants),
+                      ),
+                      Container(child: commentWidget(allComments))
+                    ],
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
               }),
         ],
@@ -160,6 +166,8 @@ class TripDetailPageState extends State<TripDetailPage> {
                                   leaveThisTrip();
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
+                                  Navigator.of(context)
+                                      .pop(); // go back to main trip screen
                                 },
                                 child: Text('Yes'),
                               ),
@@ -479,7 +487,7 @@ class TripDetailPageState extends State<TripDetailPage> {
                 Flexible(
                   flex: 3,
                   fit: FlexFit.tight,
-                  child: Text(currentParticipant.userName),
+                  child: Text("@" + currentParticipant.userName),
                 ),
                 Flexible(
                     flex: 1,

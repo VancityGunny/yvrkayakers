@@ -122,9 +122,9 @@ class LeaveTripEvent extends TripEvent {
     try {
       yield UnTripState(0);
       // load river
-      var result =
-          await _tripRepository.removeTripParticipant(tripId, removeUserId);
-      yield LeavedTripState(0, newLogId: result);
+
+      await _tripRepository.removeTripParticipant(tripId, removeUserId);
+      yield LeavedTripState(0);
     } catch (_, stackTrace) {
       developer.log('$_',
           name: 'LeaveTripEvent', error: _, stackTrace: stackTrace);

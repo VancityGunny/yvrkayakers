@@ -23,8 +23,7 @@ class TripRepository {
     return _tripProvider.addTripParticipant(tripId, newTripParticipant);
   }
 
-  Future<String> removeTripParticipant(
-      String tripId, String removeUserId) async {
-    return _tripProvider.removeTripParticipant(tripId, removeUserId);
+  Future<void> removeTripParticipant(String tripId, String removeUserId) async {
+    _tripProvider.removeTripParticipant(tripId, removeUserId);
   }
 }
