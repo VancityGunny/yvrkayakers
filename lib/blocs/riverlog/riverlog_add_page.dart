@@ -27,6 +27,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   TextEditingController txtLogDate = TextEditingController();
   TextEditingController txtLogTimeIn = TextEditingController();
   TextEditingController txtLogTimeOut = TextEditingController();
+  TextEditingController txtNote = TextEditingController();
   bool blnDidSwim = false;
   bool blnDidRescue = false;
   DateTime _logDate;
@@ -87,6 +88,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
             style: Theme.of(context).textTheme.headline1,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(
                 flex: 4,
@@ -125,36 +127,62 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                                 : "End: ${MaterialLocalizations.of(context).formatTimeOfDay(_endTime)}",
                             style: Theme.of(context).textTheme.headline3),
                         onTap: pickEndTime),
+                    SizedBox(height: 2),
+                    ListTile(
+                      contentPadding: EdgeInsets.all(2.0),
+                      tileColor: Colors.grey.shade300,
+                      title: TextField(
+                        controller: this.txtNote,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 3, //Normal textInputField will be displayed
+                        maxLines:
+                            3, // when user presses enter it will adapt to it
+                        decoration: InputDecoration(
+                            border: InputBorder.none, hintText: "Note?..."),
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        IconButton(
-                            iconSize: 60.0,
-                            color:
-                                (blnDidSwim == true) ? Colors.red : Colors.grey,
-                            icon: Padding(
-                                padding:
-                                    EdgeInsets.only(left: 4, right: 4, top: 0),
-                                child: FaIcon(FontAwesomeIcons.swimmer)),
-                            onPressed: () {
-                              setState(() {
-                                blnDidSwim = !blnDidSwim;
-                              });
-                            }),
-                        IconButton(
-                            iconSize: 60.0,
-                            color: (blnDidRescue == true)
-                                ? Colors.green
-                                : Colors.grey,
-                            icon: Padding(
-                                padding:
-                                    EdgeInsets.only(left: 4, right: 4, top: 0),
-                                child: FaIcon(FontAwesomeIcons.lifeRing)),
-                            onPressed: () {
-                              setState(() {
-                                blnDidRescue = !blnDidRescue;
-                              });
-                            }),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                                iconSize: 55.0,
+                                color: (blnDidSwim == true)
+                                    ? Colors.red
+                                    : Colors.grey,
+                                icon: FaIcon(FontAwesomeIcons.swimmer),
+                                onPressed: () {
+                                  setState(() {
+                                    blnDidSwim = !blnDidSwim;
+                                  });
+                                }),
+                            Text(
+                              "I Swam",
+                              style: Theme.of(context).textTheme.button,
+                            )
+                          ],
+                        ),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                  iconSize: 55.0,
+                                  color: (blnDidRescue == true)
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  icon: FaIcon(FontAwesomeIcons.lifeRing),
+                                  onPressed: () {
+                                    setState(() {
+                                      blnDidRescue = !blnDidRescue;
+                                    });
+                                  }),
+                              Text(
+                                "I Rescued",
+                                style: Theme.of(context).textTheme.button,
+                              )
+                            ]),
                       ],
                     ),
                   ],
@@ -163,31 +191,37 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
               Flexible(
                   flex: 1,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      RotatedBox(
-                          quarterTurns: -1,
-                          child: Slider(
-                            min: (widget._selectedRiver.maxFlow == null)
-                                ? 1
-                                : widget._selectedRiver.minFlow,
-                            max: (widget._selectedRiver.maxFlow == null)
-                                ? 1
-                                : widget._selectedRiver.maxFlow,
-                            divisions: _gaugeDivision,
-                            onChanged: (widget._selectedRiver.maxFlow == null)
-                                ? null
-                                : (double value) {
-                                    setState(() {
-                                      _selectedWaterLevel = double.parse(
-                                          (value).toStringAsFixed(2));
-                                    });
-                                  },
-                            value: (widget._selectedRiver.maxFlow == null)
-                                ? 1
-                                : (_selectedWaterLevel == null)
-                                    ? widget._selectedRiver.minFlow
-                                    : _selectedWaterLevel,
-                          )),
+                      Container(
+                        height: 300.0,
+                        child: Center(
+                            child: RotatedBox(
+                                quarterTurns: -1,
+                                child: Slider(
+                                  min: (widget._selectedRiver.maxFlow == null)
+                                      ? 1
+                                      : widget._selectedRiver.minFlow,
+                                  max: (widget._selectedRiver.maxFlow == null)
+                                      ? 1
+                                      : widget._selectedRiver.maxFlow,
+                                  divisions: _gaugeDivision,
+                                  onChanged: (widget._selectedRiver.maxFlow ==
+                                          null)
+                                      ? null
+                                      : (double value) {
+                                          setState(() {
+                                            _selectedWaterLevel = double.parse(
+                                                (value).toStringAsFixed(2));
+                                          });
+                                        },
+                                  value: (widget._selectedRiver.maxFlow == null)
+                                      ? 1
+                                      : (_selectedWaterLevel == null)
+                                          ? widget._selectedRiver.minFlow
+                                          : _selectedWaterLevel,
+                                ))),
+                      ),
                       Stack(
                         alignment: AlignmentDirectional.topCenter,
                         children: [
@@ -261,10 +295,10 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
         currentUserId,
         blnDidSwim,
         blnDidRescue,
-        null,
-        null,
-        null,
-        null,
+        null, //swimmerRescued
+        null, //rescuedBy
+        txtNote.text, //note
+        null, //enjoyment
         _selectedWaterLevel, //waterlevel
         tmpDateTime, //logdate
         null, //friends

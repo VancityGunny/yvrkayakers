@@ -148,34 +148,38 @@ class TripAddPageState extends State<TripAddPage> {
                       ),
                     ],
                   ),
-                  Slider(
-                    min: 0,
-                    max: 3,
-                    divisions: 3,
-                    value: availableSpace,
-                    onChanged: (blnNeedRide == true)
-                        ? null
-                        : (double value) {
-                            setState(() {
-                              availableSpace = value;
-                            });
-                          },
-                  ),
+                  Container(
+                      width: 250.0,
+                      child: Center(
+                          child: Slider(
+                        min: 0,
+                        max: 3,
+                        divisions: 3,
+                        value: availableSpace,
+                        onChanged: (blnNeedRide == true)
+                            ? null
+                            : (double value) {
+                                setState(() {
+                                  availableSpace = value;
+                                });
+                              },
+                      ))),
                 ],
               )
             ],
           ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: this.txtNote,
-                  decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "Note?"),
-                ),
-              )
-            ],
+          ListTile(
+            tileColor: Colors.grey.shade300,
+            title: TextField(
+              controller: this.txtNote,
+              keyboardType: TextInputType.multiline,
+              minLines: 3, //Normal textInputField will be displayed
+              maxLines: 3, // when user presses enter it will adapt to it
+              decoration: InputDecoration(
+                  border: InputBorder.none, hintText: "Note?..."),
+            ),
           ),
+          SizedBox(height: 5),
           ButtonTheme(
               minWidth: 200.0,
               height: 70.0,
