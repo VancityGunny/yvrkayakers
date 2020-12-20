@@ -1,18 +1,21 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:hashids2/hashids2.dart';
 import 'package:location/location.dart';
-import 'package:yvrkayakers/blocs/riverbeta/index.dart';
-import 'package:yvrkayakers/blocs/riverlog/index.dart';
+import 'package:yvrkayakers/blocs/riverbeta/riverbeta_model.dart';
+import 'package:yvrkayakers/blocs/riverlog/riverlog_model.dart';
 import 'package:yvrkayakers/blocs/user/user_model.dart';
+import 'package:yvrkayakers/blocs/trip/trip_model.dart';
 import 'package:yvrkayakers/common/myconstants.dart';
 
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 class CommonFunctions {
   static String getHashtag(
       {RiverbetaShortModel river,
       RiverlogModel riverlog,
-      UserShortModel user}) {
+      UserShortModel user,
+      TripModel trip}) {
     //get hashtage for each type of object
     if (river != null) {
       return MyConstants.hashtagRiverPrefix +
@@ -20,21 +23,29 @@ class CommonFunctions {
           river.riverName.replaceAll(" ", "");
     }
     if (riverlog != null) {
-      final hashids = HashIds(
-        salt: 'YVRKayakers',
-        minHashLength: 5,
-        alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
-      );
+      // final hashids = HashIds(
+      //   salt: 'YVRKayakers',
+      //   minHashLength: 5,
+      //   alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
+      // );
       return MyConstants.hashtagRiverPrefix +
           MyConstants.hashtagDelimiter +
-          riverlog.uid +
+          riverlog.river.riverName.replaceAll(" ", "") +
           MyConstants.hashtagDelimiter +
-          hashids.encode(riverlog.totalRound);
+          DateFormat.yMd().format(riverlog.logDateStart);
+      //hashids.encode(riverlog.totalRound);
     }
     if (user != null) {
       return MyConstants.hashtagUserPrefix +
           MyConstants.hashtagDelimiter +
           user.userName;
+    }
+    if (trip != null) {
+      return MyConstants.hashtagRiverPrefix +
+          MyConstants.hashtagDelimiter +
+          trip.river.riverName.replaceAll(" ", "") +
+          MyConstants.hashtagDelimiter +
+          DateFormat.yMd().format(trip.tripDate);
     }
   }
 
