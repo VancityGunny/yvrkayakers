@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:yvrkayakers/blocs/trip/index.dart';
+import 'package:yvrkayakers/common/common_functions.dart';
 
 class TripBloc extends Bloc<TripEvent, TripState> {
   // todo: check singleton for logic in project
@@ -26,7 +26,7 @@ class TripBloc extends Bloc<TripEvent, TripState> {
     newTripController = StreamController.broadcast();
     newTripController.addStream(FirebaseFirestore.instance
         .collection('/trips')
-        .where('tripDate', isGreaterThan: DateTime.now())
+        .where('tripDate', isGreaterThan: CommonFunctions.getTripLockDateTime())
         .orderBy('tripDate')
         .snapshots());
     newTripController.stream.listen((event) {
@@ -43,7 +43,7 @@ class TripBloc extends Bloc<TripEvent, TripState> {
     pastTripController = StreamController.broadcast();
     pastTripController.addStream(FirebaseFirestore.instance
         .collection('/trips')
-        .where('tripDate', isLessThan: DateTime.now())
+        .where('tripDate', isLessThan: CommonFunctions.getTripLockDateTime())
         .where('participantIds',
             arrayContainsAny: [FirebaseAuth.instance.currentUser.uid])
         .orderBy('tripDate', descending: true)

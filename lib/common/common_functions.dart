@@ -203,4 +203,9 @@ class CommonFunctions {
       return timeElapsed.inDays.toString() + ' day(s) ago';
     }
   }
+
+  static DateTime getTripLockDateTime() {
+    return DateTime.now().add(Duration(hours: -1));
+    // lock 1 hour before trip time
+  }
 }

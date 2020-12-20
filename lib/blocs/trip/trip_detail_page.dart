@@ -31,8 +31,7 @@ class TripDetailPageState extends State<TripDetailPage> {
 
   // not allow change 1 hour before the trip date
   bool get isLocked {
-    return DateTime.now()
-        .add(Duration(hours: -1))
+    return CommonFunctions.getTripLockDateTime()
         .isAfter(widget._foundTrip.tripDate);
   }
 
