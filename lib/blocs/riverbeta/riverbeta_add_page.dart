@@ -21,7 +21,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
   double _riverGrade = 2.0;
   String _riverGradeLabel = 'II';
 
-  String _selectedCountry, _selectedState, _selectedCity = null;
+  String _selectedCountry, _selectedState, _selectedCity;
   LocationResult _putInLocation;
   LocationResult _takeOutLocation;
   String _riverGaugeUnit = 'Gauge';
@@ -52,7 +52,7 @@ class RiverbetaAddPageState extends State<RiverbetaAddPage> {
         body: newRiverForm(context));
   }
 
-  void _load([bool isError = false]) {
+  void _load() {
     //widget._riverbetaBloc.add(LoadRiverbetaEvent(isError));
   }
 

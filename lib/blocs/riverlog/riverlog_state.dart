@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
+import 'package:yvrkayakers/blocs/hashtag/index.dart';
 
 abstract class RiverlogState extends Equatable {
   /// notify change state without deep clone state
@@ -90,4 +91,12 @@ class LoadedUserRiverlogState extends RiverlogState {
 class LoadedRiverlogState extends RiverlogState {
   final RiverlogModel riverLog;
   LoadedRiverlogState(int version, {@required this.riverLog}) : super(version);
+}
+
+class FoundRiverlogState extends RiverlogState {
+  final RiverlogModel foundRiverlog;
+  final HashtagModel foundRiverlogHashtag;
+  FoundRiverlogState(int version,
+      {@required this.foundRiverlog, this.foundRiverlogHashtag})
+      : super(version);
 }

@@ -6,3 +6,4 @@ export 'riverlog_provider.dart';
 export 'riverlog_repository.dart';
 export 'riverlog_screen.dart';
 export 'riverlog_state.dart';
+export 'riverlog_detail_page.dart';

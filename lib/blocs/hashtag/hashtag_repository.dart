@@ -9,9 +9,9 @@ class HashtagRepository {
     _hashtagProvider.test(isError);
   }
 
-  Future<String> updateHashtagVideos(
+  Future<void> updateHashtagVideos(
       String hashtag, List<ExtObjectLink> videoList) async {
-    return _hashtagProvider.updateHashtagVideos(hashtag, videoList);
+    _hashtagProvider.updateHashtagVideos(hashtag, videoList);
   }
 
   Future<HashtagModel> getHashtag(String hashtag) async {

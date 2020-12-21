@@ -6,7 +6,7 @@ class MyConstants {
   static String hashtagLogPrefix = "YVRKL";
   static String hashtagUserPrefix = "YVRKU";
   static String hashtagDelimiter = "_";
-  static List<double> RIVER_GRADES = [
+  static const List<double> RIVER_GRADES = [
     2.0,
     2.25,
     2.75,

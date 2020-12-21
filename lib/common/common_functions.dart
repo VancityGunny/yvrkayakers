@@ -1,5 +1,4 @@
 import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:hashids2/hashids2.dart';
 import 'package:location/location.dart';
 import 'package:yvrkayakers/blocs/riverbeta/riverbeta_model.dart';
 import 'package:yvrkayakers/blocs/riverlog/riverlog_model.dart';
@@ -32,7 +31,7 @@ class CommonFunctions {
           MyConstants.hashtagDelimiter +
           riverlog.river.riverName.replaceAll(" ", "") +
           MyConstants.hashtagDelimiter +
-          DateFormat.yMd().format(riverlog.logDateStart);
+          DateFormat('yyyyMMdd').format(riverlog.logDateStart);
       //hashids.encode(riverlog.totalRound);
     }
     if (user != null) {
@@ -47,6 +46,7 @@ class CommonFunctions {
           MyConstants.hashtagDelimiter +
           DateFormat.yMd().format(trip.tripDate);
     }
+    return '';
   }
 
   static MaterialColor translateRiverDifficultyColor(double riverDifficulty) {
@@ -90,6 +90,7 @@ class CommonFunctions {
         return 5.0;
         break;
     }
+    return -1;
   }
 
   static String translateRiverDifficulty(double riverDifficulty) {

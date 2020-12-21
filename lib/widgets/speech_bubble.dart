@@ -19,7 +19,6 @@ class SpeechBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = isMe ? Colors.white : Colors.greenAccent.shade100;
     final align = isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end;
-    final icon = delivered ? Icons.done_all : Icons.done;
     final radius = isMe
         ? BorderRadius.only(
             topRight: Radius.circular(5.0),

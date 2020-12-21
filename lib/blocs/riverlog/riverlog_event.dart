@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
 import 'package:meta/meta.dart';
+import 'package:yvrkayakers/blocs/hashtag/index.dart';
 
 @immutable
 abstract class RiverlogEvent {
   Stream<RiverlogState> applyAsync(
       {RiverlogState currentState, RiverlogBloc bloc});
   final RiverlogRepository _riverlogRepository = RiverlogRepository();
+  final HashtagRepository _hashtagRepository = HashtagRepository();
 }
 
 class UnRiverlogEvent extends RiverlogEvent {
@@ -45,10 +46,11 @@ class LoadUserRiverlogEvent extends RiverlogEvent {
 
 class LoadRiverlogEvent extends RiverlogEvent {
   final String riverlogId;
+  final String userId;
   @override
   String toString() => 'LoadRiverlogEvent';
 
-  LoadRiverlogEvent(this.riverlogId);
+  LoadRiverlogEvent(this.userId, this.riverlogId);
 
   @override
   Stream<RiverlogState> applyAsync(
@@ -56,7 +58,8 @@ class LoadRiverlogEvent extends RiverlogEvent {
     try {
       yield UnRiverlogState(0);
       // load river
-      var foundRiver = await _riverlogRepository.getRiverLogById(riverlogId);
+      var foundRiver =
+          await _riverlogRepository.getRiverLogById(userId, riverlogId);
       yield LoadedRiverlogState(0, riverLog: foundRiver);
     } catch (_, stackTrace) {
       developer.log('$_',
@@ -86,5 +89,23 @@ class AddingRiverlogEvent extends RiverlogEvent {
           name: 'AddingRiverlogEvent', error: _, stackTrace: stackTrace);
       yield ErrorRiverlogState(0, _?.toString());
     }
+  }
+}
+
+class FetchingRiverlogEvent extends RiverlogEvent {
+  final String selectedUserId;
+  final String riverlogId;
+  FetchingRiverlogEvent(this.selectedUserId, this.riverlogId);
+
+  @override
+  Stream<RiverlogState> applyAsync(
+      {RiverlogState currentState, RiverlogBloc bloc}) async* {
+    yield UnRiverlogState(0);
+    var foundRiverlog =
+        await _riverlogRepository.getRiverLogById(selectedUserId, riverlogId);
+    var foundRiverHashtag =
+        await _hashtagRepository.getHashtag(foundRiverlog.riverlogHashtag());
+    yield FoundRiverlogState(0,
+        foundRiverlog: foundRiverlog, foundRiverlogHashtag: foundRiverHashtag);
   }
 }

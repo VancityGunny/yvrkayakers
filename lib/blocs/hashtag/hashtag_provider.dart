@@ -19,7 +19,7 @@ class HashtagProvider {
     }
   }
 
-  Future<String> updateHashtagVideos(
+  Future<void> updateHashtagVideos(
       String hashtag, List<ExtObjectLink> videoList) async {
     var foundHashtagObj =
         FirebaseFirestore.instance.collection('/hashtags').doc(hashtag);

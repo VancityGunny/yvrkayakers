@@ -1,11 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:yvrkayakers/blocs/auth/index.dart';
-import 'package:yvrkayakers/generated/l10n.dart';
-
 import 'package:yvrkayakers/common/common_functions.dart';
 
 class UserNameSelectionScreen extends StatefulWidget {

@@ -13,8 +13,9 @@ class RiverlogRepository {
     return _riverlogProvider.getRiverLogByUser(userId);
   }
 
-  Future<RiverlogModel> getRiverLogById(String riverLogId) async {
-    return _riverlogProvider.getRiverLogById(riverLogId);
+  Future<RiverlogModel> getRiverLogById(
+      String userId, String riverLogId) async {
+    return _riverlogProvider.getRiverLogById(userId, riverLogId);
   }
 
   Future<String> addRiverLog(RiverlogModel newRiverLog) async {

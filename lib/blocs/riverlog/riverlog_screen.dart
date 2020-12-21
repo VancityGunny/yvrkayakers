@@ -1,20 +1,13 @@
-import 'package:clipboard/clipboard.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_session/flutter_session.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:group_list_view/group_list_view.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:yvrkayakers/blocs/riverlog/index.dart';
-import 'package:yvrkayakers/blocs/user/user_model.dart';
-import 'package:yvrkayakers/common/common_functions.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:yvrkayakers/widgets/user_experience_card.dart';
 import 'package:yvrkayakers/widgets/widgets.dart';
-
-import 'package:yvrkayakers/blocs/auth/index.dart';
 
 class RiverlogScreen extends StatefulWidget {
   final String _selectedUserId;
@@ -66,8 +59,10 @@ class RiverlogScreenState extends State<RiverlogScreen> {
                   (RiverlogShortModel obj) =>
                       DateFormat.yMMMM().format(obj.logDateStart));
               return Column(children: [
-                UserExperienceCard(tempData),
-                RiverlogList(newGroupedData: newGroupedData),
+                UserExperienceCard(),
+                RiverlogList(
+                    newGroupedData: newGroupedData,
+                    selectedUserId: widget._selectedUserId),
                 Text('')
               ]);
             }));
@@ -78,130 +73,11 @@ class RiverlogScreenState extends State<RiverlogScreen> {
   }
 }
 
-class UserExperienceCard extends StatelessWidget {
-  List<RiverlogShortModel> _riverlogs;
-  UserExperienceCard(this._riverlogs);
-  @override
-  Widget build(BuildContext context) {
-    var session = FlutterSession();
-
-    // TODO: implement build
-    return StreamBuilder(
-        stream: BlocProvider.of<AuthBloc>(context).currentAuth.stream,
-        builder: (context, snapshot) {
-          if (snapshot.data == null) return Text('');
-          var currentUser = snapshot.data;
-          var groupExperience = groupBy(currentUser.experience,
-                  (UserExperienceModel obj) => obj.riverGrade.roundToDouble())
-              .map((key, value) => MapEntry<double, int>(
-                  key, value.fold(0, (a, b) => a + b.runCount)));
-
-          return Column(children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 50.0,
-                  backgroundColor: Colors.grey[200],
-                  backgroundImage:
-                      CachedNetworkImageProvider(currentUser.photoUrl),
-                ),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        UserSkillMedal(currentUser.userSkill),
-                        Text("@" + currentUser.userName,
-                            style: Theme.of(context).textTheme.headline4),
-                        Text('   '),
-                        FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.yellow.shade900)),
-                          color: Colors.yellow.shade700,
-                          onPressed: () {
-                            // copy hashtag to clipboard
-                            var hashtag =
-                                '#${CommonFunctions.getHashtag(user: currentUser)}';
-                            FlutterClipboard.copy(hashtag).then((value) {
-                              var snackBar = SnackBar(
-                                  content: Text(hashtag +
-                                      ' is copied to clipboard! Share vdo or photo of this paddler in social media using this hashtag.'));
-                              Scaffold.of(context).showSnackBar(snackBar);
-                            });
-                          },
-                          child: Text(
-                              '#${CommonFunctions.getHashtag(user: currentUser)}',
-                              style: TextStyle(fontSize: 12.0)),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Name: ",
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                        Container(
-                          padding: new EdgeInsets.only(right: 13.0),
-                          child: new Text(currentUser.displayName,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.subtitle1),
-                        )
-                      ],
-                    ),
-                    Text(
-                      "Favorite: " +
-                          ((currentUser.userStat != null)
-                              ? currentUser.userStat.favoriteRiver.riverName
-                              : ""),
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                    Text(
-                        "Last Paddle: " +
-                            ((currentUser.userStat != null)
-                                ? DateFormat.yMMMd()
-                                    .format(currentUser.userStat.lastWetness)
-                                : ""),
-                        style: Theme.of(context).textTheme.subtitle1),
-                    LimitedBox(
-                        maxHeight: 20.0,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: groupExperience.length,
-                          itemBuilder: (context, index) {
-                            var gradeLabel =
-                                CommonFunctions.translateRiverDifficulty(
-                                    groupExperience.keys.elementAt(index));
-                            return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  RiverGradeIcon(
-                                      groupExperience.keys.elementAt(index)),
-                                  Text(" " +
-                                      groupExperience.values
-                                          .elementAt(index)
-                                          .toString())
-                                ]);
-                          },
-                        ))
-                  ],
-                )
-              ],
-            ),
-          ]);
-        });
-  }
-}
-
 class RiverlogList extends StatelessWidget {
-  const RiverlogList({
-    Key key,
-    @required this.newGroupedData,
-  }) : super(key: key);
-
+  const RiverlogList(
+      {Key key, @required this.newGroupedData, @required this.selectedUserId})
+      : super(key: key);
+  final String selectedUserId;
   final Map<String, List<RiverlogShortModel>> newGroupedData;
 
   @override
@@ -228,105 +104,116 @@ class RiverlogList extends StatelessWidget {
           var curRiver =
               newGroupedData[newGroupedData.keys.toList()[index.section]]
                   [index.index];
-          return Card(
-            elevation: 5,
-            child: Padding(
-              padding: EdgeInsets.all(2),
-              child: Stack(children: <Widget>[
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Stack(
-                    children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 2),
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).backgroundColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0))),
-                                    child: Column(
+          return GestureDetector(
+            onTap: () {
+              goToRiverlogDetail(curRiver.id, context);
+            },
+            child: Card(
+              elevation: 5,
+              child: Padding(
+                padding: EdgeInsets.all(2),
+                child: Stack(children: <Widget>[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Stack(
+                      children: <Widget>[
+                        Padding(
+                            padding: const EdgeInsets.only(left: 5, top: 2),
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0))),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  5.0),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  5.0))),
+                                              width: 40.0,
+                                              alignment: Alignment(0.0, 0.0),
+                                              child: Text(
+                                                '${DateFormat('E').format(curRiver.logDateStart)}',
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                              )),
+                                          Container(
+                                              width: 40.0,
+                                              // color: Colors.lightBlue,
+                                              alignment: Alignment(0.0, 0.0),
+                                              child: Text(
+                                                '${DateFormat.d().format(curRiver.logDateStart)}',
+                                                style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                    RiverGradeMedal(curRiver.river),
+                                    riverNameSymbol(curRiver, context),
+                                    Spacer(),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        Container(
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(5.0),
-                                                    topRight:
-                                                        Radius.circular(5.0))),
-                                            width: 40.0,
-                                            alignment: Alignment(0.0, 0.0),
-                                            child: Text(
-                                              '${DateFormat('E').format(curRiver.logDateStart)}',
+                                        Row(
+                                          children: [
+                                            (curRiver.didSwim == true)
+                                                ? FaIcon(
+                                                    FontAwesomeIcons.swimmer,
+                                                    color: Colors.red,
+                                                    size: 14.0)
+                                                : Text(''),
+                                            (curRiver.didRescue == true)
+                                                ? FaIcon(
+                                                    FontAwesomeIcons.lifeRing,
+                                                    size: 14.0,
+                                                    color: Colors.green,
+                                                  )
+                                                : Text(''),
+                                            Text(
+                                              '@${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(curRiver.logDateStart))}',
                                               style: TextStyle(
-                                                  fontSize: 15.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            )),
-                                        Container(
-                                            width: 40.0,
-                                            // color: Colors.lightBlue,
-                                            alignment: Alignment(0.0, 0.0),
-                                            child: Text(
-                                              '${DateFormat.d().format(curRiver.logDateStart)}',
-                                              style: TextStyle(
-                                                  fontSize: 20.0,
+                                                  fontSize: 12.0,
                                                   fontWeight: FontWeight.bold,
                                                   color: Theme.of(context)
                                                       .primaryColor),
-                                            ))
+                                            ),
+                                          ],
+                                        ),
+                                        waterLevelGauge(curRiver, context)
                                       ],
-                                    ),
-                                  ),
-                                  RiverGradeMedal(curRiver.river),
-                                  riverNameSymbol(curRiver, context),
-                                  Spacer(),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          (curRiver.didSwim == true)
-                                              ? FaIcon(FontAwesomeIcons.swimmer,
-                                                  color: Colors.red, size: 14.0)
-                                              : Text(''),
-                                          (curRiver.didRescue == true)
-                                              ? FaIcon(
-                                                  FontAwesomeIcons.lifeRing,
-                                                  size: 14.0,
-                                                  color: Colors.green,
-                                                )
-                                              : Text(''),
-                                          Text(
-                                            '@${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(curRiver.logDateStart))}',
-                                            style: TextStyle(
-                                                fontSize: 12.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Theme.of(context)
-                                                    .primaryColor),
-                                          ),
-                                        ],
-                                      ),
-                                      waterLevelGauge(curRiver, context)
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ))
-                    ],
-                  ),
-                )
-              ]),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ))
+                      ],
+                    ),
+                  )
+                ]),
+              ),
             ),
           );
         });
@@ -377,5 +264,18 @@ class RiverlogList extends StatelessWidget {
     } catch (exception) {
       return Text('');
     }
+  }
+
+  void goToRiverlogDetail(String curRiverlogId, BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return MultiBlocProvider(providers: [
+          BlocProvider<RiverlogBloc>.value(
+            value: BlocProvider.of<RiverlogBloc>(context),
+          ),
+        ], child: RiverlogDetailPage(selectedUserId, curRiverlogId));
+      }),
+    );
   }
 }

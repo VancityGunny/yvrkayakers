@@ -48,12 +48,10 @@ class AuthRepository {
 // now we merge with existing firebase user
     User currentUser = _firebaseAuth.currentUser;
     // add username to usernames collection
-    var newUserNameRef =
-        await _firestore.collection('/usernames').doc(newUserName);
+    var newUserNameRef = _firestore.collection('/usernames').doc(newUserName);
     newUserNameRef.set({'uid': currentUser.uid});
     // update user with new username
-    var foundUserRef =
-        await _firestore.collection('/users').doc(currentUser.uid);
+    var foundUserRef = _firestore.collection('/users').doc(currentUser.uid);
     foundUserRef.update({'userName': newUserName});
   }
 

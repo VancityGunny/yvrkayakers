@@ -110,10 +110,9 @@ class UpdatingVideosRiverbetaEvent extends RiverbetaEvent {
   @override
   Stream<RiverbetaState> applyAsync(
       {RiverbetaState currentState, RiverbetaBloc bloc}) async* {
-    var success =
-        await _hashtagRepository.updateHashtagVideos(riverHashtag, videoList);
-    if (success != null) {
+    try {
+      await _hashtagRepository.updateHashtagVideos(riverHashtag, videoList);
       yield UpdatedRiverbetaState(0, riverId: riverHashtag);
-    }
+    } catch (e) {}
   }
 }

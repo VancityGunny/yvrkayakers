@@ -16,7 +16,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class RiverbetaDetailPage extends StatefulWidget {
-  String _currentRiverId;
+  final String _currentRiverId;
   RiverbetaDetailPage(this._currentRiverId);
   @override
   RiverbetaDetailPageState createState() {

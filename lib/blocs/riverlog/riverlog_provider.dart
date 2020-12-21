@@ -26,9 +26,14 @@ class RiverlogProvider {
     return riverLogs;
   }
 
-  Future<RiverlogModel> getRiverLogById(String riverLogId) async {
-    var foundDoc =
-        await _firestore.collection('/riverlogs').doc(riverLogId).get();
+  Future<RiverlogModel> getRiverLogById(
+      String userId, String riverLogId) async {
+    var foundDoc = await _firestore
+        .collection('/riverlogs')
+        .doc(userId)
+        .collection('/logs')
+        .doc(riverLogId)
+        .get();
     var foundRiverLog = RiverlogModel.fromFire(foundDoc);
     return foundRiverLog;
   }

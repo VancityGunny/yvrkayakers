@@ -52,7 +52,7 @@ class ExtObjectLink extends Equatable {
 class HashtagModel extends Equatable {
   final String hashtag;
 
-  List<ExtObjectLink> relatedVideos;
+  final List<ExtObjectLink> relatedVideos;
   final DateTime lastFetchVideos;
 
   HashtagModel(this.hashtag, this.relatedVideos, this.lastFetchVideos);

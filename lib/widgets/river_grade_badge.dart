@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:yvrkayakers/blocs/riverbeta/index.dart';
 import 'package:yvrkayakers/common/common_functions.dart';
 
-import 'package:yvrkayakers/blocs/user/user_model.dart';
-
 class RiverGradeMedal extends StatelessWidget {
-  RiverbetaShortModel _curRiver;
+  final RiverbetaShortModel _curRiver;
   RiverGradeMedal(this._curRiver);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
         padding: EdgeInsets.all(2.0),
         child: Container(
