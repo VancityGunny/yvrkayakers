@@ -149,7 +149,7 @@ class TripAddPageState extends State<TripAddPage> {
                     ],
                   ),
                   Container(
-                      width: 250.0,
+                      width: 200.0,
                       child: Center(
                           child: Slider(
                         min: 0,

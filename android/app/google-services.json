@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "669436728185-3fm28on13lio3nme4028pgojrpv3r1h6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zeusshard.yvrkayakers",
+            "certificate_hash": "2b0f8e413533e5f404354d25b6f1cbe0456f2b5c"
+          }
+        },
+        {
+          "client_id": "669436728185-fp3s6fvcr2m358urmfloccf003gt9fvq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zeusshard.yvrkayakers",
+            "certificate_hash": "fb73d621a21963eeb01d9390fdd372817b1eb63d"
+          }
+        },
+        {
+          "client_id": "669436728185-girhh2a09j5rj0q5imot4vu8nfpbc2cs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zeusshard.yvrkayakers",
+            "certificate_hash": "81caaec4e881b3228b78d51a3827f021a5ed181b"
+          }
+        },
+        {
           "client_id": "669436728185-u8gmev2qjdjuusne5s2bs600ol1t0ujs.apps.googleusercontent.com",
           "client_type": 3
         }

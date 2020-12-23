@@ -63,7 +63,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Log River Run"),
+          title: Text("Log ${widget._selectedRiver.riverName} Run"),
         ),
         body: newRiverLogForm());
   }
@@ -83,10 +83,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            widget._selectedRiver.riverName,
-            style: Theme.of(context).textTheme.headline1,
-          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -123,7 +119,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                         dense: true,
                         title: Text(
                             (_endTime == null)
-                                ? "<<No EndTime Selected>>"
+                                ? "End: <Select Time>"
                                 : "End: ${MaterialLocalizations.of(context).formatTimeOfDay(_endTime)}",
                             style: Theme.of(context).textTheme.headline3),
                         onTap: pickEndTime),
@@ -148,7 +144,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                iconSize: 55.0,
+                                iconSize: 50.0,
                                 color: (blnDidSwim == true)
                                     ? Colors.red
                                     : Colors.grey,
@@ -168,7 +164,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               IconButton(
-                                  iconSize: 55.0,
+                                  iconSize: 50.0,
                                   color: (blnDidRescue == true)
                                       ? Colors.green
                                       : Colors.grey,
@@ -185,6 +181,17 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                             ]),
                       ],
                     ),
+                    ButtonTheme(
+                        minWidth: 200.0,
+                        height: 70.0,
+                        child: RaisedButton(
+                            child: Text(
+                              'Add New Log',
+                              style: TextStyle(fontSize: 30.0),
+                            ),
+                            onPressed: () {
+                              addNewRiverlog(context); // go up one level
+                            }))
                   ],
                 ),
               ),
@@ -194,7 +201,7 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Container(
-                        height: 300.0,
+                        height: 280.0,
                         child: Center(
                             child: RotatedBox(
                                 quarterTurns: -1,
@@ -263,17 +270,6 @@ class RiverlogAddPageState extends State<RiverlogAddPage> {
                   ))
             ],
           ),
-          ButtonTheme(
-              minWidth: 200.0,
-              height: 70.0,
-              child: RaisedButton(
-                  child: Text(
-                    'Add New Log',
-                    style: TextStyle(fontSize: 30.0),
-                  ),
-                  onPressed: () {
-                    addNewRiverlog(context); // go up one level
-                  }))
         ],
       ),
     );
