@@ -320,10 +320,10 @@ class RiverbetaDetailPageState extends State<RiverbetaDetailPage> {
             .toList();
       }
 
-      // update the fetch videos
-      BlocProvider.of<RiverbetaBloc>(context).add(
-          new UpdatingVideosRiverbetaEvent(
-              foundRiverHashtag.hashtag, newSampleVideos));
+      // // update the fetch videos
+      // BlocProvider.of<RiverbetaBloc>(context).add(
+      //     new UpdatingVideosRiverbetaEvent(
+      //         foundRiverHashtag.hashtag, newSampleVideos));
 
       return GridView.builder(
         shrinkWrap: true,

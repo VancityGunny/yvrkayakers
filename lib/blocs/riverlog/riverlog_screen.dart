@@ -106,7 +106,7 @@ class RiverlogList extends StatelessWidget {
                   [index.index];
           return GestureDetector(
             onTap: () {
-              goToRiverlogDetail(curRiver.id, context);
+              //goToRiverlogDetail(curRiver.id, context);
             },
             child: Card(
               elevation: 5,

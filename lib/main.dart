@@ -25,24 +25,52 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        // Define the default brightness and colors.
+        // brightness: Brightness.dark,
+        // primaryColor: Colors.blue[800],
+        // accentColor: Colors.lightBlue[600],
+        // backgroundColor: Colors.cyan[200],
+
+        // Define the default font family.
+        fontFamily: 'Georgia',
+
+        // Define the default TextTheme. Use this to specify the default
+        // text styling for headlines, titles, bodies of text, and more.
+        textTheme: TextTheme(
+            headline1: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
+            headline2: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+            headline3: TextStyle(fontSize: 23.0, fontWeight: FontWeight.bold),
+            headline4: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
+            headline5: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+            headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            button: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            bodyText2: TextStyle(
+                fontSize: 14.0, fontFamily: 'Hind', color: Colors.black87),
+            caption: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Hind'),
+            subtitle1: TextStyle(
+                color: Colors.grey, fontSize: 15, fontWeight: FontWeight.bold),
+            subtitle2: TextStyle(
+                color: Colors.grey, fontSize: 15, fontStyle: FontStyle.italic)),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: Banner(
+          location: BannerLocation.topStart,
+          message: 'BETA',
+          color: Colors.green.withOpacity(0.6),
+          textStyle: TextStyle(
+              fontWeight: FontWeight.w700, fontSize: 12.0, letterSpacing: 1.0),
+          textDirection: TextDirection.ltr,
+          child: MyHomePage(title: 'YVR Kayakers App')),
     );
   }
 }
@@ -83,56 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
         create: (BuildContext context) =>
             _authenticationBloc, //bloc: _authenticationBloc,
         child: CommonBloc(
-            child: MaterialApp(
-          localizationsDelegates: [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          theme: ThemeData(
-            // Define the default brightness and colors.
-            // brightness: Brightness.dark,
-            // primaryColor: Colors.blue[800],
-            // accentColor: Colors.lightBlue[600],
-            // backgroundColor: Colors.cyan[200],
-
-            // Define the default font family.
-            fontFamily: 'Georgia',
-
-            // Define the default TextTheme. Use this to specify the default
-            // text styling for headlines, titles, bodies of text, and more.
-            textTheme: TextTheme(
-                headline1:
-                    TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-                headline2:
-                    TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
-                headline3:
-                    TextStyle(fontSize: 23.0, fontWeight: FontWeight.bold),
-                headline4:
-                    TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
-                headline5:
-                    TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-                headline6:
-                    TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-                button: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-                bodyText2: TextStyle(
-                    fontSize: 14.0, fontFamily: 'Hind', color: Colors.black87),
-                caption: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Hind'),
-                subtitle1: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold),
-                subtitle2: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                    fontStyle: FontStyle.italic)),
-          ),
-          debugShowCheckedModeBanner: false,
-          home: BlocBuilder(
+          child: BlocBuilder(
             bloc: _authenticationBloc,
             builder: (BuildContext context, AuthState state) {
               final delegate = S.of(context);
@@ -170,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
           ),
-        )));
+        ));
   }
 
   @override
